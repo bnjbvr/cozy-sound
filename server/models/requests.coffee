@@ -3,7 +3,7 @@
 cozydb = require 'cozydb'
 
 module.exports =
-    template:
+    track_model:
         # shortcut for emit doc._id, doc
         all: cozydb.defaultRequests.all
 

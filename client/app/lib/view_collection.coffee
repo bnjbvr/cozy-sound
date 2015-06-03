@@ -21,17 +21,30 @@ module.exports = class ViewCollection extends BaseView
 
     template: -> ''
 
-    itemViewOptions: ->
-
     collectionEl: null
 
-    # add 'empty' class to view when there is no subview
+    # add 'empty' class to view when there is no sub-view
     onChange: ->
         @$el.toggleClass 'empty', _.size(@views) is 0
 
-    # can be overriden if we want to place the subviews somewhere else
+    # can be overridden if we want to place the sub-views somewhere else
     appendView: (view) ->
-        @$collectionEl.append view.el
+        index = @collection.indexOf view.model
+
+        if index is 0
+            @$collectionEl.prepend view.$el
+        else
+            if view.className?
+                className = ".#{view.className}"
+            else
+                className = ""
+
+            if view.tagName?
+                tagName = view.tagName
+            else
+                tagName = ""
+            selector = "#{tagName}#{className}:nth-of-type(#{index})"
+            @$collectionEl.find(selector).after view.$el
 
     # bind listeners to the collection
     initialize: ->
@@ -40,6 +53,9 @@ module.exports = class ViewCollection extends BaseView
         @listenTo @collection, "reset",   @onReset
         @listenTo @collection, "add",     @addItem
         @listenTo @collection, "remove",  @removeItem
+
+        # When an item is added, removed or the view is rendered
+        @on "change", @onChange
 
         if not @collectionEl?
             collectionEl = el
@@ -51,10 +67,11 @@ module.exports = class ViewCollection extends BaseView
 
     # after render, we reattach the views
     afterRender: ->
+        super
         @$collectionEl = $(@collectionEl)
         @appendView view.$el for id, view of @views
         @onReset @collection
-        @onChange @views
+        @trigger 'change'
 
     # destroy all sub views before remove
     remove: ->
@@ -68,15 +85,14 @@ module.exports = class ViewCollection extends BaseView
 
     # event listeners for add
     addItem: (model) =>
-        options = _.extend {}, {model: model}, @itemViewOptions(model)
+        options = _.extend {}, {model: model}
         view = new @itemview(options)
         @views[model.cid] = view.render()
         @appendView view
-        @onChange @views
+        @trigger 'change'
 
     # event listeners for remove
     removeItem: (model) =>
         @views[model.cid].remove()
         delete @views[model.cid]
-
-        @onChange @views
+        @trigger 'change'

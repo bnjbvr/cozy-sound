@@ -1,8 +1,7 @@
 # See documentation on https://github.com/frankrousseau/americano#routes
 
-index = require './index'
+track  = require './track_controller'
 
 module.exports =
-    'foo':
-        get: index.main
-
+    'tracks':
+        get: track.all
