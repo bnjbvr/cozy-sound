@@ -1,8 +1,18 @@
 # See documentation on https://github.com/frankrousseau/americano#routes
 
-index = require './index'
+track           = require './track_controller'
+playlist        = require './playlist_controller'
+
+
+test = require './test_controller'
 
 module.exports =
-    'foo':
-        get: index.main
+    'tracks':
+        get: track.all
+        post: track.create
 
+    #'playlists':
+        #get: playlist.all
+
+    'test':
+        post: test.create

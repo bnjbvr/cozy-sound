@@ -3,7 +3,7 @@
 cozydb = require 'cozydb'
 
 module.exports =
-    template:
+    track_model:
         # shortcut for emit doc._id, doc
         all: cozydb.defaultRequests.all
 
@@ -13,3 +13,6 @@ module.exports =
                 # map function
             reduce: (key, values, rereduce) ->
                 # non mandatory reduce function
+
+    playlist_model:
+        all: cozydb.defaultRequests.all

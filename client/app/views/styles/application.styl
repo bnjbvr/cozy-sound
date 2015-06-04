@@ -1,11 +1,416 @@
 // nib is a powerful lib for stylus that provides cross-browser css3 mixins.
 @import 'nib'
 
-@import '_base'
-@import '_ui'
+@import 'responsive'
 
-// Import your styles here
+// Base Styles
+*
+  box-sizing: border-box
 
-@import '_states'
-@import '_layout'
-@import '_responsive'
+body
+    text-rendering optimizeLegibility
+
+body,
+input
+    color #444
+    font 300 16px Geneva, Verdana, "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif
+    line-height 1.2
+
+@import 'player'
+
+@import 'player-button'
+
+body
+    background-color: gray
+    overflow-x: hidden
+    user-select: none
+
+a
+    color:inherit
+    text-decoration: none
+
+.top-nav
+    display: block
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    height: 49px
+
+    background: #333
+    color: white
+
+    font-weight: bold
+    overflow: ellipsis
+
+    width: 100%
+    text-align: left
+
+    .top-nav-title
+        text-shadow: 1px 1px 1px #000
+        color: #fff
+        font-size: 1em
+        width: 150px
+        text-align: center
+        display: inline-block
+        padding: 15px
+        border-right: 1px solid #333
+        cursor:pointer
+        &:hover
+            background:linear-gradient(#444, #333)
+        &.activated
+            background:linear-gradient(#222, #333)
+
+        [class^="icon-"]
+            text-align: inherit
+            line-height: inherit
+            color: inherit
+            text-shadow: inherit
+            &:hover
+                color: inherit
+                text-shadow: inherit
+
+    &.dragover
+        .top-nav-title
+            border-right: 1px solid #e00
+            &.activated
+                background:linear-gradient(#800, #f00)
+
+.dragover
+    background:linear-gradient(#f00, #800)
+
+#content
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    background: #111
+    //background: url('../images/background.jpg') no-repeat center center fixed
+    //background-size: cover
+    min-height: 200px
+
+    #tracks-display
+        .viewport
+            display: block
+            padding: 0 15px
+            position: absolute
+            top: 49px
+            left: 0
+            right: 0
+            bottom: 49px
+
+        table
+            table-layout: fixed
+            width: 100%
+            .field
+                text-align: left
+                font-weight: bold
+                overflow: ellipsis
+                &.num,
+                &.plays
+                    text-overflow: clip
+            .left
+                width: 60px
+            .right
+                width: 60px
+            .title
+                min-width: 200px
+
+            thead
+                background-color: white
+                color: #f00
+                border:1px solid #aaa
+                th
+                    &.field
+                        cursor: default
+                        &.clickable-cell
+                            cursor: pointer
+
+                        .sortArrow
+                            display: inline-block
+                            margin-left: 10px
+                            padding: 5px
+                            width: 14px
+                            height: 14px
+                            background-image: url("../images/glyphicons-halflings-red.png")
+                            &:hover
+                                transform: scale(1.2)
+                            &.up
+                                background-position: -287px -119px
+                            &.down
+                                background-position: -312px -118px
+
+                    &.left,
+                    &.right
+                        .thead-button
+                            display:inline-block
+                            margin: auto 4px
+                            width: 15px
+                            height: 15px
+                            background-image: url("../images/glyphicons-halflings-red.png")
+                            cursor:pointer
+                            &.save-button
+                                background-position: 0px 16px
+                            &.show-prev-button
+                                background-position: 134px 64px
+                                transform: scaleX(-1)
+                                &:hover
+                                    transform: scale(-1.2, 1.2)
+                            &.clear
+                                background-position: -455px 1px
+                            &:hover
+                                transform: scale(1.2)
+
+                    &.left
+                        &#playlist-play
+                            cursor:pointer
+                            &:hover i.icon-play
+                                color: red
+
+
+            tbody
+                tr.track
+                    background-color: white
+                    color: #444
+                    height: 30px
+
+                    &.odd
+                        background-color: #f3f3f3
+
+                    &.at-play
+                        background-color: #b00
+                        color: white
+
+                    &.in-playlist
+                        background-color: #99d6eb
+                        color: #333
+
+                    &.selected
+                        background-color: #c8c8c8
+                        color: #111
+
+                    &:hover
+                        background-color: #333
+                        color: white
+                        .player-button
+                            color: #222
+                            opacity: 1
+                        .uploadProgress
+                            color: white
+
+                    &.ui-sortable-helper
+                        line-height: 15px
+                        vertical-align: middle
+                        transition: all 0s ease
+                        background-color: #444
+                        color: white
+                        &:hover
+                            .player-button
+                                display: none
+
+                    &.sortable-placeholder
+                        transition: all 0s ease
+                        background-color: #777
+
+                    &.already-played
+                        opacity: 0.5
+
+                    .player-button
+                        opacity: 0
+
+                    .right,
+                    .left
+                        text-align: center
+
+                    .field
+                        cursor: default
+                        font-size: 0.8em
+
+                        .info
+                            display: none
+
+                        &:hover .info
+                            display: block
+                            position: absolute
+                            background-color: #666
+                            color: white
+                            padding: 5px
+
+                    .uploadProgress
+                        color: red
+                        font-weight: bold
+                        font-size: 0.8em
+                        display: block
+                        animation-name: dropText
+                        animation-duration: 0.1s
+                        animation-iteration-count: 1
+
+                    input
+                        width: 100%
+                        border: none
+                        font: inherit
+                        color: inherit
+                        background-color: inherit
+                        cursor: default
+                        overflow: ellipsis
+
+                        &.activated
+                            color: #444
+                            background-color: white
+                            cursor: text
+
+                    .album
+                        line-height: 15px
+                        input
+                            width: 80%
+                        i.icon-play
+                            top: -2px
+
+    #off-screen-nav
+        .off-screen-nav-toggle
+            display: block
+            position: absolute
+            z-index: 1001
+            top: 49px
+            left: 0
+            bottom: 49px
+            width: 15px
+            .off-screen-nav-toggle-handler
+                position: absolute
+                top: 50%
+                margin-top : -30px
+                border-top-right-radius: 8px
+                border-bottom-right-radius: 8px
+                background: #555
+                height: 60px
+                width: 15px
+                min-height: 30px
+                font-size: 10em
+                vertical-align: bottom
+                .off-screen-nav-toggle-arrow
+                    position : relative
+                    top : 50%
+                    margin-top : -7px
+                    width: 12px
+                    height: 14px
+                    background-position: -457px -72px
+                    background-image: url("../images/glyphicons-halflings.png")
+                    &.on
+                        background-position: -431px -72px
+            &:hover
+                .off-screen-nav-toggle-arrow
+                    background-image: url("../images/glyphicons-halflings-white.png")
+
+        .off-screen-nav-content
+            overflow: hidden
+            display: block
+            position: absolute
+            z-index: 1000
+            top: 49px
+            left: 0px
+            bottom: 49px
+            overflow-y: auto
+            background: #444
+            padding: 0rem 1rem 1rem
+            border-top: 1px solid #666
+            border-bottom: 1px solid #666
+            visibility: hidden
+            width: 18rem
+            transform: translateX(-100%)
+            transition: 500ms cubic-bezier(0.09, 0.68, 0, 0.99)
+            &.off-screen-nav-show
+                overflow: hidden
+                transform: translateX(0)
+                visibility: visible
+
+            .off-screen-nav-title
+                cursor: default
+                color: white
+                border-bottom: 1px solid #eee
+                padding: 0 0.3rem 0.2rem
+                margin: 1rem 0 0
+                text-transform: uppercase
+                font-size: 0.75rem
+                letter-spacing: 0.1rem
+                position: relative
+                display: block
+                font-weight: bold
+
+            ul#playlist-list
+                position: absolute
+                top: 40px
+                right: 1rem
+                left: 1rem
+                bottom: 1rem
+
+            ul
+                margin: 0
+                padding: 0
+                list-style: none
+                li
+                    cursor: pointer
+                    margin: 0
+                    padding: 0.3rem 0rem 0.3rem 1rem
+                    display: list-item
+                    position: relative
+                    font-weight: bold
+                    font-size: 0.75rem
+                    color: white
+                    border-bottom: 1px solid #555
+                    overflow: ellipsis
+                    &:hover
+                        padding: 0.3rem 1rem 0.3rem 1rem
+                        background: #555
+                        .delete-playlist-button
+                            display: inline-block
+                        .select-playlist-button
+                            display: inline-block
+
+                    &.selected
+                        .select-playlist-button
+                            background-image: url("../images/glyphicons-halflings-red.png")
+                            display: inline-block
+                            &:hover
+                                background-image: url("../images/glyphicons-halflings-red.png")
+
+                    &.activated
+                        background: #333
+
+            .off-screen-nav-button
+                cursor: pointer
+                display: none
+                position: absolute
+                right: 2px
+                line-height: 14px
+                vertical-align: text-top
+                height: 14px
+                width: 14px
+                background-image: url("../images/glyphicons-halflings-white.png")
+
+                &.add-playlist-button
+                    background-image: url("../images/glyphicons-halflings-white.png")
+                    display: inline-block
+                    opacity: 0.4
+                    background-position: -408px -96px
+                    &:hover
+                        opacity: 1
+                        background-image: url("../images/glyphicons-halflings-white.png")
+
+                &.delete-playlist-button
+                    background-position: -312px 0px
+
+                &.select-playlist-button
+                    left: 0
+                    background-image: url("../images/glyphicons-halflings.png")
+                    background-position: -456px -72px
+                    &:hover
+                        background-image: url("../images/glyphicons-halflings-white.png")
+
+                &:hover
+                    background-image: url("../images/glyphicons-halflings-red.png")
+
+
+@keyframes dropText
+    from{transform:scale(1.3);}
+    to{transform:scale(1);}
