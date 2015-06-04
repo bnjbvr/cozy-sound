@@ -100,7 +100,6 @@ module.exports = class OffScreenNav extends ViewCollection
                 #@views[model.cid].$('.select-playlist-button').trigger 'click'
                 #app.router.navigate '', true
             #error: -> alert "Server error occured, playlist wasn't created"
-
     onPlaylistSelected: (event, playlist)->
         if app.selectedPlaylist?
             @views[app.selectedPlaylist.cid].$('li').removeClass('selected')

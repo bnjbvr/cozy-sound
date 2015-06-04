@@ -1,11 +1,12 @@
-BaseView = require 'lib/base_view'
-TopNav = require './top_nav'
-Tracks = require './track/tracks'
-PlayQueue = require './playqueue/playqueue'
-Playlist = require './playlist/playlist'
-Player = require './player/player'
-OffScreenNav = require './off_screen_nav'
-app = require 'application'
+BaseView         = require 'lib/base_view'
+TopNav           = require './top_nav'
+Tracks           = require './track/tracks'
+PlayQueue        = require './playqueue/playqueue'
+Playlist         = require './playlist/playlist'
+Player           = require './player/player'
+OffScreenNav     = require './off_screen_nav'
+app              = require 'application'
+
 PlaylistCollection = require 'collections/playlist_collection'
 
 module.exports = class AppView extends BaseView
