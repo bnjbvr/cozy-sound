@@ -1,27 +1,20 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    routes.coffee                                      :+:      :+:    :+:    #
+#    file_collection.coffee                             :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2015/06/05 17:59:57 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/05 18:05:33 by ppeltier         ###   ########.fr        #
+#    Created: 2015/06/03 19:00:31 by ppeltier          #+#    #+#              #
+#    Updated: 2015/06/03 19:52:33 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# See documentation on https://github.com/frankrousseau/americano#routes
+File    = require '../models/file'
 
-track           = require './track_controller'
-playlist        = require './playlist_controller'
+module.exports = class FileCollection extends Backbone.Collection
+    model: File
+    url: 'test'
 
-
-
-module.exports =
-    'tracks':
-        get: track.all
-        post: track.create
-
-    'playlists':
-        get: playlist.all
-
+    initialize: ->
+        console.log "collection created"

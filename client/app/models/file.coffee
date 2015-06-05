@@ -1,27 +1,18 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    routes.coffee                                      :+:      :+:    :+:    #
+#    file.coffee                                        :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2015/06/05 17:59:57 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/05 18:05:33 by ppeltier         ###   ########.fr        #
+#    Created: 2015/06/03 18:55:35 by ppeltier          #+#    #+#              #
+#    Updated: 2015/06/03 19:52:21 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# See documentation on https://github.com/frankrousseau/americano#routes
 
-track           = require './track_controller'
-playlist        = require './playlist_controller'
+module.exports = class File  extends Backbone.Model
+    url: 'test'
 
-
-
-module.exports =
-    'tracks':
-        get: track.all
-        post: track.create
-
-    'playlists':
-        get: playlist.all
-
+    initialize: ->
+        console.log "new file"

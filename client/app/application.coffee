@@ -8,19 +8,19 @@ module.exports =
         Router = require 'router'
         @router = new Router()
 
-        ## create main track collection
-        #TrackCollection = require 'collections/track_collection'
-        #@tracks = new TrackCollection()
-        #@tracks.fetch
-            #error: =>
-                #msg = "Files couldn't be retrieved due to a server error."
-                #alert msg
+        # create main track collection
+        TrackCollection = require 'collections/track_collection'
+        @tracks = new TrackCollection()
+        @tracks.fetch
+            error: =>
+                msg = "Files couldn't be retrieved due to a server error."
+                alert msg
 
-        ## create play queue
-        #PlayQueue = require 'collections/playqueue'
-        #@playQueue = new PlayQueue()
+        # create play queue
+        PlayQueue = require 'collections/playqueue'
+        @playQueue = new PlayQueue()
 
-        #@selectedPlaylist = null
+        @selectedPlaylist = null
 
         ## initialize broadcast
         #@isBroadcastEnabled = false
@@ -30,26 +30,26 @@ module.exports =
             #error: (jqXHR, textStatus, errorThrown)->
                 #console.log "ajax fail : #{textStatus}"
 
-        ## initialize soundmanager
-        #@soundManager = soundManager
+        # initialize soundmanager
+        @soundManager = soundManager
 
-        #@soundManager.setup
-            ## disable or enable debug output
-            #debugMode: false
-            #debugFlash: false
-            #useFlashBlock: false
-            ## always prefer flash even for MP3/MP4 when HTML5 audio is available
-            #preferFlash: true
-            ## setup the display update rate while reading songs (in ms)
-            #flashPollingInterval: 500
-            #html5PollingInterval: 500
-            ## path to directory containing SM2 SWF
-            #url: "swf/"
-            ## optional: enable MPEG-4/AAC support (requires flash 9)
-            #flashVersion: 9
-            #onready: ->
-                #$('.player').trigger 'soundManager:ready'
-            #ontimeout: ->
-                #$('.player').trigger 'soundManager:timeout'
+        @soundManager.setup
+            # disable or enable debug output
+            debugMode: false
+            debugFlash: false
+            useFlashBlock: false
+            # always prefer flash even for MP3/MP4 when HTML5 audio is available
+            preferFlash: true
+            # setup the display update rate while reading songs (in ms)
+            flashPollingInterval: 500
+            html5PollingInterval: 500
+            # path to directory containing SM2 SWF
+            url: "swf/"
+            # optional: enable MPEG-4/AAC support (requires flash 9)
+            flashVersion: 9
+            onready: ->
+                $('.player').trigger 'soundManager:ready'
+            ontimeout: ->
+                $('.player').trigger 'soundManager:timeout'
 
         Backbone.history.start()

@@ -3,16 +3,19 @@
 
 cozydb = require 'cozydb'
 
-module.exports = TrackModel = cozydb.getModel 'Track',
-    title:     String
-    artiste:   String
-    album:     String
-    track:     String
-    year:      String
-    genre:     String
-    time:      String
-    slug:      String
-    playlists: Object
-    dateAdded: {'type': Date, 'default': Date.now}
-    lastPlay:  Date
-    plays:     {'type': Number, 'default': 0}
+module.exports = TrackModel = new cozydb.getModel 'Track',
+
+    title:            String
+    artist:           String
+    album:            String
+    track:            String
+    type:             String
+    size:             Number
+    year:             String
+    genre:            String
+    time:             String
+    slug:             String
+    playlists:        Object
+    dateAdded:        Date
+    lastPlay:         Date
+    plays:            Number

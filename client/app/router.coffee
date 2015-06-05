@@ -1,38 +1,34 @@
 AppView = require './views/class/app_view'
 
-TestView = require './views/class/test'
 module.exports = class Router extends Backbone.Router
 
     routes:
         '': 'main'
-        'test': 'test'
         'playqueue': 'playqueue'
         'playlist/:playlistId': 'playlist'
 
     initialize: ->
-        #@mainView = new AppView()
-        #@mainView.render()
+        @mainView = new AppView()
+        @mainView.render()
 
-        @test = new TestView()
-        # bind keyboard events
-        #@lastSeen = null
-        #@atHome = false
-        #Mousetrap.bind 'v', @onVKey
+        #bind keyboard events
+        @lastSeen = null
+        @atHome = false
+        Mousetrap.bind 'v', @onVKey
 
-    #onVKey: =>
-        ## toggle between the home and last seen list view
-        #if @atHome
-            #if @lastSeen?
-                #@navigate "playlist/#{@lastSeen}", true
-            #else
-                #@navigate "playqueue", true
-        #else
-            #@navigate "", true
+    onVKey: =>
+        # toggle between the home and last seen list view
+        if @atHome
+            if @lastSeen?
+                @navigate "playlist/#{@lastSeen}", true
+            else
+                @navigate "playqueue", true
+        else
+            @navigate "", true
 
     main: ->
-        #@atHome = true
-        #@mainView.showTrackList()
-        @test.render()
+        @atHome = true
+        @mainView.showTrackList()
 
 
     # display the playlist view for an playlist with given id

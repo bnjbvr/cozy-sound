@@ -59,6 +59,7 @@ upload = (track, cb) =>
         contentType: false # tell jQuery not to set contentType (Prevent $.ajax from being smart)
         data: formdata
         success: (model)->
+            console.log 'success'
             track.set model # to get the generated id
             cb()
         error: ->
@@ -82,63 +83,23 @@ uploadWorker = (track, done)=>
         else
             done()
 
-class Uploader
+class   UploaderModel
 
     # upload 3 by 3
     uploadQueue: async.queue uploadWorker, 3
 
-    process: (files) ->
+    process: (track) ->
         # signal trackList view
-        Backbone.Mediator.publish 'uploader:addTracks'
+        #Backbone.Mediator.publish 'uploader:addTracks'
         # handle files
-        for file in files
-            fileAttributes = {}
-            fileAttributes =
-                title: file.name
-                artist: ""
-                album: ""
-            track = new Track fileAttributes
-            track.file = file
-            app.tracks.unshift track,
-                sort: false
-            track.set
-                state: 'client'
-            Backbone.Mediator.publish 'uploader:addTrack'
+            #Backbone.Mediator.publish 'uploader:addTrack'
 
-            @uploadQueue.push track , (err, track) =>
-                if err
-                    console.log err
-                    # remove the track(it's already done if upload was canceled)
-                    app.tracks.remove track
+        console.log "test2"
+        @uploadQueue.push track , (err, track) =>
+            if err
+                console.log err
 
-    processYoutube: (youId)->
-        fileAttributes = {}
-        fileAttributes =
-            title: "fetching youtube-mp3.org ..."
-            artist: ""
-            album: ""
-        track = new Track fileAttributes
-        app.tracks.unshift track,
-            sort: false
-        track.set
-            state: 'importBegin'
-        Backbone.Mediator.publish 'uploader:addTrack'
-        Backbone.ajax
-            dataType: "json"
-            url: "you/#{youId}"
-            context: this
-            data: ""
-            success: (model)=>
-                track.set model # to get the generated id
-                track.set
-                    state: 'uploadEnd'
-            error: (xhr, status, error)=>
-                app.tracks.remove track
-                beg = "Youtube import #{status}"
-                end = "Import was cancelled."
-                if xhr.responseText isnt ""
-                    alert "#{beg} : #{xhr.responseText}. #{end}"
-                else
-                    alert "#{beg}. #{end}"
+                # remove the track(it's already done if upload was canceled)
+                #app.tracks.remove track
 
-module.exports = new Uploader()
+module.exports = new UploaderModel()

@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/04 11:27:56 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/04 18:46:38 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/05 17:25:59 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,14 +30,12 @@ module.exports = class TestView extends BaseView
 
     onFilesChanged: (event) ->
         console.log "Change !"
-        console.log @uploader[0].files
-        console.log @uploader[0].files[0]
         @handleFiles @uploader[0].files
+        # reset the input
+        old = @uploader
+        @uploader = old.clone true
+        old.replaceWith @uploader
 
-        ## reset the input
-        #old = @uploader
-        #@uploader = old.clone true
-        #old.replaceWith @uploader
     handleFiles: (files) ->
         ## Set the view as dirty to warn users it will cancel the upload
         ## if he leaves the page during the upload.
@@ -78,6 +76,7 @@ module.exports = class TestView extends BaseView
             title: file.name
             size: file.size
             type: file.type
+        console.log file
         test.file = file
         @collection.add test
         testProcessorModel.process test

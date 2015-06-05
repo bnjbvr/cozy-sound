@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/04 12:40:57 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/04 18:53:30 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/05 16:02:07 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,13 +20,13 @@ readFile = (track, next) ->
     unless track.file.type.match /audio\/(mp3|mpeg)/ # list of supported filetype
         return next 'is not an image'
 
-    reader = new FileReader()
-    track.img = new Image()
-    reader.readAsDataURL track.file
-    reader.onloadend = =>
-        track.img.src = reader.result
-    reader.onload = ->
-        next()
+    #reader = new FileReader()
+    #track.img = new Image()
+    #reader.readAsDataURL track.file
+    #reader.onloadend = =>
+        #track.img.src = reader.result
+    #reader.onload = ->
+    next()
 
 # create a FormData object with track.file, track.thumb, track.screen
 # save the model with these files
@@ -44,7 +44,7 @@ upload = (track, next) ->
     console.log "upload"
     formdata = new FormData()
     formdata.append 'cid', track.cid
-    formdata.append 'title', "plop"#track.get 'title'
+    formdata.append 'title', track.get 'title'
     formdata.append 'artist', track.get 'artist'
     formdata.append 'album', track.get 'album'
     formdata.append 'track', track.get 'track'
@@ -54,9 +54,9 @@ upload = (track, next) ->
     formdata.append 'file', track.file
 
     # need to call sync directly so we can change the data
-    console.log track.file.path
     Backbone.sync 'create', track,
         contentType: false # Prevent $.ajax from being smart
+        processData: false # tell jQuery not to process the data
         data: formdata
         success: (data) ->
             console.log "Success!"
@@ -73,7 +73,6 @@ upload = (track, next) ->
             if xhr.upload
                 xhr.upload.addEventListener 'progress', progress, false
             xhr
-
 
 # make screen sized version and upload
 uploadWorker = (track, done) ->

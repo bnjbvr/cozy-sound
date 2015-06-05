@@ -14,14 +14,14 @@ module.exports = class AppView extends BaseView
     el: 'body.application'
     template: require('views/templates/home')
 
-    events:
-        'drop #content': (e) ->
-            return unless e.originalEvent?.dataTransfer?
-            @topNav.onFilesDropped e
-        'dragover' : (e) ->
-            @topNav.onDragOver e
-        'mouseover': (e) ->
-            @topNav.onDragOut e
+    #events:
+        #'drop #content': (e) ->
+            #return unless e.originalEvent?.dataTransfer?
+            #@topNav.onFilesDropped e
+        #'dragover' : (e) ->
+            #@topNav.onDragOver e
+        #'mouseover': (e) ->
+            #@topNav.onDragOut e
 
     initialize: ->
         super

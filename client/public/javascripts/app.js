@@ -112,12 +112,70 @@
 require.register("application", function(exports, require, module) {
 module.exports = {
   initialize: function() {
-    var Router;
+    var PlayQueue, Router, TrackCollection;
     Router = require('router');
     this.router = new Router();
+    TrackCollection = require('collections/track_collection');
+    this.tracks = new TrackCollection();
+    this.tracks.fetch({
+      error: (function(_this) {
+        return function() {
+          var msg;
+          msg = "Files couldn't be retrieved due to a server error.";
+          return alert(msg);
+        };
+      })(this)
+    });
+    PlayQueue = require('collections/playqueue');
+    this.playQueue = new PlayQueue();
+    this.selectedPlaylist = null;
+    this.soundManager = soundManager;
+    this.soundManager.setup({
+      debugMode: false,
+      debugFlash: false,
+      useFlashBlock: false,
+      preferFlash: true,
+      flashPollingInterval: 500,
+      html5PollingInterval: 500,
+      url: "swf/",
+      flashVersion: 9,
+      onready: function() {
+        return $('.player').trigger('soundManager:ready');
+      },
+      ontimeout: function() {
+        return $('.player').trigger('soundManager:timeout');
+      }
+    });
     return Backbone.history.start();
   }
 };
+});
+
+;require.register("collections/file_collection", function(exports, require, module) {
+var File, FileCollection,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+File = require('../models/file');
+
+module.exports = FileCollection = (function(_super) {
+  __extends(FileCollection, _super);
+
+  function FileCollection() {
+    return FileCollection.__super__.constructor.apply(this, arguments);
+  }
+
+  FileCollection.prototype.model = File;
+
+  FileCollection.prototype.url = 'test';
+
+  FileCollection.prototype.initialize = function() {
+    return console.log("collection created");
+  };
+
+  return FileCollection;
+
+})(Backbone.Collection);
 });
 
 ;require.register("collections/playlist", function(exports, require, module) {
@@ -472,27 +530,6 @@ module.exports = PlayQueue = (function(_super) {
 })(Backbone.Collection);
 });
 
-;require.register("collections/test", function(exports, require, module) {
-var TestCollection, TestModel,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-TestModel = require('models/test');
-
-module.exports = TestCollection = (function(_super) {
-  __extends(TestCollection, _super);
-
-  function TestCollection() {
-    return TestCollection.__super__.constructor.apply(this, arguments);
-  }
-
-  TestCollection.prototype.model = TestModel;
-
-  return TestCollection;
-
-})(Backbone.Collection);
-});
-
 ;require.register("collections/track_collection", function(exports, require, module) {
 var Track, TrackCollection,
   __hasProp = {}.hasOwnProperty,
@@ -715,6 +752,29 @@ module.exports = ViewCollection = (function(_super) {
 })(BaseView);
 });
 
+;require.register("models/file", function(exports, require, module) {
+var File,
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+module.exports = File = (function(_super) {
+  __extends(File, _super);
+
+  function File() {
+    return File.__super__.constructor.apply(this, arguments);
+  }
+
+  File.prototype.url = 'test';
+
+  File.prototype.initialize = function() {
+    return console.log("new file");
+  };
+
+  return File;
+
+})(Backbone.Model);
+});
+
 ;require.register("models/playlist", function(exports, require, module) {
 var Playlist, PlaylistTrackCollection, app,
   __hasProp = {}.hasOwnProperty,
@@ -777,49 +837,265 @@ module.exports = Playlist = (function(_super) {
 })(Backbone.Model);
 });
 
-;require.register("models/test", function(exports, require, module) {
-var TestModel,
+;require.register("models/track", function(exports, require, module) {
+var Track,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-module.exports = TestModel = (function(_super) {
-  __extends(TestModel, _super);
+module.exports = Track = (function(_super) {
+  __extends(Track, _super);
 
-  function TestModel() {
-    return TestModel.__super__.constructor.apply(this, arguments);
+  function Track() {
+    return Track.__super__.constructor.apply(this, arguments);
   }
 
-  TestModel.prototype.url = 'test';
+  Track.prototype.urlRoot = 'tracks';
 
-  TestModel.prototype.urlRoot = 'test';
+  Track.prototype.defaults = function() {
+    return {
+      state: 'server'
+    };
+  };
 
-  return TestModel;
+  Track.prototype.sync = function(method, model, options) {
+    var progress;
+    progress = function(e) {
+      return model.trigger('progress', e);
+    };
+    _.extend(options, {
+      xhr: function() {
+        var xhr;
+        xhr = $.ajaxSettings.xhr();
+        if (xhr instanceof window.XMLHttpRequest) {
+          xhr.addEventListener('progress', progress, false);
+        }
+        if (xhr.upload) {
+          xhr.upload.addEventListener('progress', progress, false);
+        }
+        return xhr;
+      }
+    });
+    return Backbone.sync.apply(this, arguments);
+  };
+
+  return Track;
 
 })(Backbone.Model);
 });
 
-;require.register("models/test_processor", function(exports, require, module) {
+;require.register("models/uploader_model", function(exports, require, module) {
+var Track, UploaderModel, app, controlFile, readMetaData, refreshDisplay, upload, uploadWorker;
+
+app = require('application');
+
+Track = require('models/track');
+
+controlFile = (function(_this) {
+  return function(track, cb) {
+    var err;
+    if (!track.file.type.match(/audio\/(mp3|mpeg)/)) {
+      err = "unsupported " + track.file.type + " filetype";
+    }
+    return cb(err);
+  };
+})(this);
+
+readMetaData = (function(_this) {
+  return function(track, cb) {
+    var reader, url;
+    url = track.get('title');
+    reader = new FileReader();
+    reader.onload = function(event) {
+      return ID3.loadTags(url, (function() {
+        var tags, _ref;
+        tags = ID3.getAllTags(url);
+        track.set({
+          title: tags.title != null ? tags.title : url,
+          artist: tags.artist != null ? tags.artist : '',
+          album: tags.album != null ? tags.album : '',
+          track: tags.track != null ? tags.track : '',
+          year: tags.year != null ? tags.year : '',
+          genre: tags.genre != null ? tags.genre : '',
+          time: ((_ref = tags.TLEN) != null ? _ref.data : void 0) != null ? tags.TLEN.data : ''
+        });
+        return cb();
+      }), {
+        tags: ["title", "artist", "album", "track", "year", "genre", "TLEN"],
+        dataReader: FileAPIReader(track.file)
+      });
+    };
+    reader.readAsArrayBuffer(track.file);
+    return reader.onabort = function(event) {
+      return cb("unable to read metadata");
+    };
+  };
+})(this);
+
+upload = (function(_this) {
+  return function(track, cb) {
+    var formdata;
+    formdata = new FormData();
+    formdata.append('cid', track.cid);
+    formdata.append('title', track.get('title'));
+    formdata.append('artist', track.get('artist'));
+    formdata.append('album', track.get('album'));
+    formdata.append('track', track.get('track'));
+    formdata.append('year', track.get('year'));
+    formdata.append('genre', track.get('genre'));
+    formdata.append('time', track.get('time'));
+    formdata.append('file', track.file);
+    if (track.attributes.state === 'canceled') {
+      return cb("upload canceled");
+    }
+    track.set({
+      state: 'uploadStart'
+    });
+    track.sync('create', track, {
+      processData: false,
+      contentType: false,
+      data: formdata,
+      success: function(model) {
+        console.log('success');
+        track.set(model);
+        return cb();
+      },
+      error: function() {
+        return cb("upload failed");
+      }
+    });
+    return false;
+  };
+})(this);
+
+refreshDisplay = (function(_this) {
+  return function(track, cb) {
+    track.set({
+      state: 'uploadEnd'
+    });
+    return cb();
+  };
+})(this);
+
+uploadWorker = (function(_this) {
+  return function(track, done) {
+    return async.waterfall([
+      function(cb) {
+        return controlFile(track, cb);
+      }, function(cb) {
+        return readMetaData(track, cb);
+      }, function(cb) {
+        return upload(track, cb);
+      }, function(cb) {
+        return refreshDisplay(track, cb);
+      }
+    ], function(err) {
+      if (err) {
+        return done("" + (track.get('title')) + " not uploaded properly : " + err, track);
+      } else {
+        return done();
+      }
+    });
+  };
+})(this);
+
+UploaderModel = (function() {
+  function UploaderModel() {}
+
+  UploaderModel.prototype.uploadQueue = async.queue(uploadWorker, 3);
+
+  UploaderModel.prototype.process = function(track) {
+    console.log("test2");
+    return this.uploadQueue.push(track, (function(_this) {
+      return function(err, track) {
+        if (err) {
+          return console.log(err);
+        }
+      };
+    })(this));
+  };
+
+  return UploaderModel;
+
+})();
+
+module.exports = new UploaderModel();
+});
+
+;require.register("router", function(exports, require, module) {
+var AppView, Router,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+AppView = require('./views/class/app_view');
+
+module.exports = Router = (function(_super) {
+  __extends(Router, _super);
+
+  function Router() {
+    this.onVKey = __bind(this.onVKey, this);
+    return Router.__super__.constructor.apply(this, arguments);
+  }
+
+  Router.prototype.routes = {
+    '': 'main',
+    'playqueue': 'playqueue',
+    'playlist/:playlistId': 'playlist'
+  };
+
+  Router.prototype.initialize = function() {
+    this.mainView = new AppView();
+    this.mainView.render();
+    this.lastSeen = null;
+    this.atHome = false;
+    return Mousetrap.bind('v', this.onVKey);
+  };
+
+  Router.prototype.onVKey = function() {
+    if (this.atHome) {
+      if (this.lastSeen != null) {
+        return this.navigate("playlist/" + this.lastSeen, true);
+      } else {
+        return this.navigate("playqueue", true);
+      }
+    } else {
+      return this.navigate("", true);
+    }
+  };
+
+  Router.prototype.main = function() {
+    this.atHome = true;
+    return this.mainView.showTrackList();
+  };
+
+  Router.prototype.playlist = function(id) {
+    this.atHome = false;
+    this.lastSeen = id;
+    return this.mainView.showPlayList(id);
+  };
+
+  Router.prototype.playqueue = function() {
+    this.atHome = false;
+    this.lastSeen = null;
+    return this.mainView.showPlayQueue();
+  };
+
+  return Router;
+
+})(Backbone.Router);
+});
+
+;require.register("upload_track_model", function(exports, require, module) {
 var readFile, trackProcessor, upload, uploadWorker;
 
 readFile = function(track, next) {
-  var reader;
   if (track.file.size > 100 * 1024 * 1024) {
     return next('is too big (max 100Mo)');
   }
   if (!track.file.type.match(/audio\/(mp3|mpeg)/)) {
     return next('is not an image');
   }
-  reader = new FileReader();
-  track.img = new Image();
-  reader.readAsDataURL(track.file);
-  reader.onloadend = (function(_this) {
-    return function() {
-      return track.img.src = reader.result;
-    };
-  })(this);
-  return reader.onload = function() {
-    return next();
-  };
+  return next();
 };
 
 upload = function(track, next) {
@@ -837,7 +1113,7 @@ upload = function(track, next) {
   console.log("upload");
   formdata = new FormData();
   formdata.append('cid', track.cid);
-  formdata.append('title', "plop");
+  formdata.append('title', track.get('title'));
   formdata.append('artist', track.get('artist'));
   formdata.append('album', track.get('album'));
   formdata.append('track', track.get('track'));
@@ -845,9 +1121,9 @@ upload = function(track, next) {
   formdata.append('genre', track.get('genre'));
   formdata.append('time', track.get('time'));
   formdata.append('file', track.file);
-  console.log(track.file.path);
   return Backbone.sync('create', track, {
     contentType: false,
+    processData: false,
     data: formdata,
     success: function(data) {
       console.log("Success!");
@@ -921,304 +1197,6 @@ trackProcessor = (function() {
 module.exports = new trackProcessor();
 });
 
-;require.register("models/track", function(exports, require, module) {
-var Track,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-module.exports = Track = (function(_super) {
-  __extends(Track, _super);
-
-  function Track() {
-    return Track.__super__.constructor.apply(this, arguments);
-  }
-
-  Track.prototype.urlRoot = 'tracks';
-
-  Track.prototype.defaults = function() {
-    return {
-      state: 'server'
-    };
-  };
-
-  Track.prototype.sync = function(method, model, options) {
-    var progress;
-    progress = function(e) {
-      return model.trigger('progress', e);
-    };
-    _.extend(options, {
-      xhr: function() {
-        var xhr;
-        xhr = $.ajaxSettings.xhr();
-        if (xhr instanceof window.XMLHttpRequest) {
-          xhr.addEventListener('progress', progress, false);
-        }
-        if (xhr.upload) {
-          xhr.upload.addEventListener('progress', progress, false);
-        }
-        return xhr;
-      }
-    });
-    return Backbone.sync.apply(this, arguments);
-  };
-
-  return Track;
-
-})(Backbone.Model);
-});
-
-;require.register("models/uploader", function(exports, require, module) {
-var Track, Uploader, app, controlFile, readMetaData, refreshDisplay, upload, uploadWorker;
-
-app = require('application');
-
-Track = require('models/track');
-
-controlFile = (function(_this) {
-  return function(track, cb) {
-    var err;
-    if (!track.file.type.match(/audio\/(mp3|mpeg)/)) {
-      err = "unsupported " + track.file.type + " filetype";
-    }
-    return cb(err);
-  };
-})(this);
-
-readMetaData = (function(_this) {
-  return function(track, cb) {
-    var reader, url;
-    url = track.get('title');
-    reader = new FileReader();
-    reader.onload = function(event) {
-      return ID3.loadTags(url, (function() {
-        var tags, _ref;
-        tags = ID3.getAllTags(url);
-        track.set({
-          title: tags.title != null ? tags.title : url,
-          artist: tags.artist != null ? tags.artist : '',
-          album: tags.album != null ? tags.album : '',
-          track: tags.track != null ? tags.track : '',
-          year: tags.year != null ? tags.year : '',
-          genre: tags.genre != null ? tags.genre : '',
-          time: ((_ref = tags.TLEN) != null ? _ref.data : void 0) != null ? tags.TLEN.data : ''
-        });
-        return cb();
-      }), {
-        tags: ["title", "artist", "album", "track", "year", "genre", "TLEN"],
-        dataReader: FileAPIReader(track.file)
-      });
-    };
-    reader.readAsArrayBuffer(track.file);
-    return reader.onabort = function(event) {
-      return cb("unable to read metadata");
-    };
-  };
-})(this);
-
-upload = (function(_this) {
-  return function(track, cb) {
-    var formdata;
-    formdata = new FormData();
-    formdata.append('cid', track.cid);
-    formdata.append('title', track.get('title'));
-    formdata.append('artist', track.get('artist'));
-    formdata.append('album', track.get('album'));
-    formdata.append('track', track.get('track'));
-    formdata.append('year', track.get('year'));
-    formdata.append('genre', track.get('genre'));
-    formdata.append('time', track.get('time'));
-    formdata.append('file', track.file);
-    if (track.attributes.state === 'canceled') {
-      return cb("upload canceled");
-    }
-    track.set({
-      state: 'uploadStart'
-    });
-    track.sync('create', track, {
-      processData: false,
-      contentType: false,
-      data: formdata,
-      success: function(model) {
-        track.set(model);
-        return cb();
-      },
-      error: function() {
-        return cb("upload failed");
-      }
-    });
-    return false;
-  };
-})(this);
-
-refreshDisplay = (function(_this) {
-  return function(track, cb) {
-    track.set({
-      state: 'uploadEnd'
-    });
-    return cb();
-  };
-})(this);
-
-uploadWorker = (function(_this) {
-  return function(track, done) {
-    return async.waterfall([
-      function(cb) {
-        return controlFile(track, cb);
-      }, function(cb) {
-        return readMetaData(track, cb);
-      }, function(cb) {
-        return upload(track, cb);
-      }, function(cb) {
-        return refreshDisplay(track, cb);
-      }
-    ], function(err) {
-      if (err) {
-        return done("" + (track.get('title')) + " not uploaded properly : " + err, track);
-      } else {
-        return done();
-      }
-    });
-  };
-})(this);
-
-Uploader = (function() {
-  function Uploader() {}
-
-  Uploader.prototype.uploadQueue = async.queue(uploadWorker, 3);
-
-  Uploader.prototype.process = function(files) {
-    var file, fileAttributes, track, _i, _len, _results;
-    Backbone.Mediator.publish('uploader:addTracks');
-    _results = [];
-    for (_i = 0, _len = files.length; _i < _len; _i++) {
-      file = files[_i];
-      fileAttributes = {};
-      fileAttributes = {
-        title: file.name,
-        artist: "",
-        album: ""
-      };
-      track = new Track(fileAttributes);
-      track.file = file;
-      app.tracks.unshift(track, {
-        sort: false
-      });
-      track.set({
-        state: 'client'
-      });
-      Backbone.Mediator.publish('uploader:addTrack');
-      _results.push(this.uploadQueue.push(track, (function(_this) {
-        return function(err, track) {
-          if (err) {
-            console.log(err);
-            return app.tracks.remove(track);
-          }
-        };
-      })(this)));
-    }
-    return _results;
-  };
-
-  Uploader.prototype.processYoutube = function(youId) {
-    var fileAttributes, track;
-    fileAttributes = {};
-    fileAttributes = {
-      title: "fetching youtube-mp3.org ...",
-      artist: "",
-      album: ""
-    };
-    track = new Track(fileAttributes);
-    app.tracks.unshift(track, {
-      sort: false
-    });
-    track.set({
-      state: 'importBegin'
-    });
-    Backbone.Mediator.publish('uploader:addTrack');
-    return Backbone.ajax({
-      dataType: "json",
-      url: "you/" + youId,
-      context: this,
-      data: "",
-      success: (function(_this) {
-        return function(model) {
-          track.set(model);
-          return track.set({
-            state: 'uploadEnd'
-          });
-        };
-      })(this),
-      error: (function(_this) {
-        return function(xhr, status, error) {
-          var beg, end;
-          app.tracks.remove(track);
-          beg = "Youtube import " + status;
-          end = "Import was cancelled.";
-          if (xhr.responseText !== "") {
-            return alert("" + beg + " : " + xhr.responseText + ". " + end);
-          } else {
-            return alert("" + beg + ". " + end);
-          }
-        };
-      })(this)
-    });
-  };
-
-  return Uploader;
-
-})();
-
-module.exports = new Uploader();
-});
-
-;require.register("router", function(exports, require, module) {
-var AppView, Router, TestView,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-AppView = require('./views/class/app_view');
-
-TestView = require('./views/class/test');
-
-module.exports = Router = (function(_super) {
-  __extends(Router, _super);
-
-  function Router() {
-    return Router.__super__.constructor.apply(this, arguments);
-  }
-
-  Router.prototype.routes = {
-    '': 'main',
-    'test': 'test',
-    'playqueue': 'playqueue',
-    'playlist/:playlistId': 'playlist'
-  };
-
-  Router.prototype.initialize = function() {
-    return this.test = new TestView();
-  };
-
-  Router.prototype.main = function() {
-    return this.test.render();
-  };
-
-  Router.prototype.playlist = function(id) {
-    this.atHome = false;
-    this.lastSeen = id;
-    return this.mainView.showPlayList(id);
-  };
-
-  Router.prototype.playqueue = function() {
-    this.atHome = false;
-    this.lastSeen = null;
-    return this.mainView.showPlayQueue();
-  };
-
-  return Router;
-
-})(Backbone.Router);
-});
-
 ;require.register("views/class/app_view", function(exports, require, module) {
 var AppView, BaseView, OffScreenNav, PlayQueue, Player, Playlist, PlaylistCollection, TopNav, Tracks, app,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
@@ -1256,22 +1234,6 @@ module.exports = AppView = (function(_super) {
   AppView.prototype.el = 'body.application';
 
   AppView.prototype.template = require('views/templates/home');
-
-  AppView.prototype.events = {
-    'drop #content': function(e) {
-      var _ref;
-      if (((_ref = e.originalEvent) != null ? _ref.dataTransfer : void 0) == null) {
-        return;
-      }
-      return this.topNav.onFilesDropped(e);
-    },
-    'dragover': function(e) {
-      return this.topNav.onDragOver(e);
-    },
-    'mouseover': function(e) {
-      return this.topNav.onDragOut(e);
-    }
-  };
 
   AppView.prototype.initialize = function() {
     AppView.__super__.initialize.apply(this, arguments);
@@ -2648,114 +2610,27 @@ module.exports = PlayQueueItemView = (function(_super) {
 })(TrackListItemView);
 });
 
-;require.register("views/class/test", function(exports, require, module) {
-var BaseView, TestCollection, TestModel, TestView, testProcessorModel,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-BaseView = require('lib/base_view');
-
-TestCollection = require('collections/test');
-
-TestModel = require('models/test');
-
-testProcessorModel = require('models/test_processor');
-
-module.exports = TestView = (function(_super) {
-  __extends(TestView, _super);
-
-  function TestView() {
-    this.addTest = __bind(this.addTest, this);
-    return TestView.__super__.constructor.apply(this, arguments);
-  }
-
-  TestView.prototype.el = 'body.application';
-
-  TestView.prototype.template = require('views/templates/test');
-
-  TestView.prototype.initialize = function() {
-    return this.collection = new TestCollection();
-  };
-
-  TestView.prototype.afterRender = function() {
-    return this.uploader = this.$('#uploader');
-  };
-
-  TestView.prototype.events = function() {
-    return {
-      'change #uploader': 'onFilesChanged'
-    };
-  };
-
-  TestView.prototype.onFilesChanged = function(event) {
-    console.log("Change !");
-    console.log(this.uploader[0].files);
-    console.log(this.uploader[0].files[0]);
-    return this.handleFiles(this.uploader[0].files);
-  };
-
-  TestView.prototype.handleFiles = function(files) {
-    var addPhotoAndBreath;
-    this.uploadCounter = 0;
-    addPhotoAndBreath = (function(_this) {
-      return function(file, callback) {
-        var test;
-        test = _this.addTest(file);
-        if (_this.uploadCounter > 20) {
-          return setTimeout(callback, 10);
-        } else {
-          _this.uploadCounter++;
-          return callback();
-        }
-      };
-    })(this);
-    return async.eachSeries(files, addPhotoAndBreath, (function(_this) {
-      return function() {};
-    })(this));
-  };
-
-  TestView.prototype.addTest = function(file) {
-    var test;
-    test = new TestModel({
-      title: file.name,
-      size: file.size,
-      type: file.type
-    });
-    test.file = file;
-    this.collection.add(test);
-    testProcessorModel.process(test);
-    return test;
-  };
-
-  return TestView;
-
-})(BaseView);
-});
-
 ;require.register("views/class/top_nav", function(exports, require, module) {
-var BaseView, TopNav, app, uploader,
+var BaseView, TopNav, TrackModel, app, uploadTrackModel,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseView = require('lib/base_view');
+
+TrackModel = require('models/track');
 
 app = require('application');
 
-uploader = require('models/uploader');
+uploadTrackModel = require('models/uploader_model');
 
 module.exports = TopNav = (function(_super) {
   __extends(TopNav, _super);
 
   function TopNav() {
-    this.onClickYoutube = __bind(this.onClickYoutube, this);
+    this.addTrack = __bind(this.addTrack, this);
     this.handleFiles = __bind(this.handleFiles, this);
-    this.onDragOut = __bind(this.onDragOut, this);
-    this.onDragOver = __bind(this.onDragOver, this);
-    this.onFilesDropped = __bind(this.onFilesDropped, this);
-    this.onUploadFormChange = __bind(this.onUploadFormChange, this);
-    this.setupHiddenFileInput = __bind(this.setupHiddenFileInput, this);
+    this.onFilesChanged = __bind(this.onFilesChanged, this);
     return TopNav.__super__.constructor.apply(this, arguments);
   }
 
@@ -2766,148 +2641,68 @@ module.exports = TopNav = (function(_super) {
   TopNav.prototype.template = require('views/templates/top_nav');
 
   TopNav.prototype.events = {
-    'click #upload-form': 'onClick',
-    'click #youtube-import': 'onClickYoutube',
-    'click #broadcast': 'onClickBroadcast'
-  };
-
-  TopNav.prototype.subscriptions = {
-    'tracklist:isEmpty': 'onEmptyTrackList'
+    'change #uploader': 'onFilesChanged'
   };
 
   TopNav.prototype.afterRender = function() {
-    return this.setupHiddenFileInput();
+    return this.uploader = this.$('#uploader');
   };
 
-  TopNav.prototype.onEmptyTrackList = function() {
-    return this.$('td#h2').html("Drop files here or click to add tracks");
+  TopNav.prototype.onFilesChanged = function(event) {
+    var old;
+    this.goHome;
+    this.handleFiles(this.uploader[0].files);
+    old = this.uploader;
+    this.uploader = old.clone(true);
+    return old.replaceWith(this.uploader);
   };
 
-  TopNav.prototype.setupHiddenFileInput = function() {
-    if (this.hiddenFileInput) {
-      document.body.removeChild(this.hiddenFileInput);
-    }
-    this.hiddenFileInput = document.createElement("input");
-    this.hiddenFileInput.setAttribute("type", "file");
-    this.hiddenFileInput.setAttribute("multiple", "multiple");
-    this.hiddenFileInput.setAttribute("accept", "audio/*");
-    this.hiddenFileInput.style.visibility = "hidden";
-    this.hiddenFileInput.style.position = "absolute";
-    this.hiddenFileInput.style.top = "0";
-    this.hiddenFileInput.style.left = "0";
-    this.hiddenFileInput.style.height = "0";
-    this.hiddenFileInput.style.width = "0";
-    document.body.appendChild(this.hiddenFileInput);
-    return this.hiddenFileInput.addEventListener("change", this.onUploadFormChange);
-  };
-
-  TopNav.prototype.onUploadFormChange = function(event) {
-    this.handleFiles(this.hiddenFileInput.files);
-    return this.setupHiddenFileInput();
-  };
-
-  TopNav.prototype.onClick = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    return this.hiddenFileInput.click();
-  };
-
-  TopNav.prototype.onFilesDropped = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.$el.removeClass('dragover');
-    $('.player').removeClass('dragover');
-    event.dataTransfer = event.originalEvent.dataTransfer;
-    return this.handleFiles(event.dataTransfer.files);
-  };
-
-  TopNav.prototype.onDragOver = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (!this.$el.hasClass('dragover')) {
-      this.$el.addClass('dragover');
-      return $('.player').addClass('dragover');
-    }
-  };
-
-  TopNav.prototype.onDragOut = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (this.$el.hasClass('dragover')) {
-      this.$el.removeClass('dragover');
-      return $('.player').removeClass('dragover');
+  TopNav.prototype.goHome = function() {
+    var curUrl;
+    curUrl = "" + document.URL;
+    if (curUrl.match(/playlist/) || curUrl.match(/playqueue/)) {
+      return app.router.navigate('', true);
     }
   };
 
   TopNav.prototype.handleFiles = function(files) {
-    var curUrl;
-    curUrl = "" + document.URL;
-    if (curUrl.match(/playlist/) || curUrl.match(/playqueue/)) {
-      app.router.navigate('', true);
-    }
-    return uploader.process(files);
+    var addPhotoAndBreath, track, uploadCounter;
+    uploadCounter = 0;
+    track = null;
+    addPhotoAndBreath = (function(_this) {
+      return function(file, callback) {
+        track = _this.addTrack(file);
+        if (uploadCounter > 20) {
+          return setTimeout(callback, 10);
+        } else {
+          uploadCounter++;
+          return callback();
+        }
+      };
+    })(this);
+    return async.eachSeries(files, addPhotoAndBreath, (function(_this) {
+      return function() {
+        app.tracks.unshift(track, {
+          sort: false
+        });
+        return track.set({
+          state: 'client'
+        });
+      };
+    })(this));
   };
 
-  TopNav.prototype.onClickYoutube = function(event) {
-    var curUrl, defaultMsg, defaultVal, input, isValidInput, startIndex, youId;
-    event.preventDefault();
-    event.stopPropagation();
-    defaultMsg = "Please enter a youtube url :";
-    defaultVal = "http://www.youtube.com/watch?v=KMU0tzLwhbE";
-    isValidInput = false;
-    while (!isValidInput) {
-      input = prompt(defaultMsg, defaultVal);
-      if (input == null) {
-        return;
-      }
-      if (input.match(/^https/)) {
-        input = input.replace(/^https:\/\//i, 'http://');
-      }
-      if (input.match(/^http:\/\/www.youtube.com\/watch?/)) {
-        startIndex = input.search(/v=/) + 2;
-        isValidInput = true;
-        youId = input.substr(startIndex, 11);
-      } else if (input.match(/^http:\/\/youtu.be\//)) {
-        isValidInput = true;
-        youId = input.substr(16, 11);
-      } else if (input.length === 11) {
-        isValidInput = true;
-        youId = input;
-      }
-      defaultMsg = "Invalid youtube url, please try again :";
-      defaultVal = input;
-    }
-    curUrl = "" + document.URL;
-    if (curUrl.match(/playlist/) || curUrl.match(/playqueue/)) {
-      app.router.navigate('', true);
-    }
-    return uploader.processYoutube(youId);
-  };
-
-  TopNav.prototype.onClickBroadcast = function(event) {
-    var url;
-    event.preventDefault();
-    event.stopPropagation();
-    this.$('#broadcast').toggleClass('activated');
-    if (this.$('#broadcast').hasClass('activated')) {
-      url = document.URL;
-      alert("Your friends can now listen your current mix at\n" + (url.replace(/\/#?apps\/cozic\/.*$/, '')) + "/public/cozic/");
-      app.isBroadcastEnabled = true;
-      return $.ajax("broadcast", {
-        type: 'GET',
-        error: function(jqXHR, textStatus, errorThrown) {
-          return console.log("ajax fail : " + textStatus);
-        }
-      });
-    } else {
-      app.isBroadcastEnabled = false;
-      return $.ajax("broadcast", {
-        type: 'DELETE',
-        error: function(jqXHR, textStatus, errorThrown) {
-          return console.log("ajax fail : " + textStatus);
-        }
-      });
-    }
+  TopNav.prototype.addTrack = function(file) {
+    var track;
+    track = new TrackModel({
+      title: file.name,
+      size: file.size,
+      type: file.type
+    });
+    track.file = file;
+    console.log("test");
+    uploadTrackModel.process(track);
+    return track;
   };
 
   return TopNav;
@@ -3969,7 +3764,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<a href=\"#\" title=\"go to your songs\"><div id=\"top-nav-title-home\" class=\"top-nav-title\"><span class=\"top-nav-text\">COZIC&nbsp;</span><i class=\"icon-home\"></i></div></a><a href=\"#playqueue\" title=\"go to the play queue\"><div id=\"top-nav-title-list\" class=\"top-nav-title\"><span class=\"top-nav-text\">Up Next&nbsp;</span><i class=\"icon-list\"></i></div></a><div id=\"upload-form\" title=\"click to add tracks\" type=\"file\" multiple=\"multiple\" class=\"top-nav-title\"><span class=\"top-nav-text\">Upload&nbsp;</span><i class=\"icon-cloud-upload\"></i></div><div id=\"youtube-import\" title=\"import sounds from Youtube\" class=\"top-nav-title\"><span class=\"top-nav-text\">Youtube&nbsp;</span><i class=\"icon-youtube\"></i></div><div id=\"broadcast\" title=\"broadcast your cozic\" class=\"top-nav-title\"><span class=\"top-nav-text\">Broadcast&nbsp;</span><i class=\"icon-rss\"></i></div>");;return buf.join("");
+buf.push("<a href=\"#\" title=\"go to your songs\"><div id=\"top-nav-title-home\" class=\"top-nav-title\"><span class=\"top-nav-text\">COZIC&nbsp;</span><i class=\"icon-home\"></i></div></a><a href=\"#playqueue\" title=\"go to the play queue\"><div id=\"top-nav-title-list\" class=\"top-nav-title\"><span class=\"top-nav-text\">Up Next&nbsp;</span><i class=\"icon-list\"></i></div></a><div id=\"top-nav-title-list\" class=\"top-nav-title\"><input id=\"uploader\" name=\"test\" type=\"file\" multiple=\"multiple\" accept=\"audio/*\"/><i class=\"icon-cloud-upload\"></i></div><div id=\"youtube-import\" title=\"import sounds from Youtube\" class=\"top-nav-title\"><span class=\"top-nav-text\">Youtube&nbsp;</span><i class=\"icon-youtube\"></i></div><div id=\"broadcast\" title=\"broadcast your cozic\" class=\"top-nav-title\"><span class=\"top-nav-text\">Broadcast&nbsp;</span><i class=\"icon-rss\"></i></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
