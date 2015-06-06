@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/04 13:09:41 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/06 18:46:47 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/06 19:02:56 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -98,3 +98,11 @@ module.exports.getAttachment = (req, res, next) ->
         res.on 'close', ->
             console.log "stop stream"
         stream.pipe(res)
+
+
+module.exports.delete = (req, res, next) ->
+    TrackModel.find req.params.id, (err, trackFind) ->
+        trackFind.destroy (err) ->
+            return next err if err
+        res.status(204).send {success: 'Track successfully deleted'}
+

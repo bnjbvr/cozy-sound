@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/05 17:59:57 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/06 17:05:28 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/06 18:58:22 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,8 +20,12 @@ broadcast       = require './broadcast_controller'
 
 module.exports =
     'tracks':
-        get:   track.all
-        post:  track.create
+        get:    track.all
+        post:   track.create
+
+    'tracks/:id':
+        delete: track.delete
+
 
     'tracks/:id/binary':
         get:    track.getAttachment
