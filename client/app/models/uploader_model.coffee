@@ -59,7 +59,6 @@ upload = (track, cb) =>
         contentType: false # tell jQuery not to set contentType (Prevent $.ajax from being smart)
         data: formdata
         success: (model)->
-            console.log 'success'
             track.set model # to get the generated id
             cb()
         error: ->
@@ -94,7 +93,6 @@ class   UploaderModel
         # handle files
             #Backbone.Mediator.publish 'uploader:addTrack'
 
-        console.log "test2"
         @uploadQueue.push track , (err, track) =>
             if err
                 console.log err

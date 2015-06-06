@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    playlist.coffee                                    :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2015/06/06 17:14:20 by ppeltier          #+#    #+#              #
+#    Updated: 2015/06/06 17:14:21 by ppeltier         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 PlaylistTrackCollection = require '../collections/playlist'
 app = require 'application'
 

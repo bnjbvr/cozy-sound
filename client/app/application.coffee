@@ -22,13 +22,13 @@ module.exports =
 
         @selectedPlaylist = null
 
-        ## initialize broadcast
-        #@isBroadcastEnabled = false
-        ## make sure the broadcast is disabled by defaut
-        #$.ajax "broadcast",
-            #type: 'DELETE'
-            #error: (jqXHR, textStatus, errorThrown)->
-                #console.log "ajax fail : #{textStatus}"
+        # initialize broadcast
+        @isBroadcastEnabled = false
+        # make sure the broadcast is disabled by defaut
+        $.ajax "broadcast",
+            type: 'DELETE'
+            error: (jqXHR, textStatus, errorThrown)->
+                console.log "ajax fail : #{textStatus}"
 
         # initialize soundmanager
         @soundManager = soundManager

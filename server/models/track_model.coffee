@@ -18,4 +18,5 @@ module.exports = TrackModel = new cozydb.getModel 'Track',
     playlists:        Object
     dateAdded:        Date
     lastPlay:         Date
+    binary:           Object
     plays:            Number

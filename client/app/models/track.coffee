@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    track.coffee                                       :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2015/06/06 17:14:00 by ppeltier          #+#    #+#              #
+#    Updated: 2015/06/06 17:14:22 by ppeltier         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 module.exports = class Track extends Backbone.Model
 
     # This field is required to know from where data should be loaded.

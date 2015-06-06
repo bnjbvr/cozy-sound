@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/05 17:34:07 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/05 18:20:09 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/06 15:41:16 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,9 +48,8 @@ module.exports = class TopNav extends BaseView
         uploadCounter = 0
         track = null
 
-        # Add a photo to the collection, to avoid browser freezing,
-        # after 20 pictures, it waits for 10ms (and release execution loop)
-        # before adding pictures to the collection and the view.
+        # Add a tracks to the list, to avoid browser freezing,
+        # after 20 tracks, it waits for 10ms (and release execution loop)
         addPhotoAndBreath = (file, callback) =>
             track = @addTrack file
             if uploadCounter > 20
@@ -59,11 +58,7 @@ module.exports = class TopNav extends BaseView
                 uploadCounter++
                 callback()
         async.eachSeries files, addPhotoAndBreath, =>
-        # Some stuff after: save reference
-            app.tracks.unshift track,
-                sort: false
-            track.set
-                state: 'client'
+        # Some stuff after:
 
     addTrack: (file) =>
         track = new TrackModel
@@ -71,7 +66,9 @@ module.exports = class TopNav extends BaseView
             size: file.size
             type: file.type
         track.file = file
-        #@collection.add test
-        console.log "test"
+        app.tracks.unshift track,
+            sort: false
+        track.set
+            state: 'client'
         uploadTrackModel.process track
         track

@@ -227,7 +227,7 @@ module.exports = class Player extends BaseView
 
         # here @currentSound must be null so we can proceed the track loading
         # loading the track
-        url = "tracks/#{track.get('id')}/attach/#{track.get('slug')}"
+        url = "tracks/#{track.get('id')}/binary"
         @currentSound = app.soundManager.createSound
             id: "sound-#{track.get('id')}"
             url: url
@@ -238,10 +238,10 @@ module.exports = class Player extends BaseView
             onfinish: @onPlayFinish
             onstop: @stopTrack
             whileplaying: @updateProgressDisplay
-            #whileloading: @printLoadingInfo # debbugging tool
+            whileloading: @printLoadingInfo # debbugging tool
             # sound "restart" (instead of "chorus") when played multiple times
             multiShot: false
-            #onid3: ()-> console.log @id3 # may be useful in the future
+            onid3: ()-> console.log @id3 # may be useful in the future
         @currentSound.mute() if @isMuted
 
         # update display and variables

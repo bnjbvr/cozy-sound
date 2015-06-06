@@ -129,6 +129,13 @@ module.exports = {
     PlayQueue = require('collections/playqueue');
     this.playQueue = new PlayQueue();
     this.selectedPlaylist = null;
+    this.isBroadcastEnabled = false;
+    $.ajax("broadcast", {
+      type: 'DELETE',
+      error: function(jqXHR, textStatus, errorThrown) {
+        return console.log("ajax fail : " + textStatus);
+      }
+    });
     this.soundManager = soundManager;
     this.soundManager.setup({
       debugMode: false,
@@ -955,7 +962,6 @@ upload = (function(_this) {
       contentType: false,
       data: formdata,
       success: function(model) {
-        console.log('success');
         track.set(model);
         return cb();
       },
@@ -1004,7 +1010,6 @@ UploaderModel = (function() {
   UploaderModel.prototype.uploadQueue = async.queue(uploadWorker, 3);
 
   UploaderModel.prototype.process = function(track) {
-    console.log("test2");
     return this.uploadQueue.push(track, (function(_this) {
       return function(err, track) {
         if (err) {
@@ -1811,7 +1816,7 @@ module.exports = Player = (function(_super) {
         this.stopTrack();
       }
     }
-    url = "tracks/" + (track.get('id')) + "/attach/" + (track.get('slug'));
+    url = "tracks/" + (track.get('id')) + "/binary";
     this.currentSound = app.soundManager.createSound({
       id: "sound-" + (track.get('id')),
       url: url,
@@ -1821,7 +1826,11 @@ module.exports = Player = (function(_super) {
       onfinish: this.onPlayFinish,
       onstop: this.stopTrack,
       whileplaying: this.updateProgressDisplay,
-      multiShot: false
+      whileloading: this.printLoadingInfo,
+      multiShot: false,
+      onid3: function() {
+        return console.log(this.id3);
+      }
     });
     if (this.isMuted) {
       this.currentSound.mute();
@@ -2681,14 +2690,7 @@ module.exports = TopNav = (function(_super) {
       };
     })(this);
     return async.eachSeries(files, addPhotoAndBreath, (function(_this) {
-      return function() {
-        app.tracks.unshift(track, {
-          sort: false
-        });
-        return track.set({
-          state: 'client'
-        });
-      };
+      return function() {};
     })(this));
   };
 
@@ -2700,7 +2702,12 @@ module.exports = TopNav = (function(_super) {
       type: file.type
     });
     track.file = file;
-    console.log("test");
+    app.tracks.unshift(track, {
+      sort: false
+    });
+    track.set({
+      state: 'client'
+    });
     uploadTrackModel.process(track);
     return track;
   };
