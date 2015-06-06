@@ -759,29 +759,6 @@ module.exports = ViewCollection = (function(_super) {
 })(BaseView);
 });
 
-;require.register("models/file", function(exports, require, module) {
-var File,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-module.exports = File = (function(_super) {
-  __extends(File, _super);
-
-  function File() {
-    return File.__super__.constructor.apply(this, arguments);
-  }
-
-  File.prototype.url = 'test';
-
-  File.prototype.initialize = function() {
-    return console.log("new file");
-  };
-
-  return File;
-
-})(Backbone.Model);
-});
-
 ;require.register("models/playlist", function(exports, require, module) {
 var Playlist, PlaylistTrackCollection, app,
   __hasProp = {}.hasOwnProperty,
@@ -1088,118 +1065,6 @@ module.exports = Router = (function(_super) {
   return Router;
 
 })(Backbone.Router);
-});
-
-;require.register("upload_track_model", function(exports, require, module) {
-var readFile, trackProcessor, upload, uploadWorker;
-
-readFile = function(track, next) {
-  if (track.file.size > 100 * 1024 * 1024) {
-    return next('is too big (max 100Mo)');
-  }
-  if (!track.file.type.match(/audio\/(mp3|mpeg)/)) {
-    return next('is not an image');
-  }
-  return next();
-};
-
-upload = function(track, next) {
-  var formdata;
-  console.log("all");
-  console.log(track);
-  console.log("title");
-  console.log(track.get('title'));
-  console.log("file");
-  console.log(track.file);
-  console.log("type");
-  console.log(track.get('type'));
-  console.log("size");
-  console.log(track.get('size'));
-  console.log("upload");
-  formdata = new FormData();
-  formdata.append('cid', track.cid);
-  formdata.append('title', track.get('title'));
-  formdata.append('artist', track.get('artist'));
-  formdata.append('album', track.get('album'));
-  formdata.append('track', track.get('track'));
-  formdata.append('year', track.get('year'));
-  formdata.append('genre', track.get('genre'));
-  formdata.append('time', track.get('time'));
-  formdata.append('file', track.file);
-  return Backbone.sync('create', track, {
-    contentType: false,
-    processData: false,
-    data: formdata,
-    success: function(data) {
-      console.log("Success!");
-      track.set(track.parse(data), {
-        silent: true
-      });
-      return next();
-    },
-    error: function() {
-      return next(' : upload failled');
-    },
-    xhr: function() {
-      var progress, xhr;
-      xhr = $.ajaxSettings.xhr();
-      progress = function(e) {
-        return track.trigger('progress', e);
-      };
-      if (xhr instanceof window.XMLHttpRequest) {
-        xhr.addEventListener('progress', progress, false);
-      }
-      if (xhr.upload) {
-        xhr.upload.addEventListener('progress', progress, false);
-      }
-      return xhr;
-    }
-  });
-};
-
-uploadWorker = function(track, done) {
-  return async.waterfall([
-    function(cb) {
-      return readFile(track, cb);
-    }, function(cb) {
-      return upload(track, cb);
-    }, function(cb) {
-      delete track.file;
-      return setTimeout(cb, 200);
-    }
-  ], function(err) {
-    if (err) {
-      console.log("upError");
-      track.trigger('upError', err);
-    } else {
-      console.log("uploadComplete");
-      track.trigger('uploadComplete');
-    }
-    return done(err);
-  });
-};
-
-trackProcessor = (function() {
-  function trackProcessor() {}
-
-  trackProcessor.prototype.uploadQueue = async.queue(uploadWorker, 2);
-
-  trackProcessor.prototype.process = function(track) {
-    console.log("data");
-    return this.uploadQueue.push(track, (function(_this) {
-      return function(err) {
-        if (err) {
-          return console.log(err);
-        }
-      };
-    })(this));
-  };
-
-  return trackProcessor;
-
-})();
-
-module.exports = new trackProcessor();
 });
 
 ;require.register("views/class/app_view", function(exports, require, module) {
@@ -3734,25 +3599,6 @@ var jade_mixins = {};
 var jade_interp;
 var locals_ = (locals || {}),model = locals_.model;
 buf.push("<td id=\"state\" class=\"left\"><div id=\"mini-play-button\" title=\"play from here\" class=\"player-button size-20\"><i class=\"icon-play\"></i></div></td><td class=\"field title\">" + (jade.escape((jade_interp = model.title) == null ? '' : jade_interp)) + "</td><td class=\"field artist\">" + (jade.escape((jade_interp = model.artist) == null ? '' : jade_interp)) + "</td><td class=\"field album\">" + (jade.escape((jade_interp = model.album) == null ? '' : jade_interp)) + "</td><td class=\"field num\">" + (jade.escape((jade_interp = model.track) == null ? '' : jade_interp)) + "</td><td class=\"right\"><div id=\"delete-button\" title=\"remove\" class=\"player-button size-20 signal-button\"><i class=\"icon-remove\"></i></div><div id=\"delete-from-here-button\" title=\"clear from here\" class=\"player-button size-20 signal-button\"><i class=\"icon-arrow-down\"></i></div></td>");;return buf.join("");
-};
-if (typeof define === 'function' && define.amd) {
-  define([], function() {
-    return __templateData;
-  });
-} else if (typeof module === 'object' && module && module.exports) {
-  module.exports = __templateData;
-} else {
-  __templateData;
-}
-});
-
-;require.register("views/templates/test", function(exports, require, module) {
-var __templateData = function template(locals) {
-var buf = [];
-var jade_mixins = {};
-var jade_interp;
-
-buf.push("<div id=\"upload-block\" class=\"flatbtn\"><input id=\"uploader\" name=\"test\" type=\"file\" multiple=\"multiple\"/><div class=\"pa2\"></div></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
