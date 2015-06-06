@@ -33,7 +33,7 @@ module.exports = class PlaylistTrackCollection extends Backbone.Collection
         return super(track) if superOnly
         track.sync 'delete', track,
             url: "#{@url}/#{track.id}"
-            error: (xhr)->
+            Jrror: (xhr)->
                 msg = JSON.parse xhr.responseText
                 alert "fail to remove track : #{msg.error}"
         # avoiding calling super if an error occured

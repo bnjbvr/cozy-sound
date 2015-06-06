@@ -190,7 +190,7 @@ module.exports = class TracksItemView extends TrackListItemView
 
         # stop playing this track if at play # not needed anymore
         #id = @model.attributes.id
-        #Backbone.Mediator.publish 'track:delete', "sound-#{id}"
+        Backbone.Mediator.publish 'track:delete', "sound-#{id}"
         # destroy the model
         @model.destroy
             error: =>

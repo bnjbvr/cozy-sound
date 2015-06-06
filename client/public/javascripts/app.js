@@ -256,7 +256,7 @@ module.exports = PlaylistTrackCollection = (function(_super) {
     }
     track.sync('delete', track, {
       url: "" + this.url + "/" + track.id,
-      error: function(xhr) {
+      Jrror: function(xhr) {
         var msg;
         msg = JSON.parse(xhr.responseText);
         return alert("fail to remove track : " + msg.error);
@@ -3197,6 +3197,7 @@ module.exports = TracksItemView = (function(_super) {
         state: 'canceled'
       });
     }
+    Backbone.Mediator.publish('track:delete', "sound-" + id);
     this.model.destroy({
       error: (function(_this) {
         return function() {

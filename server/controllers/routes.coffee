@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/05 17:59:57 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/06 18:58:22 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/06 20:47:38 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ module.exports =
 
     'tracks/:id':
         delete: track.delete
+        get:    track.get
 
 
     'tracks/:id/binary':

@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/06 15:51:45 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/06 16:14:15 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/06 19:06:18 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,5 +24,5 @@ module.exports.writeUrl = (req, res) ->
             title: broadcastInfo.lastPlayTitle
             artist: broadcastInfo.lastPlayArtist
     else
-        res.status(204).send {error: 'Broadcast currently distabled'}
+        res.status(200).send {error: 'Broadcast currently distabled'}
 
