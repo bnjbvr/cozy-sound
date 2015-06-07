@@ -3,8 +3,8 @@
 ###
 app = require 'application'
 BaseView = require 'lib/base_view'
-#Playlist = require 'models/playlist'
-#PlaylistNavView = require './playlist_nav_view'
+Playlist = require 'models/playlist'
+PlaylistNavView = require './playlist_nav_view'
 ViewCollection = require 'lib/view_collection'
 
 module.exports = class OffScreenNav extends ViewCollection
@@ -74,32 +74,36 @@ module.exports = class OffScreenNav extends ViewCollection
         else
             @$('.off-screen-nav-toggle-arrow').removeClass 'on'
 
-    #onAddPlaylist: (event)->
-        #event.preventDefault()
-        #event.stopPropagation()
-        ## prompt to retrieve the title of the new playlist
-        #title = ""
-        #defaultMsg = "Please enter the new playlist title :"
-        #defaultVal = "my playlist"
-        #until title isnt "" and title.length < 50
-            #title = prompt defaultMsg, defaultVal
-            ## return if creation was canceled by user
-            #return unless title?
-            #defaultMsg = "Invalid title, please try again :"
-            #defaultVal = title
+    onAddPlaylist: (event)->
+        event.preventDefault()
+        event.stopPropagation()
+        # prompt to retrieve the title of the new playlist
+        title = ""
+        defaultMsg = "Please enter the new playlist title :"
+        defaultVal = "my playlist"
+        until title isnt "" and title.length < 50
+            title = prompt defaultMsg, defaultVal
+            # return if creation was canceled by user
+            return unless title?
+            defaultMsg = "Invalid title, please try again :"
+            defaultVal = title
 
-        ## Data to be used to create the new model
-        #playlist = new Playlist
-            #title: title
+        # Data to be used to create the new model
+        console.log "test1"
+        playlist = new Playlist()
+            title: title
+        console.log "test2"
 
-        ## Save it through collection, this will automatically add it to the
-        ## current list when request finishes.
-        #@collection.create playlist,
-            #success: (model)=>
-                ## auto-select the new playlist
-                #@views[model.cid].$('.select-playlist-button').trigger 'click'
-                #app.router.navigate '', true
-            #error: -> alert "Server error occured, playlist wasn't created"
+        # Save it through collection, this will automatically add it to the
+        # current list when request finishes.
+        @collection.create playlist,
+            success: (model)=>
+                # auto-select the new playlist
+                @views[model.cid].$('.select-playlist-button').trigger 'click'
+                app.router.navigate '', true
+            error: -> alert "Server error occured, playlist wasn't created"
+
+
     onPlaylistSelected: (event, playlist)->
         if app.selectedPlaylist?
             @views[app.selectedPlaylist.cid].$('li').removeClass('selected')

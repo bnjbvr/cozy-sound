@@ -5,18 +5,17 @@ cozydb = require 'cozydb'
 
 module.exports = TrackModel = new cozydb.getModel 'Track',
 
-    title:            String
-    artist:           String
-    album:            String
-    track:            String
-    type:             String
-    size:             Number
-    year:             String
-    genre:            String
-    time:             String
-    slug:             String
+    title:            {'type': String, 'default': ''}
+    artist:           {'type': String, 'default': ''}
+    album:            {'type': String, 'default': ''}
+    track:            {'type': String, 'default': ''}
+    type:             {'type': String, 'default': ''}
+    size:             {'type': Number, 'default': 0}
+    year:             {'type': String, 'default': ''}
+    genre:            {'type': String, 'default': ''}
+    time:             {'type': String, 'default': ''}
     playlists:        Object
-    dateAdded:        Date
-    lastPlay:         Date
+    dateAdded:        {'type': Date, 'default': Date()}
+    lastPlay:         {'type': Date, 'default': Date()}
     binary:           Object
-    plays:            Number
+    plays:            {'type': Number, 'default': 0}

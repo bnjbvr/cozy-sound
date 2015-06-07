@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/06 17:14:20 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/06 17:14:21 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/07 17:27:15 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,13 +24,18 @@ module.exports = class Playlist extends Backbone.Model
             @tracks.playlistId = "#{@id}"
             @tracks.url = "playlists/#{@id}"
 
+        console.log "test1.2"
         @tracks = new PlaylistTrackCollection false,
             url: "playlists/#{@id}"
         @tracks.playlistId = "#{@id}"
 
+        console.log "test1.3"
         if @id?
+            console.log "test1.4.1"
             @tracks.fetch()
+            console.log "test1.4.2"
         else
+            console.log "test1.4.3"
             @listenToOnce @, 'sync', (e)=>
                 @tracks.fetch()
 

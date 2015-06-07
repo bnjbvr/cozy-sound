@@ -307,3 +307,4 @@ module.exports = class TracksView extends TrackListView
         albumsTracksF = albumsTracks.filter (track) ->
             track.attributes.state is 'server'
         Backbone.Mediator.publish 'tracks:pushNext', albumsTracksF
+

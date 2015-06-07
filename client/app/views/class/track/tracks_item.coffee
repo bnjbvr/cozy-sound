@@ -153,9 +153,10 @@ module.exports = class TracksItemView extends TrackListItemView
             when @isEdited is 'album' then @model.attributes.album = val
         @saving = true
         @model.save
-            success: =>
+            elem: @isEdited
+            success: ->
                 @saving = false
-            error: =>
+            error: ->
                 alert "An error occured, modifications were not saved."
                 @saving = false
 

@@ -100,4 +100,34 @@ class   UploaderModel
                 # remove the track(it's already done if upload was canceled)
                 #app.tracks.remove track
 
+    processYoutube: (youId)->
+        fileAttributes = {}
+        fileAttributes =
+            title: "fetching youtube-mp3.org ..."
+            artist: ""
+            album: ""
+        track = new Track fileAttributes
+        app.tracks.unshift track,
+            sort: false
+        track.set
+            state: 'importBegin'
+        Backbone.Mediator.publish 'uploader:addTrack'
+        Backbone.ajax
+            dataType: "json"
+            url: "you/#{youId}"
+            context: this
+            data: ""
+            success: (model)=>
+                track.set model # to get the generated id
+                track.set
+                    state: 'uploadEnd'
+            error: (xhr, status, error)=>
+                app.tracks.remove track
+                beg = "Youtube import #{status}"
+                end = "Import was cancelled."
+                if xhr.responseText isnt ""
+                    alert "#{beg} : #{xhr.responseText}. #{end}"
+                else
+                    alert "#{beg}. #{end}"
+
 module.exports = new UploaderModel()

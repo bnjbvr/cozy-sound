@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/05 17:59:57 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/06 20:47:38 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/07 15:37:11 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ module.exports =
 
     'tracks/:id':
         delete: track.delete
-        get:    track.get
+        put:    track.update
 
 
     'tracks/:id/binary':
@@ -40,3 +40,5 @@ module.exports =
     'broadcast/:url/:title/:artist':
         put:    broadcast.writeUrl
 
+    'you/:url':
+        get:    track.youtube

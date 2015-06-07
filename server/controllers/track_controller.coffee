@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/04 13:09:41 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/06 20:46:02 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/07 16:53:01 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ TrackModel = require '../models/track_model'
 multiparty = require 'multiparty'
 os         = require 'os'
 path       = require 'path'
+request    = require 'request-json'
 
 
 module.exports.all = (req, res) ->
@@ -87,7 +88,7 @@ module.exports.create = (req, res, next) ->
 module.exports.getAttachment = (req, res, next) ->
     TrackModel.find req.params.id, (err, trackFind) ->
         dataUpdate =
-            lastPlay:   Date.now()
+            lastPlay:   Date()
             plays:      trackFind.plays + 1
         # Update the last Play ans the number of plays
         trackFind.updateAttributes dataUpdate, (err) ->
@@ -106,3 +107,30 @@ module.exports.delete = (req, res, next) ->
             return next err if err
         res.status(204).send {success: 'Track successfully deleted'}
 
+module.exports.update = (req, res, next) ->
+    delete req.body.state
+    delete req.body.elem
+    TrackModel.find req.params.id, (err, trackFind) ->
+        return next err if err
+        trackFind.updateAttributes req.body, (err) ->
+            return next err if err
+            res.status(200). send {success: 'Track successfully updated'}
+
+
+module.exports.youtube = (req, res, next) ->
+    url = "http://youtube.com/watch?v=#{req.params.url}"
+
+    # Request for info on url Track
+    client = request.newClient 'http://www.youtubeinmp3.com/'
+    path = "/fetch/?api=advanced&format=JSON&video=#{encodeURI(url)}"
+    client.get path, (err, result, videoInfo)->
+        req.body.title = videoInfo.title
+        path = "/fetch/?video=#{encodeURI(url)}"
+        console.log path
+        stream = client.saveFileAsStream path, (err, result, body) ->
+            return err if err
+        TrackModel.create req.body, (err, newTrack) =>
+            return next err if err
+            newTrack.attachBinary stream, {name: 'source'}, (err) ->
+                return next err if err
+                res.status(200).send newTrack

@@ -785,13 +785,18 @@ module.exports = Playlist = (function(_super) {
         return _this.tracks.url = "playlists/" + _this.id;
       };
     })(this));
+    console.log("test1.2");
     this.tracks = new PlaylistTrackCollection(false, {
       url: "playlists/" + this.id
     });
     this.tracks.playlistId = "" + this.id;
+    console.log("test1.3");
     if (this.id != null) {
-      return this.tracks.fetch();
+      console.log("test1.4.1");
+      this.tracks.fetch();
+      return console.log("test1.4.2");
     } else {
+      console.log("test1.4.3");
       return this.listenToOnce(this, 'sync', (function(_this) {
         return function(e) {
           return _this.tracks.fetch();
@@ -994,6 +999,51 @@ UploaderModel = (function() {
         }
       };
     })(this));
+  };
+
+  UploaderModel.prototype.processYoutube = function(youId) {
+    var fileAttributes, track;
+    fileAttributes = {};
+    fileAttributes = {
+      title: "fetching youtube-mp3.org ...",
+      artist: "",
+      album: ""
+    };
+    track = new Track(fileAttributes);
+    app.tracks.unshift(track, {
+      sort: false
+    });
+    track.set({
+      state: 'importBegin'
+    });
+    Backbone.Mediator.publish('uploader:addTrack');
+    return Backbone.ajax({
+      dataType: "json",
+      url: "you/" + youId,
+      context: this,
+      data: "",
+      success: (function(_this) {
+        return function(model) {
+          track.set(model);
+          return track.set({
+            state: 'uploadEnd'
+          });
+        };
+      })(this),
+      error: (function(_this) {
+        return function(xhr, status, error) {
+          var beg, end;
+          app.tracks.remove(track);
+          beg = "Youtube import " + status;
+          end = "Import was cancelled.";
+          if (xhr.responseText !== "") {
+            return alert("" + beg + " : " + xhr.responseText + ". " + end);
+          } else {
+            return alert("" + beg + ". " + end);
+          }
+        };
+      })(this)
+    });
   };
 
   return UploaderModel;
@@ -1277,7 +1327,7 @@ module.exports = AppView = (function(_super) {
 /*
   Off screen nav view
  */
-var BaseView, OffScreenNav, ViewCollection, app,
+var BaseView, OffScreenNav, Playlist, PlaylistNavView, ViewCollection, app,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1285,6 +1335,10 @@ var BaseView, OffScreenNav, ViewCollection, app,
 app = require('application');
 
 BaseView = require('lib/base_view');
+
+Playlist = require('models/playlist');
+
+PlaylistNavView = require('./playlist_nav_view');
 
 ViewCollection = require('lib/view_collection');
 
@@ -1376,6 +1430,39 @@ module.exports = OffScreenNav = (function(_super) {
     } else {
       return this.$('.off-screen-nav-toggle-arrow').removeClass('on');
     }
+  };
+
+  OffScreenNav.prototype.onAddPlaylist = function(event) {
+    var defaultMsg, defaultVal, playlist, title;
+    event.preventDefault();
+    event.stopPropagation();
+    title = "";
+    defaultMsg = "Please enter the new playlist title :";
+    defaultVal = "my playlist";
+    while (!(title !== "" && title.length < 50)) {
+      title = prompt(defaultMsg, defaultVal);
+      if (title == null) {
+        return;
+      }
+      defaultMsg = "Invalid title, please try again :";
+      defaultVal = title;
+    }
+    console.log("test1");
+    playlist = new Playlist()({
+      title: title
+    });
+    console.log("test2");
+    return this.collection.create(playlist, {
+      success: (function(_this) {
+        return function(model) {
+          _this.views[model.cid].$('.select-playlist-button').trigger('click');
+          return app.router.navigate('', true);
+        };
+      })(this),
+      error: function() {
+        return alert("Server error occured, playlist wasn't created");
+      }
+    });
   };
 
   OffScreenNav.prototype.onPlaylistSelected = function(event, playlist) {
@@ -2502,9 +2589,12 @@ module.exports = TopNav = (function(_super) {
   __extends(TopNav, _super);
 
   function TopNav() {
+    this.onClickYoutube = __bind(this.onClickYoutube, this);
     this.addTrack = __bind(this.addTrack, this);
     this.handleFiles = __bind(this.handleFiles, this);
     this.onFilesChanged = __bind(this.onFilesChanged, this);
+    this.onUploadFormChange = __bind(this.onUploadFormChange, this);
+    this.setupHiddenFileInput = __bind(this.setupHiddenFileInput, this);
     return TopNav.__super__.constructor.apply(this, arguments);
   }
 
@@ -2515,11 +2605,42 @@ module.exports = TopNav = (function(_super) {
   TopNav.prototype.template = require('views/templates/top_nav');
 
   TopNav.prototype.events = {
-    'change #uploader': 'onFilesChanged'
+    'click #youtube-import': 'onClickYoutube',
+    'click #broadcast': 'onClickBroadcast',
+    'click #upload-form': 'onClick'
   };
 
   TopNav.prototype.afterRender = function() {
-    return this.uploader = this.$('#uploader');
+    return this.setupHiddenFileInput();
+  };
+
+  TopNav.prototype.setupHiddenFileInput = function() {
+    if (this.hiddenFileInput) {
+      document.body.removeChild(this.hiddenFileInput);
+    }
+    this.hiddenFileInput = document.createElement("input");
+    this.hiddenFileInput.setAttribute("type", "file");
+    this.hiddenFileInput.setAttribute("multiple", "multiple");
+    this.hiddenFileInput.setAttribute("accept", "audio/*");
+    this.hiddenFileInput.style.visibility = "hidden";
+    this.hiddenFileInput.style.position = "absolute";
+    this.hiddenFileInput.style.top = "0";
+    this.hiddenFileInput.style.left = "0";
+    this.hiddenFileInput.style.height = "0";
+    this.hiddenFileInput.style.width = "0";
+    document.body.appendChild(this.hiddenFileInput);
+    return this.hiddenFileInput.addEventListener("change", this.onUploadFormChange);
+  };
+
+  TopNav.prototype.onUploadFormChange = function(event) {
+    this.handleFiles(this.hiddenFileInput.files);
+    return this.setupHiddenFileInput();
+  };
+
+  TopNav.prototype.onClick = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    return this.hiddenFileInput.click();
   };
 
   TopNav.prototype.onFilesChanged = function(event) {
@@ -2575,6 +2696,44 @@ module.exports = TopNav = (function(_super) {
     });
     uploadTrackModel.process(track);
     return track;
+  };
+
+  TopNav.prototype.onClickYoutube = function(event) {
+    var curUrl, defaultMsg, defaultVal, input, isValidInput, startIndex, youId;
+    event.preventDefault();
+    event.stopPropagation();
+    defaultMsg = "Please enter a youtube url :";
+    defaultVal = "http://www.youtube.com/watch?v=KMU0tzLwhbE";
+    isValidInput = false;
+    while (!isValidInput) {
+      input = prompt(defaultMsg, defaultVal);
+      if (input == null) {
+        return;
+      }
+      if (input.match(/^https/)) {
+        input = input.replace(/^https:\/\//i, 'http://');
+      }
+      if (input.match(/^http:\/\/www.youtube.com\/watch?/)) {
+        startIndex = input.search(/v=/) + 2;
+        isValidInput = true;
+        youId = input.substr(startIndex, 11);
+        console.log(youId);
+        console.log(input);
+      } else if (input.match(/^http:\/\/youtu.be\//)) {
+        isValidInput = true;
+        youId = input.substr(16, 11);
+      } else if (input.length === 11) {
+        isValidInput = true;
+        youId = input;
+      }
+      defaultMsg = "Invalid youtube url, please try again :";
+      defaultVal = input;
+    }
+    curUrl = "" + document.URL;
+    if (curUrl.match(/playlist/) || curUrl.match(/playqueue/)) {
+      app.router.navigate('', true);
+    }
+    return uploadTrackModel.processYoutube(youId);
   };
 
   return TopNav;
@@ -3155,17 +3314,14 @@ module.exports = TracksItemView = (function(_super) {
     }
     this.saving = true;
     return this.model.save({
-      success: (function(_this) {
-        return function() {
-          return _this.saving = false;
-        };
-      })(this),
-      error: (function(_this) {
-        return function() {
-          alert("An error occured, modifications were not saved.");
-          return _this.saving = false;
-        };
-      })(this)
+      elem: this.isEdited,
+      success: function() {
+        return this.saving = false;
+      },
+      error: function() {
+        alert("An error occured, modifications were not saved.");
+        return this.saving = false;
+      }
     });
   };
 
@@ -3618,7 +3774,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<a href=\"#\" title=\"go to your songs\"><div id=\"top-nav-title-home\" class=\"top-nav-title\"><span class=\"top-nav-text\">COZIC&nbsp;</span><i class=\"icon-home\"></i></div></a><a href=\"#playqueue\" title=\"go to the play queue\"><div id=\"top-nav-title-list\" class=\"top-nav-title\"><span class=\"top-nav-text\">Up Next&nbsp;</span><i class=\"icon-list\"></i></div></a><div id=\"top-nav-title-list\" class=\"top-nav-title\"><input id=\"uploader\" name=\"test\" type=\"file\" multiple=\"multiple\" accept=\"audio/*\"/><i class=\"icon-cloud-upload\"></i></div><div id=\"youtube-import\" title=\"import sounds from Youtube\" class=\"top-nav-title\"><span class=\"top-nav-text\">Youtube&nbsp;</span><i class=\"icon-youtube\"></i></div><div id=\"broadcast\" title=\"broadcast your cozic\" class=\"top-nav-title\"><span class=\"top-nav-text\">Broadcast&nbsp;</span><i class=\"icon-rss\"></i></div>");;return buf.join("");
+buf.push("<a href=\"#\" title=\"go to your songs\"><div id=\"top-nav-title-home\" class=\"top-nav-title\"><span class=\"top-nav-text\">COZIC&nbsp;</span><i class=\"icon-home\"></i></div></a><a href=\"#playqueue\" title=\"go to the play queue\"><div id=\"top-nav-title-list\" class=\"top-nav-title\"><span class=\"top-nav-text\">Up Next&nbsp;</span><i class=\"icon-list\"></i></div></a><div id=\"upload-form\" title=\"click to add tracks\" type=\"file\" multiple=\"multiple\" class=\"top-nav-title\"><span class=\"top-nav-text\">Upload&nbsp;</span><i class=\"icon-cloud-upload\"></i></div><div id=\"youtube-import\" title=\"import sounds from Youtube\" class=\"top-nav-title\"><span class=\"top-nav-text\">Youtube&nbsp;</span><i class=\"icon-youtube\"></i></div><div id=\"broadcast\" title=\"broadcast your cozic\" class=\"top-nav-title\"><span class=\"top-nav-text\">Broadcast&nbsp;</span><i class=\"icon-rss\"></i></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
