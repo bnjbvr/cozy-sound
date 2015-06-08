@@ -1,9 +1,19 @@
 # Description
 
-Cozy Template is a template project to start quickly your own application. Just
-fork it and code while focusing only on your features !
+Cozy-sound is a music player working on [Cozy](http://cozy.io) with the API [SoundManager2](http://www.schillmania.com/projects/soundmanager2/).
+It's based on [Cozy-music](https://github.com/rdubigny/cozy-music) originally created by [Rdubigny](https://github.com/rdubigny) but no more maintain.
 
-Do you feel lost? No problem, check out our tutorial to get your started: http://cozy.io/hack/getting-started/
+It's a student work, for fun so don't be too hard.
+
+# Main Releases
+
+### V-0.1
+- Move from Compound to Americano to fit with the actual Cozy needs
+- Restructuring of most files to fit with the Cozy template structure
+- Move from jugglingDb to Cozydb (CouchDb)
+- Redo the youtube button, now that's work!
+- Localization
+
 
 # Run
 
@@ -11,8 +21,8 @@ Clone this repository, install dependencies and run server (it requires Node.js
 and Coffee-script)
 
     npm install -g coffee-script
-    git clone git://github.com/mycozycloud/cozy-template-coffee.git
-    cd cozy-template-coffee
+    git clone https://github.com/Peltoche/cozy-sound
+    cd cozy-sound
     npm install
     coffee server.coffee
 
@@ -20,11 +30,25 @@ If you want to build the application, be sure client side dependencies are insta
 
     cd client && npm install && cd ..
 
-And then, whenever you want to build your application:
-
-    cake build
-
 Check the `Cakefile` for more information.
+
+# Todo
+
+- Make work the playlistes
+- Redo some parts of Css
+- Add multiple select with Ctrl
+- Add multiple select with Tab
+- Redo broadcast
+- Manage video
+- ...
+
+# Contribute
+
+- If you have some times, juste read few lines and leave a comment or a trick, all feedback/question/comment/tip are welcome
+- Report all [issues](https://github.com/Peltoche/cozy-sound/issues)
+- Pick up an [issue](https://github.com/Peltoche/cozy-sound/issues) and solve it.
+- Translate (English too, I'm french and I have a really bad english)
+- **I particulary need a Front-end developper, to correct some bug with Css. It's a quick job but I can't do it.**
 
 # What is Cozy?
 
