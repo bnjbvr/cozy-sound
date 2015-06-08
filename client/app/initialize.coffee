@@ -11,14 +11,12 @@ $ ->
             initializeLocale(locale)
 
     initializeLocale = (locale) ->
-        locale = 'fr'
         @locales = {}
         # if we don't find the appropiate locale file, it's English by default
         try
             @locales = require "locales/" + locale
         catch err
-            #@locales = require 'locales/en'
-            @locales = require 'locales/fr'
+            @locales = require 'locales/en'
 
         @polyglot = new Polyglot()
         # we give polyglot the data

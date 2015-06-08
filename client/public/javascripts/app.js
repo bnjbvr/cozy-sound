@@ -577,13 +577,12 @@ $(function() {
   });
   return initializeLocale = function(locale) {
     var err;
-    locale = 'fr';
     this.locales = {};
     try {
       this.locales = require("locales/" + locale);
     } catch (_error) {
       err = _error;
-      this.locales = require('locales/fr');
+      this.locales = require('locales/en');
     }
     this.polyglot = new Polyglot();
     this.polyglot.extend(this.locales);
