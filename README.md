@@ -12,6 +12,7 @@ It's a student work, for fun so don't be too hard.
 - Restructuring of most files to fit with the Cozy template structure
 - Move from jugglingDb to Cozydb (CouchDb)
 - Redo the youtube button, now that's work!
+- Localization
 
 
 # Run
@@ -39,7 +40,6 @@ Check the `Cakefile` for more information.
 - Add multiple select with Tab
 - Redo broadcast
 - Manage video
-- Multilanguage
 - ...
 
 # Contribute
