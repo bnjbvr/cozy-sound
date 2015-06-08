@@ -3,12 +3,12 @@ div.viewport
         thead
             tr
                 th.left
-                    .thead-button.save-button(title="save as playlist")
-                    .thead-button.show-prev-button(title="show/hide previously played")
-                th.field.title Title
-                th.field.artist Artist
-                th.field.album Album
-                th.field.num #
+                    .thead-button.save-button(title="#{t('save')}")
+                    .thead-button.show-prev-button(title="#{t('show/hide')}")
+                th.field.title #{t('title')}
+                th.field.artist #{t('artist')}
+                th.field.album #{t('album')}
+                th.field.num #{t('#')}
                 th.right
-                    .thead-button.clear(title="clear the queue")
+                    .thead-button.clear(title="#{t('clear')}")
         tbody#track-list

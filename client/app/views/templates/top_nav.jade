@@ -1,10 +1,10 @@
-a(href="#", title="go to your songs")
+a(href="#", title="#{ t('home') }")
     #top-nav-title-home.top-nav-title
-        span.top-nav-text COZIC&nbsp;
+        span.top-nav-text #{t("home-text")}&nbsp;
         i.icon-home
-a(href="#playqueue", title="go to the play queue")
+a(href="#playqueue", title=t('queue'))
     #top-nav-title-list.top-nav-title
-        span.top-nav-text Up Next&nbsp;
+        span.top-nav-text #{t('queue-text')}&nbsp;
         i.icon-list
 
  //-Fit this with the right CSS
@@ -12,12 +12,12 @@ a(href="#playqueue", title="go to the play queue")
 //-#top-nav-title-list.top-nav-title
     //-input#uploader(name="test" type="file", multiple="multiple", accept='audio/*')
     //-i.icon-cloud-upload
-#upload-form.top-nav-title(title="click to add tracks", type="file", multiple="multiple")
-    span.top-nav-text Upload&nbsp;
+#upload-form.top-nav-title(title="#{t('upload')}", type="file", multiple="multiple")
+    span.top-nav-text #{t('upload-text')}&nbsp;
     i.icon-cloud-upload
-#youtube-import.top-nav-title(title="import sounds from Youtube")
-    span.top-nav-text Youtube&nbsp;
+#youtube-import.top-nav-title(title="#{t('youtube')}")
+    span.top-nav-text #{t('youtube-text')}&nbsp;
     i.icon-youtube
-#broadcast.top-nav-title(title="broadcast your cozic")
-    span.top-nav-text Broadcast&nbsp;
+#broadcast.top-nav-title(title="#{t('broadcast')}")
+    span.top-nav-text #{t('broadcast-text')}&nbsp;
     i.icon-rss

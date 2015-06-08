@@ -126,7 +126,7 @@ module.exports = class Player extends BaseView
                             @onQueueTrack track
                 @updatePlayButtonDisplay()
             else
-                alert "application error : unable to play track"
+                alert t('unable-track')
 
     onClickRwd: =>
         # go to the start of the current sound

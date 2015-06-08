@@ -235,7 +235,7 @@ module.exports = PlaylistTrackCollection = (function(_super) {
         return function(xhr) {
           var msg;
           msg = JSON.parse(xhr.responseText);
-          return alert("fail to add track : " + msg.error);
+          return alert("" + (t('fail-add-track')) + " : " + msg.error);
         };
       })(this),
       success: (function(_this) {
@@ -259,7 +259,7 @@ module.exports = PlaylistTrackCollection = (function(_super) {
       Jrror: function(xhr) {
         var msg;
         msg = JSON.parse(xhr.responseText);
-        return alert("fail to remove track : " + msg.error);
+        return alert("" + (t('fail-remove-track')) + " : " + msg.error);
       }
     });
     return this.listenToOnce(track, 'sync', PlaylistTrackCollection.__super__.remove.apply(this, arguments));
@@ -288,7 +288,7 @@ module.exports = PlaylistTrackCollection = (function(_super) {
       error: function(xhr) {
         var msg;
         msg = JSON.parse(xhr.responseText);
-        return alert("fail to move track : " + msg.error);
+        return alert("" + (t('fail-move-track')) + " : " + msg.error);
       },
       success: (function(_this) {
         return function(playlists) {
@@ -561,13 +561,35 @@ module.exports = TrackCollection = (function(_super) {
 });
 
 ;require.register("initialize", function(exports, require, module) {
-var app;
-
-app = require('application');
-
 $(function() {
+  var app, initializeLocale;
+  app = require('application');
   require('lib/app_helpers');
-  return app.initialize();
+  $.ajax('cozy-locale.json', {
+    success: function(data) {
+      var locale;
+      locale = data.locale;
+      return initializeLocale(locale);
+    },
+    error: function() {
+      return initializeLocale(locale);
+    }
+  });
+  return initializeLocale = function(locale) {
+    var err;
+    locale = 'fr';
+    this.locales = {};
+    try {
+      this.locales = require("locales/" + locale);
+    } catch (_error) {
+      err = _error;
+      this.locales = require('locales/fr');
+    }
+    this.polyglot = new Polyglot();
+    this.polyglot.extend(this.locales);
+    window.t = this.polyglot.t.bind(this.polyglot);
+    return app.initialize();
+  };
 });
 });
 
@@ -757,6 +779,122 @@ module.exports = ViewCollection = (function(_super) {
   return ViewCollection;
 
 })(BaseView);
+});
+
+;require.register("locales/en", function(exports, require, module) {
+module.exports = {
+  "broadcast": "Broadcast your music",
+  "broadcast-text": "Broadcast",
+  "home": "Go to your songs",
+  "home-text": "SOUND",
+  "queue": "Go to the play queue",
+  "queue-text": "Up Next",
+  "upload": "Click to add tracks",
+  "upload-text": "Upload",
+  "youtube": "Import sounds from Youtube",
+  "youtube-text": "Youtube",
+  "title": "Title",
+  "artist": "Artist",
+  "album": "Album",
+  "#": "#",
+  "playlist-title": "Playlists",
+  "playlist-new": "Create a new playlist",
+  "playlist-push": "Push playlist in the play queue",
+  "playlist-remove": "Remove this playlist",
+  "queue-song": "Add this song to play queue",
+  "playlist-select": "Select playlist",
+  "playlist-delete": "Delete playlist",
+  "save": "Save as playlis",
+  "show/hide": "Show/hide previously played",
+  "clear": "Clear the queue",
+  "play-from-here": "Play from here",
+  "clear-from-here": "Clear from here",
+  "remove": "Remove",
+  "counter": "Plays counter",
+  "number": "Track number",
+  "number-text": "#",
+  "counter-text": "#",
+  "add": "Add to playlist",
+  "queue": "Queue this song",
+  "queue-album": "Queue this album",
+  "previous": "Previous",
+  "next": "Next",
+  "play/pause": "Play/pause",
+  "repeat": "No-repeat/Repeat-all/Repeat-one",
+  "randomize": "Randomize",
+  "mute/unmute": "Mute/Unmute",
+  "init": "INIT",
+  "done": "DONE",
+  "unable-track": "Application error : Unble to play track",
+  "no-playlist-selected": "No playlist selected. Please select aplaylist in the navigation bar on the left",
+  "not-saved": "An error occured, modifications were not saved",
+  "not-deleted": "Server error occured, track was not deleted",
+  "wait-upload-finish": "Wait for upload to finish to delete this track",
+  "null-album": "Can't play: Null album",
+  "length-not-reported": "Content Length not reported!",
+  "fetch-youtube": "Fetching youtubeinmp3.org",
+  "import-cancelled": "Import was cancelled",
+  "fail-move-track": "Fail to move track",
+  "fail-remove-track": "Fail to remove track",
+  "fail-add-track": "Fail to add track"
+};
+});
+
+;require.register("locales/fr", function(exports, require, module) {
+module.exports = {
+  "broadcast": "Partager votre musique",
+  "broadcast-text": "Partage",
+  "home": "Voir votre musique",
+  "home-text": "SOUND",
+  "queue": "Voir votre liste de lecture",
+  "queue-text": "Liste de lecture",
+  "upload": "Uploader un morceau sur le serveur",
+  "upload-text": "Upload",
+  "youtube": "Importer un morceau de Youtube",
+  "youtube-text": "Youtube",
+  "title": "Titre",
+  "artist": "Artiste",
+  "album": "Album",
+  "#": "#",
+  "playlist-title": "Playlists",
+  "playlist-new": "Creer une nouvelle playlist",
+  "playlist-push": "Ajouter cette playlist a la liste de lecture",
+  "playlist-remove": "Supprimer cette playlist",
+  "queue-song": "Ajouter ce morceau a la liste de lecture",
+  "playlist-select": "Selectionner cette playlist",
+  "playlist-delete": "Supprimer cette playlist",
+  "save": "Sauver comme une playlis",
+  "show/hide": "Montrer/Cacher les morceaux precedents",
+  "clear": "Vider la liste de lecture",
+  "play-from-here": "Jouer a partir d'ici",
+  "clear-from-here": "Vider a partir d'ici",
+  "remove": "Supprimer",
+  "counter": "Compteur",
+  "number": "Numero du morceau",
+  "number-text": "#",
+  "counter-text": "#",
+  "add": "Ajouter a la playlist",
+  "queue": "Ajouter le morceau a la liste de lecture",
+  "queue-album": "Ajouter l'album a la liste de lecture",
+  "previous": "Precedent",
+  "next": "Suivant",
+  "play/pause": "Play/pause",
+  "repeat": "Lecture simple/Repeter tout/Repeter morceau",
+  "randomize": "Aleatoire",
+  "mute/unmute": "Son off/Son one",
+  "unable-track": "Erreur application : Impossible de jouer le morceau",
+  "no-playlist-selected": "Pas de playlist selectionne. Selectionner une playlist dans la barre de gauche",
+  "not-saved": "Une erreur est survenue, les modifications n'ont pas ete sauves",
+  "not-deleted": "Le serveur a un probleme, les morceaux n'ontpas ete supprimes",
+  "wait-upload-finish": "Attendre la fin de l'upload pour supprimer unmorceau",
+  "null-album": "Lecture impossible: Album vide",
+  "length-not-reported": "Content Length non reporte",
+  "fetch-youtube": "Recuperation  youtubeinmp3.org",
+  "import-cancelled": "L'importationa echouer",
+  "fail-move-track": "Le deplacement du morceau a echouer",
+  "fail-remove-track": "La suppression du morceau a echouer",
+  "fail-add-track": "L'ajout du morceau a echouer"
+};
 });
 
 ;require.register("models/playlist", function(exports, require, module) {
@@ -1005,7 +1143,7 @@ UploaderModel = (function() {
     var fileAttributes, track;
     fileAttributes = {};
     fileAttributes = {
-      title: "fetching youtube-mp3.org ...",
+      title: t('fetch-youtube'),
       artist: "",
       album: ""
     };
@@ -1035,7 +1173,7 @@ UploaderModel = (function() {
           var beg, end;
           app.tracks.remove(track);
           beg = "Youtube import " + status;
-          end = "Import was cancelled.";
+          end = t('import-cancelled');
           if (xhr.responseText !== "") {
             return alert("" + beg + " : " + xhr.responseText + ". " + end);
           } else {
@@ -1650,7 +1788,7 @@ module.exports = Player = (function(_super) {
         }
         return this.updatePlayButtonDisplay();
       } else {
-        return alert("application error : unable to play track");
+        return alert(t('unable-track'));
       }
     }
   };
@@ -3120,7 +3258,7 @@ module.exports = TracksItemView = (function(_super) {
       if (app.selectedPlaylist != null) {
         return this.onAddTo();
       } else {
-        return alert("No playlist selected. Please select a playlist in the navigation bar on the left");
+        return alert(t('no-playlist-selected'));
       }
     },
     'dblclick [id$="button"]': function(event) {
@@ -3319,7 +3457,7 @@ module.exports = TracksItemView = (function(_super) {
         return this.saving = false;
       },
       error: function() {
-        alert("An error occured, modifications were not saved.");
+        alert(t('not-saved'));
         return this.saving = false;
       }
     });
@@ -3345,7 +3483,7 @@ module.exports = TracksItemView = (function(_super) {
     event.stopPropagation();
     state = this.model.attributes.state;
     if (state === 'uploadStart' || state === 'importBegin') {
-      alert("Wait for upload to finish to delete this track");
+      alert(t('wait-upload-finish'));
       return;
     }
     if (state === 'client') {
@@ -3357,7 +3495,7 @@ module.exports = TracksItemView = (function(_super) {
     this.model.destroy({
       error: (function(_this) {
         return function() {
-          return alert("Server error occured, track was not deleted.");
+          return alert(t('not-deleted'));
         };
       })(this)
     });
@@ -3408,7 +3546,7 @@ module.exports = TracksItemView = (function(_super) {
     if ((album != null) && album !== '') {
       return this.$el.trigger('album:queue', album);
     } else {
-      return alert("can't play null album");
+      return alert(t('null-album'));
     }
   };
 
@@ -3420,7 +3558,7 @@ module.exports = TracksItemView = (function(_super) {
     if ((album != null) && album !== '') {
       return this.$el.trigger('album:pushNext', album);
     } else {
-      return alert("can't play null album");
+      return alert(t('null-album'));
     }
   };
 
@@ -3443,7 +3581,7 @@ module.exports = TracksItemView = (function(_super) {
         return this.$('.uploadProgress').html("" + pct + "%");
       }
     } else {
-      return console.warn('Content Length not reported!');
+      return console.warn(t('length-not-reported'));
     }
   };
 
@@ -3465,7 +3603,7 @@ module.exports = TracksItemView = (function(_super) {
     this.savePlayTrackBtn = this.$('#play-track-button').detach();
     uploadProgress = $(document.createElement('div'));
     uploadProgress.addClass('uploadProgress');
-    uploadProgress.html('INIT');
+    uploadProgress.html(t('init'));
     return this.$('#state').append(uploadProgress);
   };
 
@@ -3476,7 +3614,7 @@ module.exports = TracksItemView = (function(_super) {
 
   TracksItemView.prototype.endUpload = function() {
     this.stopListening(this.model, 'progress');
-    this.$('.uploadProgress').html('DONE');
+    this.$('.uploadProgress').html(t('done'));
     return this.$('.uploadProgress').delay(1000).fadeOut(1000, this.returnToNormal);
   };
 
@@ -3622,7 +3760,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div class=\"off-screen-nav-toggle\"><div class=\"off-screen-nav-toggle-handler\"><div class=\"off-screen-nav-toggle-arrow\"></div></div></div><div class=\"off-screen-nav-content\"><div id=\"playlist-title-list\" class=\"off-screen-nav-title\">Playlists<div title=\"create\" class=\"off-screen-nav-button add-playlist-button\"></div></div><ul id=\"playlist-list\"></ul></div>");;return buf.join("");
+buf.push("<div class=\"off-screen-nav-toggle\"><div class=\"off-screen-nav-toggle-handler\"><div class=\"off-screen-nav-toggle-arrow\"></div></div></div><div class=\"off-screen-nav-content\"><div id=\"playlist-title-list\" class=\"off-screen-nav-title\">" + (jade.escape((jade_interp = t('playlist-title')) == null ? '' : jade_interp)) + "<div" + (jade.attr("title", "" + (t('playlist-new')) + "", true, false)) + " class=\"off-screen-nav-button add-playlist-button\"></div></div><ul id=\"playlist-list\"></ul></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3641,7 +3779,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div class=\"player-element\"><div id=\"rwd-button\" title=\"play previous track\" class=\"player-button size-26\"><i class=\"icon-backward\"></i></div><div id=\"play-button\" title=\"play/pause\" class=\"player-button size-34\"><i class=\"icon-cogs\"></i></div><div id=\"fwd-button\" title=\"play next track\" class=\"player-button size-26\"><i class=\"icon-forward\"></i></div></div><div class=\"player-element\"><div class=\"progress-side\"><div id=\"loop-button\" title=\"no-repeat/repeat-all/repeat-one\" class=\"progress-side-control\"><i class=\"icon-refresh\"></i></div><div class=\"time left\"><span id=\"elapsedTime\"></span></div></div><div class=\"progress-info\"><div class=\"id3-info\">-</div><div class=\"progress\"><div class=\"inner\"></div></div></div><div class=\"progress-side\"><div id=\"random-button\" title=\"randomize\" class=\"progress-side-control\"><i class=\"icon-random\"></i></div><div class=\"time right\"><span id=\"remainingTime\"></span></div></div></div><div class=\"player-element\"><span id=\"volume\"></span></div>");;return buf.join("");
+buf.push("<div class=\"player-element\"><div id=\"rwd-button\"" + (jade.attr("title", "" + (t('previous')) + "", true, false)) + " class=\"player-button size-26\"><i class=\"icon-backward\"></i></div><div id=\"play-button\"" + (jade.attr("title", "" + (t('play/pause')) + "", true, false)) + " class=\"player-button size-34\"><i class=\"icon-cogs\"></i></div><div id=\"fwd-button\"" + (jade.attr("title", "" + (t('next')) + "", true, false)) + " class=\"player-button size-26\"><i class=\"icon-forward\"></i></div></div><div class=\"player-element\"><div class=\"progress-side\"><div id=\"loop-button\"" + (jade.attr("title", "" + (t('repeat')) + "", true, false)) + " class=\"progress-side-control\"><i class=\"icon-refresh\"></i></div><div class=\"time left\"><span id=\"elapsedTime\"></span></div></div><div class=\"progress-info\"><div class=\"id3-info\">-</div><div class=\"progress\"><div class=\"inner\"></div></div></div><div class=\"progress-side\"><div id=\"random-button\"" + (jade.attr("title", "" + (t('randomize')) + "", true, false)) + " class=\"progress-side-control\"><i class=\"icon-random\"></i></div><div class=\"time right\"><span id=\"remainingTime\"></span></div></div></div><div class=\"player-element\"><span id=\"volume\"></span></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3660,7 +3798,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div id=\"volume-switch-button\" title=\"mute/unmute\"><i class=\"icon-volume-up\"></i></div><div class=\"slider\"><div class=\"slider-container\"><div class=\"slider-inner\"><div class=\"slider-handle\"></div></div></div></div>");;return buf.join("");
+buf.push("<div id=\"volume-switch-button\"" + (jade.attr("title", "" + (t('mute/unmute')) + "", true, false)) + "><i class=\"icon-volume-up\"></i></div><div class=\"slider\"><div class=\"slider-container\"><div class=\"slider-inner\"><div class=\"slider-handle\"></div></div></div></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3679,7 +3817,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div class=\"viewport\"><table><thead><tr><th id=\"playlist-play\" title=\"push playlist in the play queue\" class=\"left\"><i class=\"icon-play\"></i></th><th class=\"field title\">Title</th><th class=\"field artist\">Artist</th><th class=\"field album\">Album</th><th class=\"field num\">#</th><th class=\"right\"></th></tr></thead><tbody id=\"track-list\"></tbody></table></div>");;return buf.join("");
+buf.push("<div class=\"viewport\"><table><thead><tr><th id=\"playlist-play\" title=\"#{t('playlist-new)}\" class=\"left\"><i class=\"icon-play\"></i></th><th class=\"field title\">Title</th><th class=\"field artist\">Artist</th><th class=\"field album\">Album</th><th class=\"field num\">#</th><th class=\"right\"></th></tr></thead><tbody id=\"track-list\"></tbody></table></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3698,7 +3836,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 var locals_ = (locals || {}),model = locals_.model;
-buf.push("<td id=\"state\" class=\"left\"><div id=\"play-track-button\" title=\"queue this song\" class=\"player-button size-20\"><i class=\"icon-share-alt\"></i></div></td><td class=\"field title\">" + (jade.escape((jade_interp = model.title) == null ? '' : jade_interp)) + "</td><td class=\"field artist\">" + (jade.escape((jade_interp = model.artist) == null ? '' : jade_interp)) + "</td><td class=\"field album\">" + (jade.escape((jade_interp = model.album) == null ? '' : jade_interp)) + "</td><td class=\"field num\">" + (jade.escape((jade_interp = model.track) == null ? '' : jade_interp)) + "</td><td class=\"right\"><div id=\"delete-button\" title=\"remove\" class=\"player-button size-20 signal-button\"><i class=\"icon-remove\"></i></div></td>");;return buf.join("");
+buf.push("<td id=\"state\" class=\"left\"><div id=\"play-track-button\"" + (jade.attr("title", "" + (t('queue-song')) + "", true, false)) + " class=\"player-button size-20\"><i class=\"icon-share-alt\"></i></div></td><td class=\"field title\">" + (jade.escape((jade_interp = model.title) == null ? '' : jade_interp)) + "</td><td class=\"field artist\">" + (jade.escape((jade_interp = model.artist) == null ? '' : jade_interp)) + "</td><td class=\"field album\">" + (jade.escape((jade_interp = model.album) == null ? '' : jade_interp)) + "</td><td class=\"field num\">" + (jade.escape((jade_interp = model.track) == null ? '' : jade_interp)) + "</td><td class=\"right\"><div id=\"delete-button\"" + (jade.attr("title", "" + (t('remove')) + "", true, false)) + " class=\"player-button size-20 signal-button\"><i class=\"icon-remove\"></i></div></td>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3717,7 +3855,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 var locals_ = (locals || {}),model = locals_.model;
-buf.push("<a" + (jade.attr("href", "#playlist/" + (model.id) + "", true, false)) + "><li" + (jade.attr("title", "" + (model.title) + "", true, false)) + ">" + (jade.escape((jade_interp = model.title) == null ? '' : jade_interp)) + "<div title=\"select playlist : track will be added to this playlist when clicking on the + button\" class=\"off-screen-nav-button select-playlist-button\"></div><div title=\"delete definitively\" class=\"off-screen-nav-button delete-playlist-button\"></div></li></a>");;return buf.join("");
+buf.push("<a" + (jade.attr("href", "#playlist/" + (model.id) + "", true, false)) + "><li" + (jade.attr("title", "" + (model.title) + "", true, false)) + ">" + (jade.escape((jade_interp = model.title) == null ? '' : jade_interp)) + "<div" + (jade.attr("title", "" + (t('playlist-select')) + "", true, false)) + " class=\"off-screen-nav-button select-playlist-button\"></div><div" + (jade.attr("title", "" + (t('playlist-delete')) + "", true, false)) + " class=\"off-screen-nav-button delete-playlist-button\"></div></li></a>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3736,7 +3874,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div class=\"viewport\"><table><thead><tr><th class=\"left\"><div title=\"save as playlist\" class=\"thead-button save-button\"></div><div title=\"show/hide previously played\" class=\"thead-button show-prev-button\"></div></th><th class=\"field title\">Title</th><th class=\"field artist\">Artist</th><th class=\"field album\">Album</th><th class=\"field num\">#</th><th class=\"right\"><div title=\"clear the queue\" class=\"thead-button clear\"></div></th></tr></thead><tbody id=\"track-list\"></tbody></table></div>");;return buf.join("");
+buf.push("<div class=\"viewport\"><table><thead><tr><th class=\"left\"><div" + (jade.attr("title", "" + (t('save')) + "", true, false)) + " class=\"thead-button save-button\"></div><div" + (jade.attr("title", "" + (t('show/hide')) + "", true, false)) + " class=\"thead-button show-prev-button\"></div></th><th class=\"field title\">" + (jade.escape((jade_interp = t('title')) == null ? '' : jade_interp)) + "</th><th class=\"field artist\">" + (jade.escape((jade_interp = t('artist')) == null ? '' : jade_interp)) + "</th><th class=\"field album\">" + (jade.escape((jade_interp = t('album')) == null ? '' : jade_interp)) + "</th><th class=\"field num\">" + (jade.escape((jade_interp = t('#')) == null ? '' : jade_interp)) + "</th><th class=\"right\"><div" + (jade.attr("title", "" + (t('clear')) + "", true, false)) + " class=\"thead-button clear\"></div></th></tr></thead><tbody id=\"track-list\"></tbody></table></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3755,7 +3893,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 var locals_ = (locals || {}),model = locals_.model;
-buf.push("<td id=\"state\" class=\"left\"><div id=\"mini-play-button\" title=\"play from here\" class=\"player-button size-20\"><i class=\"icon-play\"></i></div></td><td class=\"field title\">" + (jade.escape((jade_interp = model.title) == null ? '' : jade_interp)) + "</td><td class=\"field artist\">" + (jade.escape((jade_interp = model.artist) == null ? '' : jade_interp)) + "</td><td class=\"field album\">" + (jade.escape((jade_interp = model.album) == null ? '' : jade_interp)) + "</td><td class=\"field num\">" + (jade.escape((jade_interp = model.track) == null ? '' : jade_interp)) + "</td><td class=\"right\"><div id=\"delete-button\" title=\"remove\" class=\"player-button size-20 signal-button\"><i class=\"icon-remove\"></i></div><div id=\"delete-from-here-button\" title=\"clear from here\" class=\"player-button size-20 signal-button\"><i class=\"icon-arrow-down\"></i></div></td>");;return buf.join("");
+buf.push("<td id=\"state\" class=\"left\"><div id=\"mini-play-button\"" + (jade.attr("title", "" + (t('play-from-here')) + "", true, false)) + " class=\"player-button size-20\"><i class=\"icon-play\"></i></div></td><td class=\"field title\">" + (jade.escape((jade_interp = model.title) == null ? '' : jade_interp)) + "</td><td class=\"field artist\">" + (jade.escape((jade_interp = model.artist) == null ? '' : jade_interp)) + "</td><td class=\"field album\">" + (jade.escape((jade_interp = model.album) == null ? '' : jade_interp)) + "</td><td class=\"field num\">" + (jade.escape((jade_interp = model.track) == null ? '' : jade_interp)) + "</td><td class=\"right\"><div id=\"delete-button\"" + (jade.attr("title", "" + (t('remove')) + "", true, false)) + " class=\"player-button size-20 signal-button\"><i class=\"icon-remove\"></i></div><div id=\"delete-from-here-button\"" + (jade.attr("title", "" + (t('clear-from-here')) + "", true, false)) + " class=\"player-button size-20 signal-button\"><i class=\"icon-arrow-down\"></i></div></td>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3774,7 +3912,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<a href=\"#\" title=\"go to your songs\"><div id=\"top-nav-title-home\" class=\"top-nav-title\"><span class=\"top-nav-text\">COZIC&nbsp;</span><i class=\"icon-home\"></i></div></a><a href=\"#playqueue\" title=\"go to the play queue\"><div id=\"top-nav-title-list\" class=\"top-nav-title\"><span class=\"top-nav-text\">Up Next&nbsp;</span><i class=\"icon-list\"></i></div></a><div id=\"upload-form\" title=\"click to add tracks\" type=\"file\" multiple=\"multiple\" class=\"top-nav-title\"><span class=\"top-nav-text\">Upload&nbsp;</span><i class=\"icon-cloud-upload\"></i></div><div id=\"youtube-import\" title=\"import sounds from Youtube\" class=\"top-nav-title\"><span class=\"top-nav-text\">Youtube&nbsp;</span><i class=\"icon-youtube\"></i></div><div id=\"broadcast\" title=\"broadcast your cozic\" class=\"top-nav-title\"><span class=\"top-nav-text\">Broadcast&nbsp;</span><i class=\"icon-rss\"></i></div>");;return buf.join("");
+buf.push("<a href=\"#\"" + (jade.attr("title", "" + ( t('home') ) + "", true, false)) + "><div id=\"top-nav-title-home\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t("home-text")) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-home\"></i></div></a><a href=\"#playqueue\"" + (jade.attr("title", t('queue'), true, false)) + "><div id=\"top-nav-title-list\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('queue-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-list\"></i></div></a><div id=\"upload-form\"" + (jade.attr("title", "" + (t('upload')) + "", true, false)) + " type=\"file\" multiple=\"multiple\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('upload-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-cloud-upload\"></i></div><div id=\"youtube-import\"" + (jade.attr("title", "" + (t('youtube')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('youtube-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-youtube\"></i></div><div id=\"broadcast\"" + (jade.attr("title", "" + (t('broadcast')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('broadcast-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-rss\"></i></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3793,7 +3931,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div class=\"viewport\"><table><thead><tr><th class=\"left\"></th><th class=\"field title\">Title</th><th class=\"field artist\">Artist</th><th class=\"field album\">Album</th><th class=\"field num\">#</th><th class=\"right\"></th></tr></thead><tbody id=\"track-list\"></tbody></table></div>");;return buf.join("");
+buf.push("<div class=\"viewport\"><table><thead><tr><th class=\"left\"></th><th class=\"field title\">" + (jade.escape((jade_interp = t('title')) == null ? '' : jade_interp)) + "</th><th class=\"field artist\">" + (jade.escape((jade_interp = t('artist')) == null ? '' : jade_interp)) + "</th><th class=\"field album\">" + (jade.escape((jade_interp = t('album')) == null ? '' : jade_interp)) + "</th><th class=\"field num\">" + (jade.escape((jade_interp = t('#')) == null ? '' : jade_interp)) + "</th><th class=\"right\"></th></tr></thead><tbody id=\"track-list\"></tbody></table></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3812,7 +3950,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 var locals_ = (locals || {}),model = locals_.model;
-buf.push("<td id=\"state\" class=\"left\"></td><td class=\"field title\">" + (jade.escape((jade_interp = model.title) == null ? '' : jade_interp)) + "</td><td class=\"field artist\">" + (jade.escape((jade_interp = model.artist) == null ? '' : jade_interp)) + "</td><td class=\"field album\">" + (jade.escape((jade_interp = model.album) == null ? '' : jade_interp)) + "</td><td class=\"field num\">" + (jade.escape((jade_interp = model.track) == null ? '' : jade_interp)) + "</td><td class=\"right\"><div id=\"delete-button\" title=\"remove\" class=\"player-button size-20 signal-button\"><i class=\"icon-remove\"></i></div></td>");;return buf.join("");
+buf.push("<td id=\"state\" class=\"left\"></td><td class=\"field title\">" + (jade.escape((jade_interp = model.title) == null ? '' : jade_interp)) + "</td><td class=\"field artist\">" + (jade.escape((jade_interp = model.artist) == null ? '' : jade_interp)) + "</td><td class=\"field album\">" + (jade.escape((jade_interp = model.album) == null ? '' : jade_interp)) + "</td><td class=\"field num\">" + (jade.escape((jade_interp = model.track) == null ? '' : jade_interp)) + "</td><td class=\"right\"><div id=\"delete-button\"" + (jade.attr("title", "" + (t('remove')) + "", true, false)) + " class=\"player-button size-20 signal-button\"><i class=\"icon-remove\"></i></div></td>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3831,7 +3969,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div class=\"viewport\"><table><thead><tr><th class=\"left\"></th><th class=\"field title clickable-cell\">Title</th><th title=\"plays counter\" class=\"field plays clickable-cell\">#</th><th class=\"field artist clickable-cell\">Artist</th><th class=\"field album clickable-cell\">Album</th><th title=\"track number\" class=\"field num\">#</th><th class=\"right\"></th></tr></thead><tbody id=\"track-list\"></tbody></table></div>");;return buf.join("");
+buf.push("<div class=\"viewport\"><table><thead><tr><th class=\"left\"></th><th class=\"field title clickable-cell\">Title</th><th" + (jade.attr("title", "" + (t('counter')) + "", true, false)) + " class=\"field plays clickable-cell\">" + (jade.escape((jade_interp = t('counter-text')) == null ? '' : jade_interp)) + "</th><th class=\"field artist clickable-cell\">" + (jade.escape((jade_interp = t('artist')) == null ? '' : jade_interp)) + "</th><th class=\"field album clickable-cell\">" + (jade.escape((jade_interp = t('album')) == null ? '' : jade_interp)) + "</th><th" + (jade.attr("title", "" + (t('number')) + "", true, false)) + " class=\"field num\">" + (jade.escape((jade_interp = t('number-text')) == null ? '' : jade_interp)) + "</th><th class=\"right\"></th></tr></thead><tbody id=\"track-list\"></tbody></table></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3850,7 +3988,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 var locals_ = (locals || {}),model = locals_.model;
-buf.push("<td id=\"state\" class=\"left\"><div id=\"add-to-button\" title=\"add to playlist\" class=\"player-button size-20\"><i class=\"icon-plus\"></i></div><div id=\"play-track-button\" title=\"queue this song\" class=\"player-button size-20\"><i class=\"icon-share-alt\"></i></div></td><td class=\"field title\"><input type=\"text\"" + (jade.attr("value", "" + (model.title) + "", true, false)) + " readonly=\"readonly\" class=\"mousetrap\"/></td><td class=\"field plays\">" + (jade.escape((jade_interp = model.plays) == null ? '' : jade_interp)) + "</td><td class=\"field artist\"><input type=\"text\"" + (jade.attr("value", "" + (model.artist) + "", true, false)) + " readonly=\"readonly\" class=\"mousetrap\"/></td><td class=\"field album\"><input type=\"text\"" + (jade.attr("value", "" + (model.album) + "", true, false)) + " readonly=\"readonly\" class=\"mousetrap\"/><div id=\"play-album-button\" title=\"queue this album\" class=\"player-button size-20\"><i class=\"icon-share\"></i></div></td><td class=\"field num\">" + (jade.escape((jade_interp = model.track) == null ? '' : jade_interp)) + "</td><td class=\"right\"><div id=\"delete-button\" title=\"delete definitively\" class=\"player-button size-20 signal-button\"><i class=\"icon-remove\"></i></div></td>");;return buf.join("");
+buf.push("<td id=\"state\" class=\"left\"><div id=\"add-to-button\"" + (jade.attr("title", "" + (t('add')) + "", true, false)) + " class=\"player-button size-20\"><i class=\"icon-plus\"></i></div><div id=\"play-track-button\"" + (jade.attr("title", "" + (t('queue')) + "", true, false)) + " class=\"player-button size-20\"><i class=\"icon-share-alt\"></i></div></td><td class=\"field title\"><input type=\"text\"" + (jade.attr("value", "" + (model.title) + "", true, false)) + " readonly=\"readonly\" class=\"mousetrap\"/></td><td class=\"field plays\">" + (jade.escape((jade_interp = model.plays) == null ? '' : jade_interp)) + "</td><td class=\"field artist\"><input type=\"text\"" + (jade.attr("value", "" + (model.artist) + "", true, false)) + " readonly=\"readonly\" class=\"mousetrap\"/></td><td class=\"field album\"><input type=\"text\"" + (jade.attr("value", "" + (model.album) + "", true, false)) + " readonly=\"readonly\" class=\"mousetrap\"/><div id=\"play-album-button\"" + (jade.attr("title", "" + (t('queue-album')) + "", true, false)) + " class=\"player-button size-20\"><i class=\"icon-share\"></i></div></td><td class=\"field num\">" + (jade.escape((jade_interp = model.track) == null ? '' : jade_interp)) + "</td><td class=\"right\"><div id=\"delete-button\"" + (jade.attr("title", "" + (t('remove')) + "", true, false)) + " class=\"player-button size-20 signal-button\"><i class=\"icon-remove\"></i></div></td>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {

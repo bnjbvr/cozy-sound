@@ -1,13 +1,13 @@
 .player-element
-    #rwd-button.player-button.size-26(title="play previous track")
+    #rwd-button.player-button.size-26(title="#{t('previous')}")
         i.icon-backward
-    #play-button.player-button.size-34(title="play/pause")
+    #play-button.player-button.size-34(title="#{t('play/pause')}")
         i.icon-cogs
-    #fwd-button.player-button.size-26(title="play next track")
+    #fwd-button.player-button.size-26(title="#{t('next')}")
         i.icon-forward
 .player-element
     .progress-side
-        .progress-side-control#loop-button(title="no-repeat/repeat-all/repeat-one")
+        .progress-side-control#loop-button(title="#{t('repeat')}")
             i.icon-refresh
         .time.left
             span#elapsedTime
@@ -16,7 +16,7 @@
         .progress
             .inner
     .progress-side
-        .progress-side-control#random-button(title="randomize")
+        .progress-side-control#random-button(title="#{t('randomize')}")
             i.icon-random
         .time.right
             span#remainingTime

@@ -103,7 +103,7 @@ class   UploaderModel
     processYoutube: (youId)->
         fileAttributes = {}
         fileAttributes =
-            title: "fetching youtube-mp3.org ..."
+            title: t('fetch-youtube')
             artist: ""
             album: ""
         track = new Track fileAttributes
@@ -124,7 +124,7 @@ class   UploaderModel
             error: (xhr, status, error)=>
                 app.tracks.remove track
                 beg = "Youtube import #{status}"
-                end = "Import was cancelled."
+                end = t('import-cancelled')
                 if xhr.responseText isnt ""
                     alert "#{beg} : #{xhr.responseText}. #{end}"
                 else

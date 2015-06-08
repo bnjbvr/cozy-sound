@@ -22,7 +22,7 @@ module.exports = class PlaylistTrackCollection extends Backbone.Collection
             url: "#{@url}/#{track.id}/#{lastWeight}"
             error: (xhr)=>
                 msg = JSON.parse xhr.responseText
-                alert "fail to add track : #{msg.error}"
+                alert "#{t('fail-add-track')} : #{msg.error}"
             success: (playlists)=>
                 track.attributes.playlists = playlists
 
@@ -35,7 +35,7 @@ module.exports = class PlaylistTrackCollection extends Backbone.Collection
             url: "#{@url}/#{track.id}"
             Jrror: (xhr)->
                 msg = JSON.parse xhr.responseText
-                alert "fail to remove track : #{msg.error}"
+                alert "#{t('fail-remove-track')} : #{msg.error}"
         # avoiding calling super if an error occured
         @listenToOnce track, 'sync', super
 
@@ -56,7 +56,7 @@ module.exports = class PlaylistTrackCollection extends Backbone.Collection
             url: "#{@url}/prev/#{prevWeight}/next/#{nextWeight}/#{track.id}"
             error: (xhr)->
                 msg = JSON.parse xhr.responseText
-                alert "fail to move track : #{msg.error}"
+                alert "#{t('fail-move-track')} : #{msg.error}"
             success: (playlists)=>
                 track.attributes.playlists = playlists
         @remove track, true

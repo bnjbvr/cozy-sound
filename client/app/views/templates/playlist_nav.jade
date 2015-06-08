@@ -1,4 +1,4 @@
 a(href="#playlist/#{model.id}")
     li(title="#{model.title}") #{model.title}
-        .off-screen-nav-button.select-playlist-button(title="select playlist : track will be added to this playlist when clicking on the + button")
-        .off-screen-nav-button.delete-playlist-button(title="delete definitively")
+        .off-screen-nav-button.select-playlist-button(title="#{t('playlist-select')}")
+        .off-screen-nav-button.delete-playlist-button(title="#{t('playlist-delete')}")

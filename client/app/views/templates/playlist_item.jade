@@ -1,10 +1,10 @@
 td.left#state
-    #play-track-button.player-button.size-20(title="queue this song")
+    #play-track-button.player-button.size-20(title="#{t('queue-song')}")
         i.icon-share-alt
 td.field.title #{model.title}
 td.field.artist #{model.artist}
 td.field.album #{model.album}
 td.field.num #{model.track}
 td.right
-    #delete-button.player-button.size-20.signal-button(title="remove")
+    #delete-button.player-button.size-20.signal-button(title="#{t('remove')}")
         i.icon-remove

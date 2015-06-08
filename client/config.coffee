@@ -1,4 +1,11 @@
 exports.config =
+    plugins:
+        coffeelint:
+            options:
+                indentation: value:4, level:'error'
+        jade:
+            globals: ['t']
+
     files:
         javascripts:
             joinTo:

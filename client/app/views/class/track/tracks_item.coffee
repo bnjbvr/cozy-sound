@@ -18,7 +18,7 @@ module.exports = class TracksItemView extends TrackListItemView
             if app.selectedPlaylist?
                 @onAddTo()
             else
-                alert "No playlist selected. Please select a playlist in the navigation bar on the left"
+                alert t('no-playlist-selected')
         'dblclick [id$="button"]': (event)->
             # prevent triggering multiple events when dbl clicking on a button
             event.preventDefault()
@@ -157,7 +157,7 @@ module.exports = class TracksItemView extends TrackListItemView
             success: ->
                 @saving = false
             error: ->
-                alert "An error occured, modifications were not saved."
+                alert t('not-saved')
                 @saving = false
 
     afterRender: ->
@@ -181,7 +181,7 @@ module.exports = class TracksItemView extends TrackListItemView
         if state is 'uploadStart' or state is 'importBegin'
             # we don't know the file id on the server before the upload is ended
             # it simplier to just prohibit the cancelling at this moment
-            alert "Wait for upload to finish to delete this track"
+            alert t('wait-upload-finish')
             return
 
         if state is 'client'
@@ -195,7 +195,7 @@ module.exports = class TracksItemView extends TrackListItemView
         # destroy the model
         @model.destroy
             error: =>
-                alert "Server error occured, track was not deleted."
+                alert t('not-deleted')
         # signal trackList view
         Backbone.Mediator.publish 'trackItem:remove'
 
@@ -235,7 +235,7 @@ module.exports = class TracksItemView extends TrackListItemView
         if album? and album isnt ''
             @$el.trigger 'album:queue', album
         else
-            alert "can't play null album"
+            alert t('null-album')
 
     onPlayNextAlbum: (event)->
         event.preventDefault()
@@ -244,7 +244,7 @@ module.exports = class TracksItemView extends TrackListItemView
         if album? and album isnt ''
             @$el.trigger 'album:pushNext', album
         else
-            alert "can't play null album"
+            alert t('null-album')
 
     onAddTo: ->
         if @model.attributes.state is 'server'
@@ -271,7 +271,7 @@ module.exports = class TracksItemView extends TrackListItemView
 
         # this usually happens when Content-Length isn't set
         else
-            console.warn 'Content Length not reported!'
+            console.warn t('length-not-reported')
 
     onStateChange: ->
         if @model.attributes.state is 'client'
@@ -288,7 +288,7 @@ module.exports = class TracksItemView extends TrackListItemView
         @savePlayTrackBtn = @$('#play-track-button').detach()
         uploadProgress = $(document.createElement('div'))
         uploadProgress.addClass('uploadProgress')
-        uploadProgress.html 'INIT'
+        uploadProgress.html t('init')
         @$('#state').append uploadProgress
 
     startUpload: ->
@@ -297,7 +297,7 @@ module.exports = class TracksItemView extends TrackListItemView
 
     endUpload: ->
         @stopListening @model, 'progress'
-        @$('.uploadProgress').html 'DONE'
+        @$('.uploadProgress').html t('done')
         @$('.uploadProgress').delay(1000).fadeOut 1000, @returnToNormal
 
     returnToNormal: =>

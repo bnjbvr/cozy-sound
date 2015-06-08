@@ -13,7 +13,8 @@
   "main": "server.coffee",
   "dependencies": {
     "americano": "0.3.11",
-    "cozydb": "0.0.3"
+    "cozydb": "0.0.3",
+    "cozy-i18n-helper": "0.0.4"
   },
   "devDependencies": {
     "should": "4.0.1",
