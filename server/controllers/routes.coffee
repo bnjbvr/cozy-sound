@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/05 17:59:57 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/07 15:37:11 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/10 20:33:20 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,9 +33,20 @@ module.exports =
 
     'playlists':
         get:    playlist.all
+        post:   playlist.create
+
+    'playlists/:id':
+        delete: playlist.delete
+        get:    playlist.get
+
+    'playlists/:playlistId/:id/:index':
+        post:   playlist.add
+
+
 
     'broadcast':
         delete: broadcast.disable
+        #post:   broadcast.create
 
     'broadcast/:url/:title/:artist':
         put:    broadcast.writeUrl

@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/08 19:54:04 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/08 20:48:16 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/09 17:00:05 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,8 +32,17 @@ module.exports =
     #Playlist
     "playlist-title"            : "Playlists"
     "playlist-new"              : "Creer une nouvelle playlist"
+    "playlist-new-pop"          : "Entrer le nom de la nouvelle playlist"
+    "playlist-new-exemple"      : "Ma playlist"
+    "playlist-new-invalid"      : "Titre invalide, reessayer"
+    "playlist-new-error"        : "Une erreur est survenue sur le serveur, \
+    la playlist n'a pas ete creer"
     "playlist-push"             : "Ajouter cette playlist a la liste de lecture"
     "playlist-remove"           : "Supprimer cette playlist"
+    "playlist-remove-valid"     : "Etes-vous sure? La playlist va etre \
+    supprimer definitivement"
+    "playlist-remove-error"     : "Une erreur est survenue sur le serveur, \
+    la playlist n'a pas ete supprimer"
     "queue-song"                : "Ajouter ce morceau a la liste de lecture"
     "playlist-select"           : "Selectionner cette playlist"
     "playlist-delete"           : "Supprimer cette playlist"

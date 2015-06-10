@@ -158,33 +158,6 @@ module.exports = {
 };
 });
 
-;require.register("collections/file_collection", function(exports, require, module) {
-var File, FileCollection,
-  __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-File = require('../models/file');
-
-module.exports = FileCollection = (function(_super) {
-  __extends(FileCollection, _super);
-
-  function FileCollection() {
-    return FileCollection.__super__.constructor.apply(this, arguments);
-  }
-
-  FileCollection.prototype.model = File;
-
-  FileCollection.prototype.url = 'test';
-
-  FileCollection.prototype.initialize = function() {
-    return console.log("collection created");
-  };
-
-  return FileCollection;
-
-})(Backbone.Collection);
-});
-
 ;require.register("collections/playlist", function(exports, require, module) {
 var PlaylistTrackCollection, Track,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
@@ -205,14 +178,7 @@ module.exports = PlaylistTrackCollection = (function(_super) {
   PlaylistTrackCollection.prototype.model = Track;
 
   PlaylistTrackCollection.prototype.getWeight = function(playlists) {
-    var elem, _i, _len;
-    for (_i = 0, _len = playlists.length; _i < _len; _i++) {
-      elem = playlists[_i];
-      if (elem.id === this.playlistId) {
-        return elem.weight;
-      }
-    }
-    return false;
+    return 0;
   };
 
   PlaylistTrackCollection.prototype.add = function(track, superOnly, options) {
@@ -229,7 +195,7 @@ module.exports = PlaylistTrackCollection = (function(_super) {
     } else {
       lastWeight = 0;
     }
-    track.sync('update', track, {
+    track.sync('create', track, {
       url: "" + this.url + "/" + track.id + "/" + lastWeight,
       error: (function(_this) {
         return function(xhr) {
@@ -308,24 +274,24 @@ module.exports = PlaylistTrackCollection = (function(_super) {
 });
 
 ;require.register("collections/playlist_collection", function(exports, require, module) {
-var Playlist, PlaylistCollection,
+var Playlist, PlaylistsCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Playlist = require('../models/playlist');
 
-module.exports = PlaylistCollection = (function(_super) {
-  __extends(PlaylistCollection, _super);
+module.exports = PlaylistsCollection = (function(_super) {
+  __extends(PlaylistsCollection, _super);
 
-  function PlaylistCollection() {
-    return PlaylistCollection.__super__.constructor.apply(this, arguments);
+  function PlaylistsCollection() {
+    return PlaylistsCollection.__super__.constructor.apply(this, arguments);
   }
 
-  PlaylistCollection.prototype.model = Playlist;
+  PlaylistsCollection.prototype.model = Playlist;
 
-  PlaylistCollection.prototype.url = 'playlists';
+  PlaylistsCollection.prototype.url = 'playlists';
 
-  return PlaylistCollection;
+  return PlaylistsCollection;
 
 })(Backbone.Collection);
 });
@@ -798,8 +764,14 @@ module.exports = {
   "#": "#",
   "playlist-title": "Playlists",
   "playlist-new": "Create a new playlist",
+  "playlist-new-pop": "Please enter the new playlist title",
+  "playlist-new-exemple": "My playlist",
+  "playlist-new-invalid": "Invalid title, please try again",
+  "playlist-new-error": "Server error occured, playlist wasn't created",
   "playlist-push": "Push playlist in the play queue",
   "playlist-remove": "Remove this playlist",
+  "playlist-remove-valid": "Are you sure? The playlist will be deleted definitively",
+  "playlist-remove-error": "Server orror occured, track was not deleted",
   "queue-song": "Add this song to play queue",
   "playlist-select": "Select playlist",
   "playlist-delete": "Delete playlist",
@@ -857,8 +829,14 @@ module.exports = {
   "#": "#",
   "playlist-title": "Playlists",
   "playlist-new": "Creer une nouvelle playlist",
+  "playlist-new-pop": "Entrer le nom de la nouvelle playlist",
+  "playlist-new-exemple": "Ma playlist",
+  "playlist-new-invalid": "Titre invalide, reessayer",
+  "playlist-new-error": "Une erreur est survenue sur le serveur, la playlist n'a pas ete creer",
   "playlist-push": "Ajouter cette playlist a la liste de lecture",
   "playlist-remove": "Supprimer cette playlist",
+  "playlist-remove-valid": "Etes-vous sure? La playlist va etre supprimer definitivement",
+  "playlist-remove-error": "Une erreur est survenue sur le serveur, la playlist n'a pas ete supprimer",
   "queue-song": "Ajouter ce morceau a la liste de lecture",
   "playlist-select": "Selectionner cette playlist",
   "playlist-delete": "Supprimer cette playlist",
@@ -922,24 +900,21 @@ module.exports = Playlist = (function(_super) {
         return _this.tracks.url = "playlists/" + _this.id;
       };
     })(this));
-    console.log("test1.2");
     this.tracks = new PlaylistTrackCollection(false, {
       url: "playlists/" + this.id
     });
     this.tracks.playlistId = "" + this.id;
-    console.log("test1.3");
     if (this.id != null) {
-      console.log("test1.4.1");
+      this.tracks.url = "playlists/" + this.id;
       this.tracks.fetch();
-      return console.log("test1.4.2");
     } else {
-      console.log("test1.4.3");
-      return this.listenToOnce(this, 'sync', (function(_this) {
+      this.listenToOnce(this, 'sync', (function(_this) {
         return function(e) {
           return _this.tracks.fetch();
         };
       })(this));
     }
+    return console.log(this.tracks);
   };
 
   Playlist.prototype.destroy = function() {
@@ -1495,6 +1470,8 @@ module.exports = OffScreenNav = (function(_super) {
 
   OffScreenNav.prototype.template = require('views/templates/off_screen_nav');
 
+  OffScreenNav.prototype.itemview = PlaylistNavView;
+
   OffScreenNav.prototype.collectionEl = '#playlist-list';
 
   OffScreenNav.prototype.magicCounterSensibility = 2;
@@ -1574,21 +1551,19 @@ module.exports = OffScreenNav = (function(_super) {
     event.preventDefault();
     event.stopPropagation();
     title = "";
-    defaultMsg = "Please enter the new playlist title :";
-    defaultVal = "my playlist";
+    defaultMsg = "" + (t('playlist-new-pop')) + " :";
+    defaultVal = t('playlist-new-exemple');
     while (!(title !== "" && title.length < 50)) {
       title = prompt(defaultMsg, defaultVal);
       if (title == null) {
         return;
       }
-      defaultMsg = "Invalid title, please try again :";
+      defaultMsg = "" + (t('playlist-new-invalid')) + " :";
       defaultVal = title;
     }
-    console.log("test1");
-    playlist = new Playlist()({
+    playlist = new Playlist({
       title: title
     });
-    console.log("test2");
     return this.collection.create(playlist, {
       success: (function(_this) {
         return function(model) {
@@ -1597,7 +1572,7 @@ module.exports = OffScreenNav = (function(_super) {
         };
       })(this),
       error: function() {
-        return alert("Server error occured, playlist wasn't created");
+        return alert(t('playlist-new-error'));
       }
     });
   };
@@ -2417,11 +2392,11 @@ module.exports = PlaylistNavView = (function(_super) {
   PlaylistNavView.prototype.onDeleteClick = function(event) {
     event.preventDefault();
     event.stopPropagation();
-    if (confirm("Are you sure? the playlist will be deleted definitively.")) {
+    if (confirm(t('playlist-remove-valid'))) {
       return this.model.destroy({
         error: (function(_this) {
           return function() {
-            return alert("Server error occured, track was not deleted.");
+            return alert(t('playlist-remove-error'));
           };
         })(this)
       });

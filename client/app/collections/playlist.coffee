@@ -6,10 +6,11 @@ module.exports = class PlaylistTrackCollection extends Backbone.Collection
     model: Track
 
     getWeight: (playlists)=>
-        for elem in playlists
-            if elem.id is @playlistId
-                return elem.weight
-        return false
+        return 0
+        #for elem in playlists
+            #if elem.id is @playlistId
+                #return elem.weight
+        #return false
 
     add: (track, superOnly = false, options)=>
         return super(track, options) if superOnly
@@ -18,7 +19,7 @@ module.exports = class PlaylistTrackCollection extends Backbone.Collection
             lastWeight = @getWeight last.attributes.playlists
         else
             lastWeight = 0
-        track.sync 'update', track,
+        track.sync 'create', track,
             url: "#{@url}/#{track.id}/#{lastWeight}"
             error: (xhr)=>
                 msg = JSON.parse xhr.responseText

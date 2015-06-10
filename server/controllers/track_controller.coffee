@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/04 13:09:41 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/07 19:21:06 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/10 20:56:24 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ path       = require 'path'
 request    = require 'request-json'
 
 
-module.exports.all = (req, res) ->
+module.exports.all = (req, res, next) ->
     console.log "Get all Tracks"
     TrackModel.request 'all', (err, data) ->
         if err
@@ -112,6 +112,7 @@ module.exports.update = (req, res, next) ->
     delete req.body.elem
     TrackModel.find req.params.id, (err, trackFind) ->
         return next err if err
+        req.body.lastModified = Date.now()
         trackFind.updateAttributes req.body, (err) ->
             return next err if err
             res.status(200). send {success: 'Track successfully updated'}

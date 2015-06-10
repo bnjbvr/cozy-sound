@@ -3,7 +3,6 @@ config =
     common: [
         require('cozy-i18n-helper').middleware
         americano.bodyParser()
-        #require('cozy-i18n-helper').middleware
         americano.methodOverride()
         americano.errorHandler
             dumpExceptions: true

@@ -13,7 +13,7 @@ module.exports = class OffScreenNav extends ViewCollection
     tagName: 'div'
     template: require('views/templates/off_screen_nav')
 
-    #itemview: PlaylistNavView
+    itemview: PlaylistNavView
     collectionEl: '#playlist-list'
 
     magicCounterSensibility : 2
@@ -79,20 +79,18 @@ module.exports = class OffScreenNav extends ViewCollection
         event.stopPropagation()
         # prompt to retrieve the title of the new playlist
         title = ""
-        defaultMsg = "Please enter the new playlist title :"
-        defaultVal = "my playlist"
+        defaultMsg = "#{t('playlist-new-pop')} :"
+        defaultVal = t('playlist-new-exemple')
         until title isnt "" and title.length < 50
             title = prompt defaultMsg, defaultVal
             # return if creation was canceled by user
             return unless title?
-            defaultMsg = "Invalid title, please try again :"
+            defaultMsg = "#{t('playlist-new-invalid')} :"
             defaultVal = title
 
         # Data to be used to create the new model
-        console.log "test1"
-        playlist = new Playlist()
+        playlist = new Playlist
             title: title
-        console.log "test2"
 
         # Save it through collection, this will automatically add it to the
         # current list when request finishes.
@@ -101,7 +99,7 @@ module.exports = class OffScreenNav extends ViewCollection
                 # auto-select the new playlist
                 @views[model.cid].$('.select-playlist-button').trigger 'click'
                 app.router.navigate '', true
-            error: -> alert "Server error occured, playlist wasn't created"
+            error: -> alert t('playlist-new-error')
 
 
     onPlaylistSelected: (event, playlist)->
