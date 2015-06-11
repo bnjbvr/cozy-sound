@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/06 17:14:20 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/10 20:57:48 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/11 19:39:27 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ module.exports = class Playlist extends Backbone.Model
 
     initialize: ->
         super
-        @listenTo @, 'change:id', (e)=>
+        @listenTo @, 'change:id', (e) ->
             @tracks.playlistId = "#{@id}"
             @tracks.url = "playlists/#{@id}"
         @tracks = new PlaylistTrackCollection false,
@@ -32,9 +32,8 @@ module.exports = class Playlist extends Backbone.Model
             @tracks.url = "playlists/#{@id}" #add to trick an issue
             @tracks.fetch()
         else
-            @listenToOnce @, 'sync', (e)=>
+            @listenToOnce @, 'sync', (e) ->
                 @tracks.fetch()
-        console.log @tracks
 
     destroy: ->
         # if this list is beeing displayed navigate to home
@@ -45,9 +44,9 @@ module.exports = class Playlist extends Backbone.Model
             app.router.navigate '', true
         # empty playlist
         # this emptying method avoid us to encounter issues with indexes
-        until @tracks.length is 0
-            track = @tracks.first()
-            @tracks.remove track
+        #until @tracks.length is 0
+            #track = @tracks.first()
+            #@tracks.remove track
         # then destroy it
         super
         # return false, for the super to be call

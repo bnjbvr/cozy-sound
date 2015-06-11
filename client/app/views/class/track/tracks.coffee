@@ -82,7 +82,6 @@ module.exports = class TracksView extends TrackListView
         @listenTo @collection, 'sort', @render
         # suppress that when views_collection is functional (with onReset)
         @listenTo @collection, 'sync', (e) ->
-            #console.log "vue tracks : \"pense à me supprimer un de ces quatres\""
             if @collection.length is 0
                 Backbone.Mediator.publish 'tracklist:isEmpty'
 
@@ -95,7 +94,9 @@ module.exports = class TracksView extends TrackListView
                     return false
 
             # stop for input, select, and textarea that aren't in readOnly mode
-            return element.readOnly is false && (element.tagName == 'INPUT' || element.tagName == 'SELECT' || element.tagName == 'TEXTAREA' || (element.contentEditable && element.contentEditable == 'true'))
+            return element.readOnly is false && (element.tagName == 'INPUT' ||
+            element.tagName == 'SELECT' || element.tagName == 'TEXTAREA' ||
+            (element.contentEditable && element.contentEditable == 'true'))
 
     afterRender: =>
         super
@@ -118,7 +119,7 @@ module.exports = class TracksView extends TrackListView
             @highlightTracks app.selectedPlaylist
 
         # enable arrow up and down to navigate through tracks
-        Mousetrap.bind 'up', ()=>
+        Mousetrap.bind 'up', ->
             if @selectedTrackView?
                 index = @collection.indexOf @selectedTrackView.model
                 # if this is not the first track we can go up
@@ -141,7 +142,7 @@ module.exports = class TracksView extends TrackListView
                 # update
                 view.el.click()
 
-        Mousetrap.bind 'down', ()=>
+        Mousetrap.bind 'down', ->
             if @selectedTrackView?
                 index = @collection.indexOf @selectedTrackView.model
                 # if this is not the last track we can go down
@@ -203,13 +204,13 @@ module.exports = class TracksView extends TrackListView
         @$collectionEl.append blankTrack
 
     highlightTracks: (playlist) ->
-            # add highlighting during playlist edition
-            @$('tr.in-playlist').removeClass 'in-playlist'
-            if playlist?
-                for track in playlist.tracks.models
-                    track2 = @collection.get track.id
-                    if track2?.cid? # track2 my be deleted here
-                        @views[track2.cid].$el.addClass 'in-playlist'
+        # add highlighting during playlist edition
+        @$('tr.in-playlist').removeClass 'in-playlist'
+        if playlist?
+            for track in playlist.tracks.models
+                track2 = @collection.get track.id
+                if track2?.cid? # track2 my be deleted here
+                    @views[track2.cid].$el.addClass 'in-playlist'
 
     onClickTrack: (e, trackView)=>
         # unselect previous selected track if there is one
@@ -272,7 +273,8 @@ module.exports = class TracksView extends TrackListView
                 if (field1.match(/^[0-9]+$/))? and (field2.match(/^[0-9]+$/))?
                     field1 = parseInt(field1)
                     field2 = parseInt(field2)
-                else if (field1.match(/^[0-9]+\/[0-9]+$/))? and (field2.match(/^[0-9]+\/[0-9]+$/))?
+                else if (field1.match(/^[0-9]+\/[0-9]+$/))? and
+                (field2.match(/^[0-9]+\/[0-9]+$/))?
                     #if field1.match(/\/[0-9]+$/) is field2.match(/\/[0-9]+$/)
                     field1 = parseInt(field1.match(/^[0-9]+/))
                     field2 = parseInt(field2.match(/^[0-9]+/))
@@ -285,10 +287,10 @@ module.exports = class TracksView extends TrackListView
             0
 
         if @isReverseOrder
-            @collection.comparator = (t1, t2)=>
+            @collection.comparator = (t1, t2) ->
                 compare t2, t1
         else
-            @collection.comparator = (t1, t2)=>
+            @collection.comparator = (t1, t2) ->
                 compare t1, t2
 
         # sort with this new comparator function

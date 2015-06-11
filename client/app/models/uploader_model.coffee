@@ -2,19 +2,19 @@ app = require 'application'
 Track = require 'models/track'
 
 # control file type
-controlFile = (track, cb)=>
+controlFile = (track, cb) ->
     # here soundManager.canPlayLink track.file will be good
     # but it doesn't work with audio/mp4 on chrome
-    unless track.file.type.match /audio\/(mp3|mpeg)/ # list of supported filetype
+    unless track.file.type.match /audio\/(mp3|mpeg)/ #list of supported filetype
         err = "unsupported #{track.file.type} filetype"
     cb(err)
 
 # read metadata using a FileReader
-readMetaData = (track, cb)=>
+readMetaData = (track, cb) ->
     url = track.get 'title'
     reader = new FileReader()
-    reader.onload = (event)=>
-        ID3.loadTags url, (=>
+    reader.onload = (event) ->
+        ID3.loadTags url, ( ->
             tags = ID3.getAllTags url
             track.set
                 title: if tags.title? then tags.title else url
@@ -29,12 +29,12 @@ readMetaData = (track, cb)=>
             tags: ["title","artist","album","track","year","genre","TLEN"]
             dataReader: FileAPIReader track.file
     reader.readAsArrayBuffer track.file
-    reader.onabort = (event)=>
+    reader.onabort = (event) ->
         cb "unable to read metadata"
 
 # create a FormData object
 # save the model
-upload = (track, cb) =>
+upload = (track, cb) ->
     formdata = new FormData()
     formdata.append 'cid', track.cid
     formdata.append 'title', track.get 'title'
@@ -56,21 +56,21 @@ upload = (track, cb) =>
 
     track.sync 'create', track,
         processData: false # tell jQuery not to process the data
-        contentType: false # tell jQuery not to set contentType (Prevent $.ajax from being smart)
+        contentType: false # tell jQuery not to set contentType
         data: formdata
-        success: (model)->
+        success: (model) ->
             track.set model # to get the generated id
             cb()
         error: ->
             cb("upload failed")
     false
 
-refreshDisplay = (track, cb) =>
+refreshDisplay = (track, cb) ->
     track.set
         state: 'uploadEnd'
     cb()
 
-uploadWorker = (track, done)=>
+uploadWorker = (track, done) ->
     async.waterfall [
         (cb) -> controlFile track, cb
         (cb) -> readMetaData track, cb
@@ -93,14 +93,14 @@ class   UploaderModel
         # handle files
             #Backbone.Mediator.publish 'uploader:addTrack'
 
-        @uploadQueue.push track , (err, track) =>
+        @uploadQueue.push track , (err, track) ->
             if err
                 console.log err
 
                 # remove the track(it's already done if upload was canceled)
                 #app.tracks.remove track
 
-    processYoutube: (youId)->
+    processYoutube: (youId) ->
         fileAttributes = {}
         fileAttributes =
             title: t('fetch-youtube')
@@ -117,11 +117,11 @@ class   UploaderModel
             url: "you/#{youId}"
             context: this
             data: ""
-            success: (model)=>
+            success: (model) ->
                 track.set model # to get the generated id
                 track.set
                     state: 'uploadEnd'
-            error: (xhr, status, error)=>
+            error: (xhr, status, error) ->
                 app.tracks.remove track
                 beg = "Youtube import #{status}"
                 end = t('import-cancelled')

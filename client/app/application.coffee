@@ -12,8 +12,8 @@ module.exports =
         TrackCollection = require 'collections/track_collection'
         @tracks = new TrackCollection()
         @tracks.fetch
-            error: =>
-                msg = "Files couldn't be retrieved due to a server error."
+            error: ->
+                msg = t('error-retrieve')
                 alert msg
 
         # create play queue

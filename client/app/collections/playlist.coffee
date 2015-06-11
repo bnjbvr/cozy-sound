@@ -5,14 +5,14 @@ module.exports = class PlaylistTrackCollection extends Backbone.Collection
     # Model that will be contained inside the collection.
     model: Track
 
-    getWeight: (playlists)=>
+    getWeight: (playlists) ->
         return 0
         #for elem in playlists
             #if elem.id is @playlistId
                 #return elem.weight
         #return false
 
-    add: (track, superOnly = false, options)=>
+    add: (track, superOnly = false, options) ->
         return super(track, options) if superOnly
         if @size() > 0
             last = @last()
@@ -21,26 +21,26 @@ module.exports = class PlaylistTrackCollection extends Backbone.Collection
             lastWeight = 0
         track.sync 'create', track,
             url: "#{@url}/#{track.id}/#{lastWeight}"
-            error: (xhr)=>
+            error: (xhr) ->
                 msg = JSON.parse xhr.responseText
                 alert "#{t('fail-add-track')} : #{msg.error}"
-            success: (playlists)=>
+            success: (playlists) ->
                 track.attributes.playlists = playlists
 
         # avoiding calling super if an error occured
         @listenToOnce track, 'sync', super
 
-    remove: (track, superOnly = false)->
-        return super(track) if superOnly
-        track.sync 'delete', track,
-            url: "#{@url}/#{track.id}"
-            Jrror: (xhr)->
-                msg = JSON.parse xhr.responseText
-                alert "#{t('fail-remove-track')} : #{msg.error}"
-        # avoiding calling super if an error occured
-        @listenToOnce track, 'sync', super
+    #remove: (track, superOnly = false)->
+        #return super(track) if superOnly
+        #track.sync 'delete', track,
+            #url: "#{@url}/#{track.id}"
+            #Jrror: (xhr)->
+                #msg = JSON.parse xhr.responseText
+                #alert "#{t('fail-remove-track')} : #{msg.error}"
+        ## avoiding calling super if an error occured
+        #@listenToOnce track, 'sync', super
 
-    move: (newP, track)->
+    move: (newP, track) ->
         oldP = @indexOf(track)
         return if newP is oldP
         if newP is 0
@@ -58,7 +58,7 @@ module.exports = class PlaylistTrackCollection extends Backbone.Collection
             error: (xhr)->
                 msg = JSON.parse xhr.responseText
                 alert "#{t('fail-move-track')} : #{msg.error}"
-            success: (playlists)=>
+            success: (playlists) ->
                 track.attributes.playlists = playlists
         @remove track, true
         @add track, true,

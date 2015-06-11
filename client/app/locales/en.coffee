@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/07 19:28:13 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/09 16:39:34 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/11 19:35:43 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,8 @@ module.exports =
     "playlist-new-pop"          : "Please enter the new playlist title"
     "playlist-new-exemple"      : "My playlist"
     "playlist-new-invalid"      : "Invalid title, please try again"
-    "playlist-new-error"        : "Server error occured, playlist wasn't created"
+    "playlist-new-error"        : "Server error occured, playlist wasn't \
+    created"
     "playlist-push"             : "Push playlist in the play queue"
     "playlist-remove"           : "Remove this playlist"
     "playlist-remove-valid"     : "Are you sure? The playlist will be deleted \
@@ -44,6 +45,8 @@ module.exports =
     "queue-song"                : "Add this song to play queue"
     "playlist-select"           : "Select playlist"
     "playlist-delete"           : "Delete playlist"
+    "playlist-retrieve-error"   : "Playlists couldn't be retrieved due tot a \
+    serveur error."
 
     #Playqueue
     "save"                      : "Save as playlis"
@@ -76,11 +79,15 @@ module.exports =
     "unable-track"              : "Application error : Unble to play track"
     "no-playlist-selected"      : "No playlist selected. Please select a\
      playlist in the navigation bar on the left"
-    "not-saved"                 : "An error occured, modifications were not saved"
+    "not-saved"                 : "An error occured, modifications were not \
+    saved"
     "not-deleted"               : "Server error occured, track was not deleted"
-    "wait-upload-finish"        : "Wait for upload to finish to delete this track"
+    "wait-upload-finish"        : "Wait for upload to finish to delete this \
+    track"
     "null-album"                : "Can't play: Null album"
     "length-not-reported"       : "Content Length not reported!"
+    "error-retrieve"            : "Files couldn't be retrieved due to a server \
+    error."
 
     #Message
     "fetch-youtube"             : "Fetching youtubeinmp3.org"

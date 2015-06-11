@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/06 17:14:00 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/07 17:14:58 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/11 19:37:18 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ module.exports = class Track extends Backbone.Model
 
     defaults: ->
         # state can be :
-        #   'client', 'uploadStart', 'uploadEnd', 'server', 'canceled', 'importBegin'
+        # 'client', 'uploadStart', 'uploadEnd', 'server',
+        # 'canceled', 'importBegin'
         state: 'server'
 
     # patch Model.sync so it could trigger progress event
@@ -26,7 +27,7 @@ module.exports = class Track extends Backbone.Model
             model.trigger('progress', e)
 
         _.extend options,
-            xhr: ()->
+            xhr: ->
                 xhr = $.ajaxSettings.xhr()
                 if xhr instanceof window.XMLHttpRequest
                     xhr.addEventListener 'progress', progress, false

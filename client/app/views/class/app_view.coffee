@@ -47,14 +47,14 @@ module.exports = class AppView extends BaseView
                     collection: collection
                 @$('#off-screen-nav').append @offScreenNav.$el
                 @offScreenNav.render()
-            error: =>
+            error: ->
                 msg = "Playlists couldn't be retrieved due to a server error."
                 alert msg
 
         # prevent to leave the page if playing or uploading
-        window.onbeforeunload = =>
+        window.onbeforeunload = ->
             msg = ""
-            app.tracks.each (track)=>
+            app.tracks.each (track) ->
                 state = track.attributes.state
                 if msg is "" and state isnt 'server'
                     msg += "upload will be cancelled "

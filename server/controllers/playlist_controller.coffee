@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/10 13:27:58 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/10 21:05:46 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/11 20:00:19 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,27 +26,39 @@ module.exports.create = (req, res, next) ->
         res.status(201).send playlist
 
 module.exports.delete = (req, res, next) ->
-    Playlist.destroy req.params.id, (err, playlist) ->
+    Playlist.find req.params.id, (err, playlist) ->
         return next err if err
-        res.status(204).send {success: "Playlist successfuly removed"}
+        for trackId in playlist.trackId
+            Track.find trackId, (err, track) ->
+                return next err if err
+                for id, index in track.playlistId
+                    if id == playlist.id
+                        track.playlistId.splice index, index + 1
+                        track.updateAttributes track, (err) ->
+                            return next err if err
+        playlist.destroy (err) ->
+            return next err if err
+            res.status(204).send {success: "Playlist successfuly removed"}
 
 module.exports.add = (req, res, next) ->
-    async.parallel ->
-        Playlist.find req.params.playlistId, (err, playlist) ->
+    async.parallel [
+        (cb) -> Playlist.find req.params.playlistId, (err, playlist) ->
             return next err if err
             playlist.trackId.push req.params.id
             playlist.size = playlist.size + 1
             playlist.lastModified = Date.now
             playlist.updateAttributes playlist, (err) ->
                 return next err if err
-        Track.find req.params.id, (err, track) ->
+                cb
+        (cb) -> Track.find req.params.id, (err, track) ->
             return next err if err
-            track.playlists.push req.params.playlistId
+            track.playlistId.push req.params.playlistId
             track.lastModified = Date.now
             track.updateAttributes track, (err) ->
                 return next err if err
-     res.status(201).send playlist
-
+                cb
+        ], (err, result) ->
+        res.status(201)
 
 
 module.exports.get = (req, res, next) ->

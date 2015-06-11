@@ -67,7 +67,8 @@ module.exports = class Player extends BaseView
             @volume = parseInt(Cookies('defaultVolume'))
         else
             @volume = 50
-        @isMuted = Cookies('isMuteByDefault')? and Cookies('isMuteByDefault') is "true"
+        @isMuted = Cookies('isMuteByDefault')? and Cookies('isMuteByDefault')\
+        is "true"
 
         # create, bind and display the volume bar
         @volumeManager = new VolumeManager
@@ -241,7 +242,7 @@ module.exports = class Player extends BaseView
             whileloading: @printLoadingInfo # debbugging tool
             # sound "restart" (instead of "chorus") when played multiple times
             multiShot: false
-            onid3: ()-> console.log @id3 # may be useful in the future
+            onid3: -> console.log @id3 # may be useful in the future
         @currentSound.mute() if @isMuted
 
         # update display and variables
@@ -301,14 +302,14 @@ module.exports = class Player extends BaseView
                     console.log "ajax fail : #{textStatus}"
 
     # volumeChange handler, it just tells soundManager the new volume value
-    onVolumeChange: (volume)=>
+    onVolumeChange: (volume) ->
         @volume = volume
         Cookies.set 'defaultVolume', volume
         if @currentSound?
             @currentSound.setVolume @volumeFilter(volume)
 
     # volume change should be more significant with that
-    volumeFilter: (volume)=>
+    volumeFilter: (volume) ->
         # the formula is x->(x*0.01)^2*100+1
         newVol = volume*0.01
         newVol = newVol*newVol # turn linear into quadratic
@@ -340,9 +341,11 @@ module.exports = class Player extends BaseView
             tot = @currentSound.durationEstimate
             console.log "is buffering : #{@currentSound.isBuffering}"
             console.log "buffered :"
-            printBuf = (buf)=>
-                console.log "[#{Math.floor(buf.start/tot*100)}% - #{Math.floor(buf.end/tot*100)}%]"
-            printBuf @currentSound.buffered[i] for buf, i in @currentSound.buffered
+            printBuf = (buf) ->
+                console.log "[#{Math.floor(buf.start/tot*100)}% - \
+                #{Math.floor(buf.end/tot*100)}%]"
+            printBuf @currentSound.buffered[i] for buf, i in \
+            @currentSound.buffered
             console.log "bytes loaded : #{bl}"
             console.log ""
         else

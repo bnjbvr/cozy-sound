@@ -40,5 +40,5 @@ module.exports = class PlaylistNavView extends BaseView
 
         if confirm t('playlist-remove-valid')
             @model.destroy
-                error: =>
+                error: ->
                     alert t('playlist-remove-error')

@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/08 19:54:04 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/09 17:00:05 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/11 19:55:52 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,6 +46,8 @@ module.exports =
     "queue-song"                : "Ajouter ce morceau a la liste de lecture"
     "playlist-select"           : "Selectionner cette playlist"
     "playlist-delete"           : "Supprimer cette playlist"
+    "playlist-retrieve-error"   : "Les playlistes n'ont pas pue etre recuperer \
+    due a une erreur serveur."
 
     #Playqueue
     "save"                      : "Sauver comme une playlis"
@@ -71,19 +73,25 @@ module.exports =
     "repeat"                    : "Lecture simple/Repeter tout/Repeter morceau"
     "randomize"                 : "Aleatoire"
     "mute/unmute"               : "Son off/Son one"
+    "init"                      : "INIT"
+    "done"                      : "PRET"
 
     #Error
-    "unable-track"              : "Erreur application : Impossible de jouer le morceau"
+    "unable-track"              : "Erreur application : Impossible de jouer le \
+    morceau"
     "no-playlist-selected"      : "Pas de playlist selectionne. Selectionner \
     une playlist dans la barre de gauche"
     "not-saved"                 : "Une erreur est survenue, les modifications \
     n'ont pas ete sauves"
     "not-deleted"               : "Le serveur a un probleme, les morceaux n'ont\
      pas ete supprimes"
-    "wait-upload-finish"        : "Attendre la fin de l'upload pour supprimer un\
-     morceau"
+    "wait-upload-finish"        : "Attendre la fin de l'upload pour supprimer \
+    un morceau"
     "null-album"                : "Lecture impossible: Album vide"
     "length-not-reported"       : "Content Length non reporte"
+    "error-retrieve"            : "Les fichiers n'ont pas pue etre recuperer \
+    due a une erreur du serveur"
+
 
     #Message
     "fetch-youtube"             : "Recuperation  youtubeinmp3.org"

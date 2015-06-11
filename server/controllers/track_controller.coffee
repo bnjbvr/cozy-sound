@@ -6,15 +6,16 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/04 13:09:41 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/10 20:56:24 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/11 20:01:25 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-TrackModel = require '../models/track_model'
-multiparty = require 'multiparty'
-os         = require 'os'
-path       = require 'path'
-request    = require 'request-json'
+TrackModel      = require '../models/track_model'
+PlaylistModel   = require '../models/playlists_model'
+multiparty      = require 'multiparty'
+os              = require 'os'
+path            = require 'path'
+request         = require 'request-json'
 
 
 module.exports.all = (req, res, next) ->
@@ -95,17 +96,27 @@ module.exports.getAttachment = (req, res, next) ->
             return next err if err
         # Create a stream
         stream = trackFind.getBinary "source", (err) ->
-                return next err if err
+            return next err if err
         res.on 'close', ->
             console.log "stop stream"
         stream.pipe(res)
 
 
 module.exports.delete = (req, res, next) ->
+    console.log "delete"
     TrackModel.find req.params.id, (err, trackFind) ->
+        for playlistId in trackFind.playlistId
+            PlaylistModel.find playlistId, (err, playlist) ->
+                return next err if err
+                for id, index in playlist.trackId
+                    if id == trackFind.id
+                        playlist.trackId.splice index, index + 1
+                        playlist.size = playlist.size - 1
+                        playlist.updateAttributes playlist, (err) ->
+                            return next er if err
         trackFind.destroy (err) ->
             return next err if err
-        res.status(204).send {success: 'Track successfully deleted'}
+        res.status(200).send {success: 'Track successfully deleted'}
 
 module.exports.update = (req, res, next) ->
     delete req.body.state
@@ -130,7 +141,7 @@ module.exports.youtube = (req, res, next) ->
         console.log path
         stream = client.saveFileAsStream path, (err, result, body) ->
             return err if err
-        TrackModel.create req.body, (err, newTrack) =>
+        TrackModel.create req.body, (err, newTrack) ->
             return next err if err
             newTrack.attachBinary stream, {name: 'source'}, (err) ->
                 return next err if err

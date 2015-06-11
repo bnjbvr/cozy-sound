@@ -118,13 +118,11 @@ module.exports = {
     TrackCollection = require('collections/track_collection');
     this.tracks = new TrackCollection();
     this.tracks.fetch({
-      error: (function(_this) {
-        return function() {
-          var msg;
-          msg = "Files couldn't be retrieved due to a server error.";
-          return alert(msg);
-        };
-      })(this)
+      error: function() {
+        var msg;
+        msg = t('error-retrieve');
+        return alert(msg);
+      }
     });
     PlayQueue = require('collections/playqueue');
     this.playQueue = new PlayQueue();
@@ -160,7 +158,6 @@ module.exports = {
 
 ;require.register("collections/playlist", function(exports, require, module) {
 var PlaylistTrackCollection, Track,
-  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -170,8 +167,6 @@ module.exports = PlaylistTrackCollection = (function(_super) {
   __extends(PlaylistTrackCollection, _super);
 
   function PlaylistTrackCollection() {
-    this.add = __bind(this.add, this);
-    this.getWeight = __bind(this.getWeight, this);
     return PlaylistTrackCollection.__super__.constructor.apply(this, arguments);
   }
 
@@ -197,38 +192,16 @@ module.exports = PlaylistTrackCollection = (function(_super) {
     }
     track.sync('create', track, {
       url: "" + this.url + "/" + track.id + "/" + lastWeight,
-      error: (function(_this) {
-        return function(xhr) {
-          var msg;
-          msg = JSON.parse(xhr.responseText);
-          return alert("" + (t('fail-add-track')) + " : " + msg.error);
-        };
-      })(this),
-      success: (function(_this) {
-        return function(playlists) {
-          return track.attributes.playlists = playlists;
-        };
-      })(this)
-    });
-    return this.listenToOnce(track, 'sync', PlaylistTrackCollection.__super__.add.apply(this, arguments));
-  };
-
-  PlaylistTrackCollection.prototype.remove = function(track, superOnly) {
-    if (superOnly == null) {
-      superOnly = false;
-    }
-    if (superOnly) {
-      return PlaylistTrackCollection.__super__.remove.call(this, track);
-    }
-    track.sync('delete', track, {
-      url: "" + this.url + "/" + track.id,
-      Jrror: function(xhr) {
+      error: function(xhr) {
         var msg;
         msg = JSON.parse(xhr.responseText);
-        return alert("" + (t('fail-remove-track')) + " : " + msg.error);
+        return alert("" + (t('fail-add-track')) + " : " + msg.error);
+      },
+      success: function(playlists) {
+        return track.attributes.playlists = playlists;
       }
     });
-    return this.listenToOnce(track, 'sync', PlaylistTrackCollection.__super__.remove.apply(this, arguments));
+    return this.listenToOnce(track, 'sync', PlaylistTrackCollection.__super__.add.apply(this, arguments));
   };
 
   PlaylistTrackCollection.prototype.move = function(newP, track) {
@@ -256,11 +229,9 @@ module.exports = PlaylistTrackCollection = (function(_super) {
         msg = JSON.parse(xhr.responseText);
         return alert("" + (t('fail-move-track')) + " : " + msg.error);
       },
-      success: (function(_this) {
-        return function(playlists) {
-          return track.attributes.playlists = playlists;
-        };
-      })(this)
+      success: function(playlists) {
+        return track.attributes.playlists = playlists;
+      }
     });
     this.remove(track, true);
     return this.add(track, true, {
@@ -775,6 +746,7 @@ module.exports = {
   "queue-song": "Add this song to play queue",
   "playlist-select": "Select playlist",
   "playlist-delete": "Delete playlist",
+  "playlist-retrieve-error": "Playlists couldn't be retrieved due tot a serveur error.",
   "save": "Save as playlis",
   "show/hide": "Show/hide previously played",
   "clear": "Clear the queue",
@@ -803,6 +775,7 @@ module.exports = {
   "wait-upload-finish": "Wait for upload to finish to delete this track",
   "null-album": "Can't play: Null album",
   "length-not-reported": "Content Length not reported!",
+  "error-retrieve": "Files couldn't be retrieved due to a server error.",
   "fetch-youtube": "Fetching youtubeinmp3.org",
   "import-cancelled": "Import was cancelled",
   "fail-move-track": "Fail to move track",
@@ -840,6 +813,7 @@ module.exports = {
   "queue-song": "Ajouter ce morceau a la liste de lecture",
   "playlist-select": "Selectionner cette playlist",
   "playlist-delete": "Supprimer cette playlist",
+  "playlist-retrieve-error": "Les playlistes n'ont pas pue etre recuperer due a une erreur serveur.",
   "save": "Sauver comme une playlis",
   "show/hide": "Montrer/Cacher les morceaux precedents",
   "clear": "Vider la liste de lecture",
@@ -859,13 +833,16 @@ module.exports = {
   "repeat": "Lecture simple/Repeter tout/Repeter morceau",
   "randomize": "Aleatoire",
   "mute/unmute": "Son off/Son one",
+  "init": "INIT",
+  "done": "PRET",
   "unable-track": "Erreur application : Impossible de jouer le morceau",
   "no-playlist-selected": "Pas de playlist selectionne. Selectionner une playlist dans la barre de gauche",
   "not-saved": "Une erreur est survenue, les modifications n'ont pas ete sauves",
   "not-deleted": "Le serveur a un probleme, les morceaux n'ontpas ete supprimes",
-  "wait-upload-finish": "Attendre la fin de l'upload pour supprimer unmorceau",
+  "wait-upload-finish": "Attendre la fin de l'upload pour supprimer un morceau",
   "null-album": "Lecture impossible: Album vide",
   "length-not-reported": "Content Length non reporte",
+  "error-retrieve": "Les fichiers n'ont pas pue etre recuperer due a une erreur du serveur",
   "fetch-youtube": "Recuperation  youtubeinmp3.org",
   "import-cancelled": "L'importationa echouer",
   "fail-move-track": "Le deplacement du morceau a echouer",
@@ -894,40 +871,31 @@ module.exports = Playlist = (function(_super) {
 
   Playlist.prototype.initialize = function() {
     Playlist.__super__.initialize.apply(this, arguments);
-    this.listenTo(this, 'change:id', (function(_this) {
-      return function(e) {
-        _this.tracks.playlistId = "" + _this.id;
-        return _this.tracks.url = "playlists/" + _this.id;
-      };
-    })(this));
+    this.listenTo(this, 'change:id', function(e) {
+      this.tracks.playlistId = "" + this.id;
+      return this.tracks.url = "playlists/" + this.id;
+    });
     this.tracks = new PlaylistTrackCollection(false, {
       url: "playlists/" + this.id
     });
     this.tracks.playlistId = "" + this.id;
     if (this.id != null) {
       this.tracks.url = "playlists/" + this.id;
-      this.tracks.fetch();
+      return this.tracks.fetch();
     } else {
-      this.listenToOnce(this, 'sync', (function(_this) {
-        return function(e) {
-          return _this.tracks.fetch();
-        };
-      })(this));
+      return this.listenToOnce(this, 'sync', function(e) {
+        return this.tracks.fetch();
+      });
     }
-    return console.log(this.tracks);
   };
 
   Playlist.prototype.destroy = function() {
-    var curUrl, regex, str, track;
+    var curUrl, regex, str;
     curUrl = "" + document.URL;
     str = "#playlist/" + this.id;
     regex = new RegExp(str);
     if (curUrl.match(regex)) {
       app.router.navigate('', true);
-    }
-    while (this.tracks.length !== 0) {
-      track = this.tracks.first();
-      this.tracks.remove(track);
     }
     Playlist.__super__.destroy.apply(this, arguments);
     return false;
@@ -991,112 +959,102 @@ app = require('application');
 
 Track = require('models/track');
 
-controlFile = (function(_this) {
-  return function(track, cb) {
-    var err;
-    if (!track.file.type.match(/audio\/(mp3|mpeg)/)) {
-      err = "unsupported " + track.file.type + " filetype";
-    }
-    return cb(err);
-  };
-})(this);
+controlFile = function(track, cb) {
+  var err;
+  if (!track.file.type.match(/audio\/(mp3|mpeg)/)) {
+    err = "unsupported " + track.file.type + " filetype";
+  }
+  return cb(err);
+};
 
-readMetaData = (function(_this) {
-  return function(track, cb) {
-    var reader, url;
-    url = track.get('title');
-    reader = new FileReader();
-    reader.onload = function(event) {
-      return ID3.loadTags(url, (function() {
-        var tags, _ref;
-        tags = ID3.getAllTags(url);
-        track.set({
-          title: tags.title != null ? tags.title : url,
-          artist: tags.artist != null ? tags.artist : '',
-          album: tags.album != null ? tags.album : '',
-          track: tags.track != null ? tags.track : '',
-          year: tags.year != null ? tags.year : '',
-          genre: tags.genre != null ? tags.genre : '',
-          time: ((_ref = tags.TLEN) != null ? _ref.data : void 0) != null ? tags.TLEN.data : ''
-        });
-        return cb();
-      }), {
-        tags: ["title", "artist", "album", "track", "year", "genre", "TLEN"],
-        dataReader: FileAPIReader(track.file)
+readMetaData = function(track, cb) {
+  var reader, url;
+  url = track.get('title');
+  reader = new FileReader();
+  reader.onload = function(event) {
+    return ID3.loadTags(url, (function() {
+      var tags, _ref;
+      tags = ID3.getAllTags(url);
+      track.set({
+        title: tags.title != null ? tags.title : url,
+        artist: tags.artist != null ? tags.artist : '',
+        album: tags.album != null ? tags.album : '',
+        track: tags.track != null ? tags.track : '',
+        year: tags.year != null ? tags.year : '',
+        genre: tags.genre != null ? tags.genre : '',
+        time: ((_ref = tags.TLEN) != null ? _ref.data : void 0) != null ? tags.TLEN.data : ''
       });
-    };
-    reader.readAsArrayBuffer(track.file);
-    return reader.onabort = function(event) {
-      return cb("unable to read metadata");
-    };
+      return cb();
+    }), {
+      tags: ["title", "artist", "album", "track", "year", "genre", "TLEN"],
+      dataReader: FileAPIReader(track.file)
+    });
   };
-})(this);
+  reader.readAsArrayBuffer(track.file);
+  return reader.onabort = function(event) {
+    return cb("unable to read metadata");
+  };
+};
 
-upload = (function(_this) {
-  return function(track, cb) {
-    var formdata;
-    formdata = new FormData();
-    formdata.append('cid', track.cid);
-    formdata.append('title', track.get('title'));
-    formdata.append('artist', track.get('artist'));
-    formdata.append('album', track.get('album'));
-    formdata.append('track', track.get('track'));
-    formdata.append('year', track.get('year'));
-    formdata.append('genre', track.get('genre'));
-    formdata.append('time', track.get('time'));
-    formdata.append('file', track.file);
-    if (track.attributes.state === 'canceled') {
-      return cb("upload canceled");
+upload = function(track, cb) {
+  var formdata;
+  formdata = new FormData();
+  formdata.append('cid', track.cid);
+  formdata.append('title', track.get('title'));
+  formdata.append('artist', track.get('artist'));
+  formdata.append('album', track.get('album'));
+  formdata.append('track', track.get('track'));
+  formdata.append('year', track.get('year'));
+  formdata.append('genre', track.get('genre'));
+  formdata.append('time', track.get('time'));
+  formdata.append('file', track.file);
+  if (track.attributes.state === 'canceled') {
+    return cb("upload canceled");
+  }
+  track.set({
+    state: 'uploadStart'
+  });
+  track.sync('create', track, {
+    processData: false,
+    contentType: false,
+    data: formdata,
+    success: function(model) {
+      track.set(model);
+      return cb();
+    },
+    error: function() {
+      return cb("upload failed");
     }
-    track.set({
-      state: 'uploadStart'
-    });
-    track.sync('create', track, {
-      processData: false,
-      contentType: false,
-      data: formdata,
-      success: function(model) {
-        track.set(model);
-        return cb();
-      },
-      error: function() {
-        return cb("upload failed");
-      }
-    });
-    return false;
-  };
-})(this);
+  });
+  return false;
+};
 
-refreshDisplay = (function(_this) {
-  return function(track, cb) {
-    track.set({
-      state: 'uploadEnd'
-    });
-    return cb();
-  };
-})(this);
+refreshDisplay = function(track, cb) {
+  track.set({
+    state: 'uploadEnd'
+  });
+  return cb();
+};
 
-uploadWorker = (function(_this) {
-  return function(track, done) {
-    return async.waterfall([
-      function(cb) {
-        return controlFile(track, cb);
-      }, function(cb) {
-        return readMetaData(track, cb);
-      }, function(cb) {
-        return upload(track, cb);
-      }, function(cb) {
-        return refreshDisplay(track, cb);
-      }
-    ], function(err) {
-      if (err) {
-        return done("" + (track.get('title')) + " not uploaded properly : " + err, track);
-      } else {
-        return done();
-      }
-    });
-  };
-})(this);
+uploadWorker = function(track, done) {
+  return async.waterfall([
+    function(cb) {
+      return controlFile(track, cb);
+    }, function(cb) {
+      return readMetaData(track, cb);
+    }, function(cb) {
+      return upload(track, cb);
+    }, function(cb) {
+      return refreshDisplay(track, cb);
+    }
+  ], function(err) {
+    if (err) {
+      return done("" + (track.get('title')) + " not uploaded properly : " + err, track);
+    } else {
+      return done();
+    }
+  });
+};
 
 UploaderModel = (function() {
   function UploaderModel() {}
@@ -1104,13 +1062,11 @@ UploaderModel = (function() {
   UploaderModel.prototype.uploadQueue = async.queue(uploadWorker, 3);
 
   UploaderModel.prototype.process = function(track) {
-    return this.uploadQueue.push(track, (function(_this) {
-      return function(err, track) {
-        if (err) {
-          return console.log(err);
-        }
-      };
-    })(this));
+    return this.uploadQueue.push(track, function(err, track) {
+      if (err) {
+        return console.log(err);
+      }
+    });
   };
 
   UploaderModel.prototype.processYoutube = function(youId) {
@@ -1134,27 +1090,23 @@ UploaderModel = (function() {
       url: "you/" + youId,
       context: this,
       data: "",
-      success: (function(_this) {
-        return function(model) {
-          track.set(model);
-          return track.set({
-            state: 'uploadEnd'
-          });
-        };
-      })(this),
-      error: (function(_this) {
-        return function(xhr, status, error) {
-          var beg, end;
-          app.tracks.remove(track);
-          beg = "Youtube import " + status;
-          end = t('import-cancelled');
-          if (xhr.responseText !== "") {
-            return alert("" + beg + " : " + xhr.responseText + ". " + end);
-          } else {
-            return alert("" + beg + ". " + end);
-          }
-        };
-      })(this)
+      success: function(model) {
+        track.set(model);
+        return track.set({
+          state: 'uploadEnd'
+        });
+      },
+      error: function(xhr, status, error) {
+        var beg, end;
+        app.tracks.remove(track);
+        beg = "Youtube import " + status;
+        end = t('import-cancelled');
+        if (xhr.responseText !== "") {
+          return alert("" + beg + " : " + xhr.responseText + ". " + end);
+        } else {
+          return alert("" + beg + ". " + end);
+        }
+      }
     });
   };
 
@@ -1295,38 +1247,34 @@ module.exports = AppView = (function(_super) {
           return _this.offScreenNav.render();
         };
       })(this),
-      error: (function(_this) {
-        return function() {
-          var msg;
-          msg = "Playlists couldn't be retrieved due to a server error.";
-          return alert(msg);
-        };
-      })(this)
-    });
-    return window.onbeforeunload = (function(_this) {
-      return function() {
+      error: function() {
         var msg;
-        msg = "";
-        app.tracks.each(function(track) {
-          var state;
-          state = track.attributes.state;
-          if (msg === "" && state !== 'server') {
-            return msg += "upload will be cancelled ";
-          }
-        });
-        if (!_this.player.isStopped && !_this.player.isPaused) {
-          msg += "music will be stopped";
+        msg = "Playlists couldn't be retrieved due to a server error.";
+        return alert(msg);
+      }
+    });
+    return window.onbeforeunload = function() {
+      var msg;
+      msg = "";
+      app.tracks.each(function(track) {
+        var state;
+        state = track.attributes.state;
+        if (msg === "" && state !== 'server') {
+          return msg += "upload will be cancelled ";
         }
-        if (msg !== "" && app.playQueue.length > 0) {
-          msg += " & your queue list will be erased.";
-        }
-        if (msg !== "") {
-          return msg;
-        } else {
+      });
+      if (!this.player.isStopped && !this.player.isPaused) {
+        msg += "music will be stopped";
+      }
+      if (msg !== "" && app.playQueue.length > 0) {
+        msg += " & your queue list will be erased.";
+      }
+      if (msg !== "") {
+        return msg;
+      } else {
 
-        }
-      };
-    })(this);
+      }
+    };
   };
 
   AppView.prototype.showTrackList = function() {
@@ -1550,7 +1498,7 @@ module.exports = OffScreenNav = (function(_super) {
     var defaultMsg, defaultVal, playlist, title;
     event.preventDefault();
     event.stopPropagation();
-    title = "";
+    title = '';
     defaultMsg = "" + (t('playlist-new-pop')) + " :";
     defaultVal = t('playlist-new-exemple');
     while (!(title !== "" && title.length < 50)) {
@@ -1618,8 +1566,6 @@ module.exports = Player = (function(_super) {
     this.updateProgressDisplay = __bind(this.updateProgressDisplay, this);
     this.printLoadingInfo = __bind(this.printLoadingInfo, this);
     this.onToggleMute = __bind(this.onToggleMute, this);
-    this.volumeFilter = __bind(this.volumeFilter, this);
-    this.onVolumeChange = __bind(this.onVolumeChange, this);
     this.stopTrack = __bind(this.stopTrack, this);
     this.onPlayFinish = __bind(this.onPlayFinish, this);
     this.onPlayTrack = __bind(this.onPlayTrack, this);
@@ -2005,11 +1951,9 @@ module.exports = Player = (function(_super) {
       tot = this.currentSound.durationEstimate;
       console.log("is buffering : " + this.currentSound.isBuffering);
       console.log("buffered :");
-      printBuf = (function(_this) {
-        return function(buf) {
-          return console.log("[" + (Math.floor(buf.start / tot * 100)) + "% - " + (Math.floor(buf.end / tot * 100)) + "%]");
-        };
-      })(this);
+      printBuf = function(buf) {
+        return console.log("[" + (Math.floor(buf.start / tot * 100)) + "% - " + (Math.floor(buf.end / tot * 100)) + "%]");
+      };
       _ref = this.currentSound.buffered;
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         buf = _ref[i];
@@ -2394,11 +2338,9 @@ module.exports = PlaylistNavView = (function(_super) {
     event.stopPropagation();
     if (confirm(t('playlist-remove-valid'))) {
       return this.model.destroy({
-        error: (function(_this) {
-          return function() {
-            return alert(t('playlist-remove-error'));
-          };
-        })(this)
+        error: function() {
+          return alert(t('playlist-remove-error'));
+        }
       });
     }
   };
@@ -2431,7 +2373,6 @@ module.exports = PlayQueueView = (function(_super) {
   __extends(PlayQueueView, _super);
 
   function PlayQueueView() {
-    this.onClickShowPrevious = __bind(this.onClickShowPrevious, this);
     this.afterRender = __bind(this.afterRender, this);
     return PlayQueueView.__super__.constructor.apply(this, arguments);
   }
@@ -2701,12 +2642,9 @@ module.exports = TopNav = (function(_super) {
   __extends(TopNav, _super);
 
   function TopNav() {
-    this.onClickYoutube = __bind(this.onClickYoutube, this);
-    this.addTrack = __bind(this.addTrack, this);
     this.handleFiles = __bind(this.handleFiles, this);
     this.onFilesChanged = __bind(this.onFilesChanged, this);
     this.onUploadFormChange = __bind(this.onUploadFormChange, this);
-    this.setupHiddenFileInput = __bind(this.setupHiddenFileInput, this);
     return TopNav.__super__.constructor.apply(this, arguments);
   }
 
@@ -2787,9 +2725,7 @@ module.exports = TopNav = (function(_super) {
         }
       };
     })(this);
-    return async.eachSeries(files, addPhotoAndBreath, (function(_this) {
-      return function() {};
-    })(this));
+    return async.eachSeries(files, addPhotoAndBreath, function() {});
   };
 
   TopNav.prototype.addTrack = function(file) {
@@ -2976,46 +2912,42 @@ module.exports = TracksView = (function(_super) {
     if (app.selectedPlaylist != null) {
       this.highlightTracks(app.selectedPlaylist);
     }
-    Mousetrap.bind('up', (function(_this) {
-      return function() {
-        var cid, index, prevCid, prevIndex, prevView, view;
-        if (_this.selectedTrackView != null) {
-          index = _this.collection.indexOf(_this.selectedTrackView.model);
-          if (index > 0) {
-            prevIndex = index - 1;
-            prevCid = _this.collection.at(prevIndex).cid;
-            prevView = _this.views[prevCid];
-            _this.scrollCheck(prevView);
-            return prevView.el.click();
-          }
-        } else {
-          cid = _this.collection.last().cid;
-          view = _this.views[cid];
-          _this.scrollCheck(view);
-          return view.el.click();
+    Mousetrap.bind('up', function() {
+      var cid, index, prevCid, prevIndex, prevView, view;
+      if (this.selectedTrackView != null) {
+        index = this.collection.indexOf(this.selectedTrackView.model);
+        if (index > 0) {
+          prevIndex = index - 1;
+          prevCid = this.collection.at(prevIndex).cid;
+          prevView = this.views[prevCid];
+          this.scrollCheck(prevView);
+          return prevView.el.click();
         }
-      };
-    })(this));
-    return Mousetrap.bind('down', (function(_this) {
-      return function() {
-        var cid, index, nextCid, nextIndex, nextView, view;
-        if (_this.selectedTrackView != null) {
-          index = _this.collection.indexOf(_this.selectedTrackView.model);
-          if (index < _this.collection.length - 1) {
-            nextIndex = index + 1;
-            nextCid = _this.collection.at(nextIndex).cid;
-            nextView = _this.views[nextCid];
-            _this.scrollCheck(nextView);
-            return nextView.el.click();
-          }
-        } else {
-          cid = _this.collection.first().cid;
-          view = _this.views[cid];
-          _this.scrollCheck(view);
-          return view.el.click();
+      } else {
+        cid = this.collection.last().cid;
+        view = this.views[cid];
+        this.scrollCheck(view);
+        return view.el.click();
+      }
+    });
+    return Mousetrap.bind('down', function() {
+      var cid, index, nextCid, nextIndex, nextView, view;
+      if (this.selectedTrackView != null) {
+        index = this.collection.indexOf(this.selectedTrackView.model);
+        if (index < this.collection.length - 1) {
+          nextIndex = index + 1;
+          nextCid = this.collection.at(nextIndex).cid;
+          nextView = this.views[nextCid];
+          this.scrollCheck(nextView);
+          return nextView.el.click();
         }
-      };
-    })(this));
+      } else {
+        cid = this.collection.first().cid;
+        view = this.views[cid];
+        this.scrollCheck(view);
+        return view.el.click();
+      }
+    });
   };
 
   TracksView.prototype.scrollCheck = function(view) {
@@ -3147,17 +3079,13 @@ module.exports = TracksView = (function(_super) {
       return 0;
     };
     if (this.isReverseOrder) {
-      this.collection.comparator = (function(_this) {
-        return function(t1, t2) {
-          return compare(t2, t1);
-        };
-      })(this);
+      this.collection.comparator = function(t1, t2) {
+        return compare(t2, t1);
+      };
     } else {
-      this.collection.comparator = (function(_this) {
-        return function(t1, t2) {
-          return compare(t1, t2);
-        };
-      })(this);
+      this.collection.comparator = function(t1, t2) {
+        return compare(t1, t2);
+      };
     }
     return this.collection.sort();
   };
@@ -3310,14 +3238,12 @@ module.exports = TracksItemView = (function(_super) {
       } else {
         this.$el.addClass('selected');
         this.$el.trigger('click-track', this);
-        Mousetrap.bind('f2', (function(_this) {
-          return function() {
-            if (_this.isEdited === '') {
-              _this.isEdited = 'title';
-              return _this.enableEdition();
-            }
-          };
-        })(this));
+        Mousetrap.bind('f2', function() {
+          if (this.isEdited === '') {
+            this.isEdited = 'title';
+            return this.enableEdition();
+          }
+        });
         Mousetrap.bind('enter', this.onEnter);
         return Mousetrap.bind('ctrl+enter', this.onCtrlEnter);
       }
@@ -3452,7 +3378,7 @@ module.exports = TracksItemView = (function(_super) {
   };
 
   TracksItemView.prototype.onDeleteClick = function(event) {
-    var state;
+    var id, state;
     event.preventDefault();
     event.stopPropagation();
     state = this.model.attributes.state;
@@ -3465,13 +3391,12 @@ module.exports = TracksItemView = (function(_super) {
         state: 'canceled'
       });
     }
+    id = this.model.attributes.id;
     Backbone.Mediator.publish('track:delete', "sound-" + id);
     this.model.destroy({
-      error: (function(_this) {
-        return function() {
-          return alert(t('not-deleted'));
-        };
-      })(this)
+      error: function() {
+        return alert(t('not-deleted'));
+      }
     });
     return Backbone.Mediator.publish('trackItem:remove');
   };
@@ -3791,7 +3716,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<div class=\"viewport\"><table><thead><tr><th id=\"playlist-play\" title=\"#{t('playlist-new)}\" class=\"left\"><i class=\"icon-play\"></i></th><th class=\"field title\">Title</th><th class=\"field artist\">Artist</th><th class=\"field album\">Album</th><th class=\"field num\">#</th><th class=\"right\"></th></tr></thead><tbody id=\"track-list\"></tbody></table></div>");;return buf.join("");
+buf.push("<div class=\"viewport\"><table><thead><tr><th id=\"playlist-play\" title=\"#{t('playlist-new)}\" class=\"left\"><i class=\"icon-play\"></i></th><th class=\"field title\">" + (jade.escape((jade_interp = t('title')) == null ? '' : jade_interp)) + "</th><th class=\"field artist\">" + (jade.escape((jade_interp = t('artist')) == null ? '' : jade_interp)) + "</th><th class=\"field album\">" + (jade.escape((jade_interp = t('album')) == null ? '' : jade_interp)) + "</th><th class=\"field num\">" + (jade.escape((jade_interp = t('#')) == null ? '' : jade_interp)) + "</th><th class=\"right\"></th></tr></thead><tbody id=\"track-list\"></tbody></table></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {

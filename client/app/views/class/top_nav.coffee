@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/05 17:34:07 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/08 18:07:22 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/11 19:46:17 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,7 @@ module.exports = class TopNav extends BaseView
         @setupHiddenFileInput()
 
     # Delete this when I can, don't pretty at all
-    setupHiddenFileInput: =>
+    setupHiddenFileInput: ->
         document.body.removeChild @hiddenFileInput if @hiddenFileInput
         # create a hidden input file and append it at the end of the document
         @hiddenFileInput = document.createElement "input"
@@ -101,10 +101,10 @@ module.exports = class TopNav extends BaseView
             else
                 uploadCounter++
                 callback()
-        async.eachSeries files, addPhotoAndBreath, =>
+        async.eachSeries files, addPhotoAndBreath, ->
         # Some stuff after:
 
-    addTrack: (file) =>
+    addTrack: (file) ->
         track = new TrackModel
             title: file.name
             size: file.size
@@ -118,7 +118,7 @@ module.exports = class TopNav extends BaseView
         track
 
 
-    onClickYoutube: (event) =>
+    onClickYoutube: (event) ->
         event.preventDefault()
         event.stopPropagation()
         defaultMsg = "Please enter a youtube url :"

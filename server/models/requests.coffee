@@ -13,3 +13,5 @@ module.exports =
                 ## map function
             #reduce: (key, values, rereduce) ->
                  ##non mandatory reduce function
+    playlists_model:
+        all: cozydb.defaultRequests.all

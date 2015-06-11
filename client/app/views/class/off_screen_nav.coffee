@@ -7,6 +7,7 @@ Playlist = require 'models/playlist'
 PlaylistNavView = require './playlist_nav_view'
 ViewCollection = require 'lib/view_collection'
 
+    # collection is /collections/play.ist_collection
 module.exports = class OffScreenNav extends ViewCollection
 
     className: 'off-screen-nav'
@@ -78,7 +79,7 @@ module.exports = class OffScreenNav extends ViewCollection
         event.preventDefault()
         event.stopPropagation()
         # prompt to retrieve the title of the new playlist
-        title = ""
+        title = ''
         defaultMsg = "#{t('playlist-new-pop')} :"
         defaultVal = t('playlist-new-exemple')
         until title isnt "" and title.length < 50

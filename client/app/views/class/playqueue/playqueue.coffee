@@ -17,12 +17,12 @@ module.exports = class PlayQueueView extends TrackListView
 
     events:
         'update-sort': 'updateSort'
-        'remove-item': (e, track)->
+        'remove-item': (e, track) ->
             @collection.remove track
         'play-from-track': 'playFromTrack'
         'remove-from-track': 'removeFromTrack'
         'remove-to-track': 'removeToTrack'
-        'click .save-button': (e)->
+        'click .save-button': (e) ->
             alert 'not available yet'
         'click .show-prev-button': 'onClickShowPrevious'
         'click .clear': 'removeFromFirst'
@@ -122,11 +122,11 @@ module.exports = class PlayQueueView extends TrackListView
         @collection.deleteFromBeginingToIndex index
         @render()
 
-    removeFromFirst: (event)->
+    removeFromFirst: (event) ->
         @collection.deleteFromIndexToEnd 0
         @render()
 
-    onClickShowPrevious: (e)=>
-            @showPrevious = !@showPrevious
-            Cookies.set 'isShowPreviousByDefault', @showPrevious
-            @render()
+    onClickShowPrevious: (e) ->
+        @showPrevious = !@showPrevious
+        Cookies.set 'isShowPreviousByDefault', @showPrevious
+        @render()

@@ -78,7 +78,7 @@ module.exports = class TracksItemView extends TrackListItemView
                 # signal to unselect previous selection and register the new one
                 @$el.trigger 'click-track', @
                 # enable F2 key
-                Mousetrap.bind 'f2', ()=>
+                Mousetrap.bind 'f2', ->
                     if @isEdited is ''
                         @isEdited = 'title'
                         @enableEdition()
@@ -108,11 +108,11 @@ module.exports = class TracksItemView extends TrackListItemView
 
                 Mousetrap.unbind 'enter', @onEnter
                 Mousetrap.unbind 'ctrl+enter', @onCtrlEnter
-                Mousetrap.bind 'enter', ()=>
+                Mousetrap.bind 'enter', =>
                     @disableEdition()
                     @isEdited = ''
 
-                Mousetrap.bind 'esc', ()=>
+                Mousetrap.bind 'esc', =>
                     @$(selector).val @tmpValue
                     @disableEdition(false)
                     @isEdited = ''
@@ -190,11 +190,11 @@ module.exports = class TracksItemView extends TrackListItemView
                 state: 'canceled'
 
         # stop playing this track if at play # not needed anymore
-        #id = @model.attributes.id
+        id = @model.attributes.id
         Backbone.Mediator.publish 'track:delete', "sound-#{id}"
         # destroy the model
         @model.destroy
-            error: =>
+            error: ->
                 alert t('not-deleted')
         # signal trackList view
         Backbone.Mediator.publish 'trackItem:remove'

@@ -8,12 +8,11 @@ module.exports = TrackModel = cozydb.getModel 'Track',
     artist:           type: String, default: ''
     album:            type: String, default: ''
     track:            type: String, default: ''
-    genre:            type: String, default: ''
     size:             type: Number, default: 0
     year:             type: String, default: ''
     genre:            type: String, default: ''
     time:             type: String, default: ''
-    playlists:        type: [String]
+    playlistId:       type: [String]
     lastModified:     type: Date,   default: Date.now()
     dateAdded:        type: Date,   default: Date.now()
     lastPlay:         type: Date,   default: Date.now()
@@ -22,3 +21,5 @@ module.exports = TrackModel = cozydb.getModel 'Track',
     rating:           type: Number, default: 0 # Reserved
     bitRate:          type: Number, default: 0 # Reserved
     public:           type: Boolean,default: false # Reserved
+
+
