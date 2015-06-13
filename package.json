@@ -1,42 +1,48 @@
 {
-  "name": "cozy-sound",
-  "version": "1.0.0",
-  "engines": [
-    "node = 0.10.x"
-  ],
-  "description": "The Sound by Cozy community",
-  "license": "GPLv3",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Peltoche/cozy-sound.git"
-  },
-  "main": "server.coffee",
-  "dependencies": {
-    "americano": "0.4.1",
-    "cozydb": "0.0.3",
-    "cozy-i18n-helper": "0.0.4"
-  },
-  "devDependencies": {
-    "should": "4.0.1",
-    "mocha": "1.20.1",
-    "request-json": "0.4.10",
-    "cozy-fixtures": "1.1.1",
-    "coffeelint": "1.5.1"
-  },
-  "scripts": {
-    "test": "cake tests",
-    "start": "node build/server.js"
-  },
-  "cozy-permissions": {
-    "Track": {
-      "description": "Upload and store your music on your cozy"
+    "name": "cozy-sound",
+    "version": "1.0.0",
+    "displayName": "Sound",
+    "description": "The Sound by Cozy community",
+    "author": "Peltoche <dev@halium.fr>",
+    "licenses": [
+        {
+        "type": "AGPL v3",
+        "url": "http://www.gnu.org/licenses/agpl-3.0.html"
+        }
+    ],
+    "engines": [
+        "node = 0.10.x"
+        ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Peltoche/cozy-sound.git"
     },
-    "Playlist": {
-      "description": "Manage your playlists"
+    "main": "server.coffee",
+    "dependencies": {
+        "americano": "0.4.1",
+        "cozydb": "0.0.3",
+        "cozy-i18n-helper": "0.0.4"
+    },
+    "devDependencies": {
+        "should": "4.0.1",
+        "mocha": "1.20.1",
+        "request-json": "0.4.10",
+        "cozy-fixtures": "1.1.1",
+        "coffeelint": "1.5.1"
+    },
+    "scripts": {
+        "test": "cake tests",
+        "start": "node build/server.js"
+    },
+    "cozy-permissions": {
+        "Track": {
+            "description": "Upload and store your music on your cozy"
+        },
+        "Playlist": {
+            "description": "Manage your playlists"
+        }
+        "CozyInstance": {
+            "description": "Used to recover your language setting and your cozy's domain"
+        }
     }
-    "CozyInstance": {
-      "description": "Used to recover your language setting and your cozy's domain"
-     }
-  }
-  "cozy-displayName": "Sound"
 }
