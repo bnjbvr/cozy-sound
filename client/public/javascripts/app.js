@@ -157,11 +157,13 @@ module.exports = {
 });
 
 ;require.register("collections/playlist", function(exports, require, module) {
-var PlaylistTrackCollection, Track,
+var PlaylistTrackCollection, Track, app,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Track = require('../models/track');
+
+app = require('application');
 
 module.exports = PlaylistTrackCollection = (function(_super) {
   __extends(PlaylistTrackCollection, _super);
@@ -172,36 +174,34 @@ module.exports = PlaylistTrackCollection = (function(_super) {
 
   PlaylistTrackCollection.prototype.model = Track;
 
-  PlaylistTrackCollection.prototype.getWeight = function(playlists) {
-    return 0;
+  PlaylistTrackCollection.prototype.setAllTracks = function(param) {
+    var tracksId, value, _i, _len, _ref, _results;
+    tracksId = app.tracks._byId;
+    _ref = param.trackId;
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      value = _ref[_i];
+      _results.push(this.push(tracksId[value]));
+    }
+    return _results;
   };
 
-  PlaylistTrackCollection.prototype.add = function(track, superOnly, options) {
-    var last, lastWeight;
+  PlaylistTrackCollection.prototype.remove = function(track, superOnly) {
     if (superOnly == null) {
       superOnly = false;
     }
     if (superOnly) {
-      return PlaylistTrackCollection.__super__.add.call(this, track, options);
+      return PlaylistTrackCollection.__super__.remove.call(this, track);
     }
-    if (this.size() > 0) {
-      last = this.last();
-      lastWeight = this.getWeight(last.attributes.playlists);
-    } else {
-      lastWeight = 0;
-    }
-    track.sync('create', track, {
-      url: "" + this.url + "/" + track.id + "/" + lastWeight,
+    track.sync('delete', track, {
+      url: "" + this.url + "/" + track.id,
       error: function(xhr) {
         var msg;
         msg = JSON.parse(xhr.responseText);
-        return alert("" + (t('fail-add-track')) + " : " + msg.error);
-      },
-      success: function(playlists) {
-        return track.attributes.playlists = playlists;
+        return alert("" + (t('fail-remove-track')) + " : " + msg.error);
       }
     });
-    return this.listenToOnce(track, 'sync', PlaylistTrackCollection.__super__.add.apply(this, arguments));
+    return this.listenToOnce(track, 'sync', PlaylistTrackCollection.__super__.remove.apply(this, arguments));
   };
 
   PlaylistTrackCollection.prototype.move = function(newP, track) {
@@ -658,10 +658,15 @@ module.exports = ViewCollection = (function(_super) {
   };
 
   ViewCollection.prototype.render = function() {
-    var id, view, _ref;
+    var id, view, _ref, _ref1;
     _ref = this.views;
     for (id in _ref) {
       view = _ref[id];
+      console.log;
+    }
+    _ref1 = this.views;
+    for (id in _ref1) {
+      view = _ref1[id];
       view.$el.detach();
     }
     return ViewCollection.__super__.render.apply(this, arguments);
@@ -747,6 +752,7 @@ module.exports = {
   "playlist-select": "Select playlist",
   "playlist-delete": "Delete playlist",
   "playlist-retrieve-error": "Playlists couldn't be retrieved due tot a serveur error.",
+  "error-playlist-get": "Unable to get this playlist",
   "save": "Save as playlis",
   "show/hide": "Show/hide previously played",
   "clear": "Clear the queue",
@@ -814,6 +820,7 @@ module.exports = {
   "playlist-select": "Selectionner cette playlist",
   "playlist-delete": "Supprimer cette playlist",
   "playlist-retrieve-error": "Les playlistes n'ont pas pue etre recuperer due a une erreur serveur.",
+  "error-playlist-get": "Impossible de recuperer cette playlist",
   "save": "Sauver comme une playlis",
   "show/hide": "Montrer/Cacher les morceaux precedents",
   "clear": "Vider la liste de lecture",
@@ -852,11 +859,9 @@ module.exports = {
 });
 
 ;require.register("models/playlist", function(exports, require, module) {
-var Playlist, PlaylistTrackCollection, app,
+var Playlist, app,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-PlaylistTrackCollection = require('../collections/playlist');
 
 app = require('application');
 
@@ -869,36 +874,24 @@ module.exports = Playlist = (function(_super) {
 
   Playlist.prototype.urlRoot = "playlists";
 
-  Playlist.prototype.initialize = function() {
-    Playlist.__super__.initialize.apply(this, arguments);
-    this.listenTo(this, 'change:id', function(e) {
-      this.tracks.playlistId = "" + this.id;
-      return this.tracks.url = "playlists/" + this.id;
+  Playlist.prototype.addTrack = function(listNewId) {
+    var listTrackId, newListTrackId;
+    listTrackId = this.get('trackId');
+    newListTrackId = listTrackId.concat(listNewId);
+    $.ajax({
+      url: "playlists/post/" + this.id,
+      type: 'PUT',
+      data: {
+        listNewId: listNewId,
+        newListTrackId: newListTrackId
+      },
+      error: function(xhr) {
+        var msg;
+        msg = JSON.parse(xhr.responseText);
+        return alert("" + (t('fail-add-track')) + " : " + msg.error);
+      }
     });
-    this.tracks = new PlaylistTrackCollection(false, {
-      url: "playlists/" + this.id
-    });
-    this.tracks.playlistId = "" + this.id;
-    if (this.id != null) {
-      this.tracks.url = "playlists/" + this.id;
-      return this.tracks.fetch();
-    } else {
-      return this.listenToOnce(this, 'sync', function(e) {
-        return this.tracks.fetch();
-      });
-    }
-  };
-
-  Playlist.prototype.destroy = function() {
-    var curUrl, regex, str;
-    curUrl = "" + document.URL;
-    str = "#playlist/" + this.id;
-    regex = new RegExp(str);
-    if (curUrl.match(regex)) {
-      app.router.navigate('', true);
-    }
-    Playlist.__super__.destroy.apply(this, arguments);
-    return false;
+    return this.set('trackId', newListTrackId);
   };
 
   return Playlist;
@@ -1182,7 +1175,7 @@ module.exports = Router = (function(_super) {
 });
 
 ;require.register("views/class/app_view", function(exports, require, module) {
-var AppView, BaseView, OffScreenNav, PlayQueue, Player, Playlist, PlaylistCollection, TopNav, Tracks, app,
+var AppView, BaseView, OffScreenNav, PlayQueue, Player, Playlist, PlaylistCollection, PlaylistTrackCollection, TopNav, Tracks, app,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1205,6 +1198,8 @@ app = require('application');
 
 PlaylistCollection = require('collections/playlist_collection');
 
+PlaylistTrackCollection = require('collections/playlist');
+
 module.exports = AppView = (function(_super) {
   __extends(AppView, _super);
 
@@ -1224,8 +1219,7 @@ module.exports = AppView = (function(_super) {
     Cookies.defaults = {
       expires: 604800
     };
-    this.playList = {};
-    return this.currentPlaylistId = 0;
+    return this.playList = null;
   };
 
   AppView.prototype.afterRender = function() {
@@ -1283,9 +1277,9 @@ module.exports = AppView = (function(_super) {
       this.queueList.beforeDetach();
       this.queueList.$el.detach();
     }
-    if (this.playList[this.currentPlaylistId] != null) {
-      this.playList[this.currentPlaylistId].beforeDetach();
-      this.playList[this.currentPlaylistId].$el.detach();
+    if (this.playList != null) {
+      this.playList.beforeDetach();
+      this.playList.$el.detach();
     }
     if (this.tracklist == null) {
       this.tracklist = new Tracks({
@@ -1307,9 +1301,9 @@ module.exports = AppView = (function(_super) {
       this.tracklist.beforeDetach();
       this.tracklist.$el.detach();
     }
-    if (this.playList[this.currentPlaylistId] != null) {
-      this.playList[this.currentPlaylistId].beforeDetach();
-      this.playList[this.currentPlaylistId].$el.detach();
+    if (this.playList != null) {
+      this.playList.beforeDetach();
+      this.playList.$el.detach();
     }
     if (this.queueList == null) {
       this.queueList = new PlayQueue({
@@ -1335,9 +1329,9 @@ module.exports = AppView = (function(_super) {
       this.queueList.beforeDetach();
       this.queueList.$el.detach();
     }
-    if (this.playList[this.currentPlaylistId] != null) {
-      this.playList[this.currentPlaylistId].beforeDetach();
-      this.playList[this.currentPlaylistId].$el.detach();
+    if (this.playList != null) {
+      this.playList.beforeDetach();
+      this.playList.$el.detach();
     }
     this.currentPlaylistId = id;
     if ((_ref = this.offScreenNav) != null) {
@@ -1352,7 +1346,7 @@ module.exports = AppView = (function(_super) {
         if (playlistModel != null) {
           return this.appendPlaylist(playlistModel);
         } else {
-          alert('unable to get this playlist');
+          alert(t('error-playlist-get'));
           if (app.router.lastSeen === id) {
             app.router.lastSeen = null;
           }
@@ -1365,14 +1359,18 @@ module.exports = AppView = (function(_super) {
   };
 
   AppView.prototype.appendPlaylist = function(playlistModel) {
-    var cid;
-    if (this.playList[this.currentPlaylistId] == null) {
-      this.playList[this.currentPlaylistId] = new Playlist({
-        collection: playlistModel.tracks
-      });
-    }
-    this.$('#tracks-display').append(this.playList[this.currentPlaylistId].$el);
-    this.playList[this.currentPlaylistId].render();
+    var cid, collection;
+    collection = new PlaylistTrackCollection(false, {
+      url: "playlists/" + this.id
+    });
+    collection.setAllTracks({
+      trackId: playlistModel.attributes.trackId
+    });
+    this.playList = new Playlist({
+      collection: collection
+    });
+    this.$('#tracks-display').append(this.playList.$el);
+    this.playList.render();
     cid = playlistModel.cid;
     return this.offScreenNav.views[cid].$('li').addClass('activated');
   };
@@ -1837,10 +1835,7 @@ module.exports = Player = (function(_super) {
       onstop: this.stopTrack,
       whileplaying: this.updateProgressDisplay,
       whileloading: this.printLoadingInfo,
-      multiShot: false,
-      onid3: function() {
-        return console.log(this.id3);
-      }
+      multiShot: false
     });
     if (this.isMuted) {
       this.currentSound.mute();
@@ -1968,10 +1963,16 @@ module.exports = Player = (function(_super) {
 
   Player.prototype.updateProgressDisplay = function() {
     var newWidth, remainingTime;
+    console.log("duration : " + this.currentSound.duration);
+    console.log("durationEstimate : " + this.currentSound.durationEstimate);
     newWidth = this.currentSound.position / this.currentSound.durationEstimate * 100;
+    console.log("newWidth = " + newWidth);
+    console.log("position = " + this.currentSound.position);
+    console.log("///////////////////");
     this.progressInner.width("" + newWidth + "%");
     this.elapsedTime.html(this.formatMs(this.currentSound.position));
     remainingTime = this.currentSound.durationEstimate - this.currentSound.position;
+    console.log(remainingTime);
     return this.remainingTime.html(this.formatMs(remainingTime));
   };
 
@@ -2146,7 +2147,7 @@ module.exports = VolumeManager = (function(_super) {
     - queue the entire list
     - list backed up on server side
  */
-var BaseView, PlayListView, PlayQueueView, TrackView, Tracklist,
+var BaseView, PlayListView, PlayQueueView, PlaylistTrackCollection, TrackView, Tracklist,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -2157,6 +2158,8 @@ PlayQueueView = require('../playqueue/playqueue');
 BaseView = require('./../../../lib/base_view');
 
 TrackView = require('./playlist_item');
+
+PlaylistTrackCollection = require('collections/playlist');
 
 module.exports = PlayListView = (function(_super) {
   __extends(PlayListView, _super);
@@ -2284,14 +2287,12 @@ module.exports = PlayListItemView = (function(_super) {
 });
 
 ;require.register("views/class/playlist_nav_view", function(exports, require, module) {
-var BaseView, PlaylistNavView, PlaylistTrackCollection,
+var BaseView, PlaylistNavView,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 BaseView = require('lib/base_view');
-
-PlaylistTrackCollection = require('collections/playlist');
 
 module.exports = PlaylistNavView = (function(_super) {
   __extends(PlaylistNavView, _super);
@@ -2992,11 +2993,11 @@ module.exports = TracksView = (function(_super) {
     var track, track2, _i, _len, _ref, _results;
     this.$('tr.in-playlist').removeClass('in-playlist');
     if (playlist != null) {
-      _ref = playlist.tracks.models;
+      _ref = playlist.attributes.trackId;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         track = _ref[_i];
-        track2 = this.collection.get(track.id);
+        track2 = this.collection.get(track);
         if ((track2 != null ? track2.cid : void 0) != null) {
           _results.push(this.views[track2.cid].$el.addClass('in-playlist'));
         } else {
@@ -3462,11 +3463,12 @@ module.exports = TracksItemView = (function(_super) {
   };
 
   TracksItemView.prototype.onAddTo = function() {
-    if (this.model.attributes.state === 'server') {
-      app.selectedPlaylist.tracks.add(this.model);
-      if (!this.$el.hasClass('in-playlist')) {
-        return this.$el.addClass('in-playlist');
-      }
+    var array;
+    array = new Array();
+    array.push(this.model.id);
+    app.selectedPlaylist.addTrack(array);
+    if (!this.$el.hasClass('in-playlist')) {
+      return this.$el.addClass('in-playlist');
     }
   };
 

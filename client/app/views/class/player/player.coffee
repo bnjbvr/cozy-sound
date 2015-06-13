@@ -242,7 +242,7 @@ module.exports = class Player extends BaseView
             whileloading: @printLoadingInfo # debbugging tool
             # sound "restart" (instead of "chorus") when played multiple times
             multiShot: false
-            onid3: -> console.log @id3 # may be useful in the future
+            #onid3: -> console.log @id3 # may be useful in the future
         @currentSound.mute() if @isMuted
 
         # update display and variables
@@ -353,10 +353,16 @@ module.exports = class Player extends BaseView
 
     # update both left and right timers and the progress bar
     updateProgressDisplay: =>
+        console.log "duration : #{@currentSound.duration}"
+        console.log "durationEstimate : #{@currentSound.durationEstimate}"
         newWidth = @currentSound.position/@currentSound.durationEstimate*100
+        console.log "newWidth = #{newWidth}"
+        console.log "position = #{@currentSound.position}"
+        console.log "///////////////////"
         @progressInner.width "#{newWidth}%"
         @elapsedTime.html @formatMs(@currentSound.position)
         remainingTime = @currentSound.durationEstimate - @currentSound.position
+        console.log remainingTime
         @remainingTime.html @formatMs(remainingTime)
 
     onClickLoop: ->

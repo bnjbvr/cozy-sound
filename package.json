@@ -27,6 +27,16 @@
     "test": "cake tests",
     "start": "node build/server.js"
   },
-  "cozy-permissions": {},
+  "cozy-permissions": {
+    "Track": {
+      "description": "Upload and store your music on your cozy"
+    },
+    "Playlist": {
+      "description": "Manage your playlists"
+    }
+    "CozyInstance": {
+        "description": "Get your default language"
+    }
+  }
   "cozy-displayName": "Sound"
 }

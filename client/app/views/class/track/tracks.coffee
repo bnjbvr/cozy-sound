@@ -207,8 +207,8 @@ module.exports = class TracksView extends TrackListView
         # add highlighting during playlist edition
         @$('tr.in-playlist').removeClass 'in-playlist'
         if playlist?
-            for track in playlist.tracks.models
-                track2 = @collection.get track.id
+            for track in playlist.attributes.trackId
+                track2 = @collection.get track
                 if track2?.cid? # track2 my be deleted here
                     @views[track2.cid].$el.addClass 'in-playlist'
 

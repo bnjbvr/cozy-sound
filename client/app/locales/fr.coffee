@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/08 19:54:04 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/11 19:55:52 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/12 15:42:17 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,6 +48,7 @@ module.exports =
     "playlist-delete"           : "Supprimer cette playlist"
     "playlist-retrieve-error"   : "Les playlistes n'ont pas pue etre recuperer \
     due a une erreur serveur."
+    "error-playlist-get"        : "Impossible de recuperer cette playlist"
 
     #Playqueue
     "save"                      : "Sauver comme une playlis"

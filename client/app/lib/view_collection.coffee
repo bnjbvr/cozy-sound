@@ -62,6 +62,7 @@ module.exports = class ViewCollection extends BaseView
 
     # if we have views before a render call, we detach them
     render: ->
+        console.log for id, view of @views
         view.$el.detach() for id, view of @views
         super
 

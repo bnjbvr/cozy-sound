@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/05 17:59:57 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/11 12:11:50 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/13 12:52:43 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,8 +39,8 @@ module.exports =
         delete: playlist.delete
         get:    playlist.get
 
-    'playlists/:playlistId/:id/:index':
-        post:   playlist.add
+    'playlists/post/:playlistId':
+        put:   playlist.add
 
 
 

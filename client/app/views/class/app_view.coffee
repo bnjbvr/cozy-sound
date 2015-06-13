@@ -8,6 +8,7 @@ OffScreenNav     = require './off_screen_nav'
 app              = require 'application'
 
 PlaylistCollection = require 'collections/playlist_collection'
+PlaylistTrackCollection = require 'collections/playlist'
 
 module.exports = class AppView extends BaseView
 
@@ -27,8 +28,7 @@ module.exports = class AppView extends BaseView
         super
         Cookies.defaults =
             expires: 604800 # = 1 week
-        @playList = {}
-        @currentPlaylistId = 0
+        @playList = null
 
     afterRender: ->
         super
@@ -75,9 +75,9 @@ module.exports = class AppView extends BaseView
         if @queueList?
             @queueList.beforeDetach()
             @queueList.$el.detach()
-        if @playList[@currentPlaylistId]?
-            @playList[@currentPlaylistId].beforeDetach()
-            @playList[@currentPlaylistId].$el.detach()
+        if @playList?
+            @playList.beforeDetach()
+            @playList.$el.detach()
         unless @tracklist?
             @tracklist = new Tracks
                 collection: app.tracks
@@ -94,9 +94,9 @@ module.exports = class AppView extends BaseView
         if @tracklist?
             @tracklist.beforeDetach()
             @tracklist.$el.detach()
-        if @playList[@currentPlaylistId]?
-            @playList[@currentPlaylistId].beforeDetach()
-            @playList[@currentPlaylistId].$el.detach()
+        if @playList?
+            @playList.beforeDetach()
+            @playList.$el.detach()
         unless @queueList?
             @queueList = new PlayQueue
                 collection: app.playQueue
@@ -116,9 +116,9 @@ module.exports = class AppView extends BaseView
         if @queueList?
             @queueList.beforeDetach()
             @queueList.$el.detach()
-        if @playList[@currentPlaylistId]?
-            @playList[@currentPlaylistId].beforeDetach()
-            @playList[@currentPlaylistId].$el.detach()
+        if @playList?
+            @playList.beforeDetach()
+            @playList.$el.detach()
         @currentPlaylistId = id
         @offScreenNav?.$('li.activated').removeClass 'activated'
         playlistModel = @playlistCollection.get id
@@ -130,7 +130,7 @@ module.exports = class AppView extends BaseView
                 if playlistModel?
                     @appendPlaylist playlistModel
                 else
-                    alert 'unable to get this playlist'
+                    alert t('error-playlist-get')
                     if app.router.lastSeen is id
                         app.router.lastSeen = null
                     app.router.navigate '', true
@@ -140,10 +140,14 @@ module.exports = class AppView extends BaseView
         $('#top-nav-title-home').removeClass 'activated'
 
     appendPlaylist: (playlistModel)->
-        unless @playList[@currentPlaylistId]?
-            @playList[@currentPlaylistId] = new Playlist
-                collection: playlistModel.tracks
-        @$('#tracks-display').append @playList[@currentPlaylistId].$el
-        @playList[@currentPlaylistId].render()
+        collection = new PlaylistTrackCollection false,
+            url: "playlists/#{@id}"
+        collection.setAllTracks
+            trackId: playlistModel.attributes.trackId
+        #unless @playList[@currentPlaylistId]?
+        @playList = new Playlist
+            collection: collection
+        @$('#tracks-display').append @playList.$el
+        @playList.render()
         cid = playlistModel.cid
         @offScreenNav.views[cid].$('li').addClass 'activated'

@@ -246,12 +246,14 @@ module.exports = class TracksItemView extends TrackListItemView
         else
             alert t('null-album')
 
+            # Temporary fix for next release. I need to recieve the tracks to add in array
     onAddTo: ->
-        if @model.attributes.state is 'server'
-            app.selectedPlaylist.tracks.add @model
-            # warning, the track will be highlighted even if the operation fail
-            unless @$el.hasClass 'in-playlist'
-                @$el.addClass 'in-playlist'
+        array = new Array()
+        array.push @model.id
+        app.selectedPlaylist.addTrack array
+        # warning, the track will be highlighted even if the operation fail
+        unless @$el.hasClass 'in-playlist'
+            @$el.addClass 'in-playlist'
 
     onUploadProgressChange: (e)=>
         # make sure we can compute the length

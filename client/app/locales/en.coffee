@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/07 19:28:13 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/11 19:35:43 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/12 15:41:43 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,7 @@ module.exports =
     "playlist-delete"           : "Delete playlist"
     "playlist-retrieve-error"   : "Playlists couldn't be retrieved due tot a \
     serveur error."
+    "error-playlist-get"        : "Unable to get this playlist"
 
     #Playqueue
     "save"                      : "Save as playlis"

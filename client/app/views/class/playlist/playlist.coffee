@@ -10,6 +10,7 @@ Tracklist = require '../tracklist/tracklist'
 PlayQueueView = require '../playqueue/playqueue'
 BaseView = require './../../../lib/base_view'
 TrackView = require './playlist_item'
+PlaylistTrackCollection = require 'collections/playlist'
 
 module.exports = class PlayListView extends PlayQueueView
 
@@ -21,6 +22,12 @@ module.exports = class PlayListView extends PlayQueueView
         'click #playlist-play': 'onClickPlay'
         'remove-item': (e, track)->
             @collection.remove track
+
+    #initialize: (param) ->
+        #@collection = new PlaylistTrackCollection
+            #trackId: param.trackId
+            #playlistId: param.playlistId
+        #super
 
     onClickPlay: (event)->
         event.preventDefault()

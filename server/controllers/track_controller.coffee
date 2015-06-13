@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/04 13:09:41 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/11 20:01:25 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/12 15:19:17 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -88,27 +88,27 @@ module.exports.create = (req, res, next) ->
 
 module.exports.getAttachment = (req, res, next) ->
     TrackModel.find req.params.id, (err, trackFind) ->
-        dataUpdate =
-            lastPlay:   Date()
-            plays:      trackFind.plays + 1
-        # Update the last Play ans the number of plays
-        trackFind.updateAttributes dataUpdate, (err) ->
-            return next err if err
-        # Create a stream
-        stream = trackFind.getBinary "source", (err) ->
-            return next err if err
-        res.on 'close', ->
-            console.log "stop stream"
-        stream.pipe(res)
+        if trackFind
+            dataUpdate =
+                lastPlay:   Date()
+                plays:      trackFind.plays + 1
+            # Update the last Play ans the number of plays
+            trackFind.updateAttributes dataUpdate, (err) ->
+                return next err if err
+            # Create a stream
+            stream = trackFind.getBinary "source", (err) ->
+                return next err if err
+            res.on 'close', ->
+                console.log "stop stream"
+            stream.pipe(res)
 
 
 module.exports.delete = (req, res, next) ->
-    console.log "delete"
     TrackModel.find req.params.id, (err, trackFind) ->
-        for playlistId in trackFind.playlistId
+        for playlistId in trackFind?.playlistId
             PlaylistModel.find playlistId, (err, playlist) ->
                 return next err if err
-                for id, index in playlist.trackId
+                for id, index in playlist?.trackId
                     if id == trackFind.id
                         playlist.trackId.splice index, index + 1
                         playlist.size = playlist.size - 1
