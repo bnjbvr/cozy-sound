@@ -34,7 +34,9 @@
     "Playlist": {
       "description": "Manage your playlists"
     }
-    "CozyInstance": {}
+    "CozyInstance": {
+      "description": "Used to recover your language setting and your cozy's domain"
+     }
   }
   "cozy-displayName": "Sound"
 }
