@@ -12,6 +12,7 @@ It's a student work, for fun so don't be too hard.
 - Restructuring of most files to fit with the Cozy template structure
 - Move from jugglingDb to Cozydb (CouchDb)
 - Redo the youtube button, now that's work!
+- Redo playlist system
 - Localization
 
 
@@ -34,7 +35,6 @@ Check the `Cakefile` for more information.
 
 # Todo
 
-- Make work the playlistes
 - Redo some parts of Css
 - Add multiple select with Ctrl
 - Add multiple select with Tab
@@ -45,10 +45,10 @@ Check the `Cakefile` for more information.
 # Contribute
 
 - If you have some times, juste read few lines and leave a comment or a trick, all feedback/question/comment/tip are welcome
-- Report all [issues](https://github.com/Peltoche/cozy-sound/issues)
+- Report all issues
 - Pick up an [issue](https://github.com/Peltoche/cozy-sound/issues) and solve it.
 - Translate (English too, I'm french and I have a really bad english)
-- **I particulary need a Front-end developper, to correct some bug with Css. It's a quick job but I can't do it.**
+- **Any Front-developper is welcome!**
 
 # What is Cozy?
 
