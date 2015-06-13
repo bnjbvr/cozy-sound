@@ -34,9 +34,7 @@
     "Playlist": {
       "description": "Manage your playlists"
     }
-    "CozyInstance": {
-        "description": "Get your default language"
-    }
+    "CozyInstance": {}
   }
   "cozy-displayName": "Sound"
 }
