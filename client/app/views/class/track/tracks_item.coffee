@@ -63,28 +63,31 @@ module.exports = class TracksItemView extends TrackListItemView
         event.stopPropagation()
         if @model.attributes.state is 'server'
             # if the track is already selected
-            if @$el.hasClass 'selected'
-                # is another element is selected
-                if @isEdited isnt element
-                    # disable edition on the previously edited element
-                    if @isEdited isnt ''
-                        @disableEdition()
-                    # then enable edition on this track
-                    @isEdited = element
-                    @enableEdition()
-            else
-                # select track
-                @$el.addClass 'selected'
+            #if @$el.hasClass 'selected'
+                ## is another element is selected
+                #if @isEdited isnt element
+                    ## disable edition on the previously edited element
+                    #if @isEdited isnt ''
+                        #@disableEdition()
+                    ## then enable edition on this track
+                    #@isEdited = element
+                    #@enableEdition()
+            #else
                 # signal to unselect previous selection and register the new one
-                @$el.trigger 'click-track', @
-                # enable F2 key
-                Mousetrap.bind 'f2', ->
-                    if @isEdited is ''
-                        @isEdited = 'title'
-                        @enableEdition()
-                # enable play on enter
-                Mousetrap.bind 'enter', @onEnter
-                Mousetrap.bind 'ctrl+enter', @onCtrlEnter
+                if event.shiftKey
+                    @$el.trigger 'shift-click-track', @
+                else if event.ctrlKey || event.metaKey
+                    @$el.trigger 'ctrl-click-track', @
+                else
+                    @$el.trigger 'click-track', @
+                ## enable F2 key
+                #Mousetrap.bind 'f2', ->
+                    #if @isEdited is ''
+                        #@isEdited = 'title'
+                        #@enableEdition()
+                ## enable play on enter
+                #Mousetrap.bind 'enter', @onEnter
+                #Mousetrap.bind 'ctrl+enter', @onCtrlEnter
 
     unSelect: =>
         @$el.removeClass 'selected'

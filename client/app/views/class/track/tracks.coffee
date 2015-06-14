@@ -37,6 +37,8 @@ module.exports = class TracksView extends TrackListView
 
         # when a track is selected
         'click-track': 'onClickTrack'
+        'shift-click-track': 'onShiftClickTrack'
+        'ctrl-click-track': 'onCtrlClickTrack'
 
     # minimum track-list length
     minTrackListLength: 40
@@ -69,7 +71,8 @@ module.exports = class TracksView extends TrackListView
 
     initialize: ->
         super
-        @selectedTrackView = null
+        @selectedTrackView = new Array()
+        @lastSelectedTrackView = null
 
         # default value : sort by artist
         @toggleSort Cookies('defaultSortItem') || 'artist'
@@ -212,12 +215,40 @@ module.exports = class TracksView extends TrackListView
                 if track2?.cid? # track2 my be deleted here
                     @views[track2.cid].$el.addClass 'in-playlist'
 
-    onClickTrack: (e, trackView)=>
-        # unselect previous selected track if there is one
-        if @selectedTrackView?
-            @selectedTrackView.unSelect()
+    emptySelectedTrackView: ->
+        while @selectedTrackView.length
+            @selectedTrackView.pop().unSelect()
+
+
+    onShiftClickTrack: (e, trackView) ->
+        #console.log app.tracks?.indexOf? trackView.model
+
+
+    onCtrlClickTrack: (e, trackView) ->
+        # Check if the trackView is already selected
+        isNewSelect = @selectedTrackView.every (elem,index, array) ->
+            # If already selected : unselect and remove from select list
+            if elem == trackView
+                elem.unSelect()
+                array.splice index, 1
+                return false
+            true
+        # If trackView is not already selected: select it and add it to list
+        if isNewSelect
+            @selectedTrackView.push trackView
+            # select track
+            trackView.$el.addClass 'selected'
+        @lastSelectedTrackView = trackView
+
+
+    onClickTrack: (e, trackView) ->
+        # unselect previous selected track if there is one or many
+        @emptySelectedTrackView()
         # register selected track
-        @selectedTrackView = trackView
+        @selectedTrackView.push trackView
+        # select track
+        trackView.$el.addClass 'selected'
+        @lastSelectedTrackView = trackView
 
     # manage sortArrow display according to elementSort & isReverseOrder values
     updateSortingDisplay: =>

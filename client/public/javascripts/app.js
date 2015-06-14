@@ -154,10 +154,9 @@ module.exports = {
     return Backbone.history.start();
   }
 };
-
 });
 
-require.register("collections/playlist", function(exports, require, module) {
+;require.register("collections/playlist", function(exports, require, module) {
 var PlaylistTrackCollection, Track, app,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -243,10 +242,9 @@ module.exports = PlaylistTrackCollection = (function(_super) {
   return PlaylistTrackCollection;
 
 })(Backbone.Collection);
-
 });
 
-require.register("collections/playlist_collection", function(exports, require, module) {
+;require.register("collections/playlist_collection", function(exports, require, module) {
 var Playlist, PlaylistsCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -267,10 +265,9 @@ module.exports = PlaylistsCollection = (function(_super) {
   return PlaylistsCollection;
 
 })(Backbone.Collection);
-
 });
 
-require.register("collections/playqueue", function(exports, require, module) {
+;require.register("collections/playqueue", function(exports, require, module) {
 var PlayQueue, Track,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -475,10 +472,9 @@ module.exports = PlayQueue = (function(_super) {
   return PlayQueue;
 
 })(Backbone.Collection);
-
 });
 
-require.register("collections/track_collection", function(exports, require, module) {
+;require.register("collections/track_collection", function(exports, require, module) {
 var Track, TrackCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -499,10 +495,9 @@ module.exports = TrackCollection = (function(_super) {
   return TrackCollection;
 
 })(Backbone.Collection);
-
 });
 
-require.register("initialize", function(exports, require, module) {
+;require.register("initialize", function(exports, require, module) {
 $(function() {
   var app, initializeLocale;
   app = require('application');
@@ -532,10 +527,9 @@ $(function() {
     return app.initialize();
   };
 });
-
 });
 
-require.register("lib/app_helpers", function(exports, require, module) {
+;require.register("lib/app_helpers", function(exports, require, module) {
 (function() {
   return (function() {
     var console, dummy, method, methods, _results;
@@ -550,10 +544,9 @@ require.register("lib/app_helpers", function(exports, require, module) {
     return _results;
   })();
 })();
-
 });
 
-require.register("lib/base_view", function(exports, require, module) {
+;require.register("lib/base_view", function(exports, require, module) {
 var BaseView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -597,10 +590,9 @@ module.exports = BaseView = (function(_super) {
   return BaseView;
 
 })(Backbone.View);
-
 });
 
-require.register("lib/view_collection", function(exports, require, module) {
+;require.register("lib/view_collection", function(exports, require, module) {
 var BaseView, ViewCollection,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -728,10 +720,9 @@ module.exports = ViewCollection = (function(_super) {
   return ViewCollection;
 
 })(BaseView);
-
 });
 
-require.register("locales/en", function(exports, require, module) {
+;require.register("locales/en", function(exports, require, module) {
 module.exports = {
   "broadcast": "Broadcast your music",
   "broadcast-text": "Broadcast",
@@ -797,10 +788,9 @@ module.exports = {
   "fail-remove-track": "Fail to remove track",
   "fail-add-track": "Fail to add track"
 };
-
 });
 
-require.register("locales/fr", function(exports, require, module) {
+;require.register("locales/fr", function(exports, require, module) {
 module.exports = {
   "broadcast": "Partager votre musique",
   "broadcast-text": "Partage",
@@ -866,10 +856,9 @@ module.exports = {
   "fail-remove-track": "La suppression du morceau a echouer",
   "fail-add-track": "L'ajout du morceau a echouer"
 };
-
 });
 
-require.register("models/playlist", function(exports, require, module) {
+;require.register("models/playlist", function(exports, require, module) {
 var Playlist, app,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -908,10 +897,9 @@ module.exports = Playlist = (function(_super) {
   return Playlist;
 
 })(Backbone.Model);
-
 });
 
-require.register("models/track", function(exports, require, module) {
+;require.register("models/track", function(exports, require, module) {
 var Track,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -955,10 +943,9 @@ module.exports = Track = (function(_super) {
   return Track;
 
 })(Backbone.Model);
-
 });
 
-require.register("models/uploader_model", function(exports, require, module) {
+;require.register("models/uploader_model", function(exports, require, module) {
 var Track, UploaderModel, app, controlFile, readMetaData, refreshDisplay, upload, uploadWorker;
 
 app = require('application');
@@ -1121,10 +1108,9 @@ UploaderModel = (function() {
 })();
 
 module.exports = new UploaderModel();
-
 });
 
-require.register("router", function(exports, require, module) {
+;require.register("router", function(exports, require, module) {
 var AppView, Router,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -1186,10 +1172,9 @@ module.exports = Router = (function(_super) {
   return Router;
 
 })(Backbone.Router);
-
 });
 
-require.register("views/class/app_view", function(exports, require, module) {
+;require.register("views/class/app_view", function(exports, require, module) {
 var AppView, BaseView, OffScreenNav, PlayQueue, Player, Playlist, PlaylistCollection, PlaylistTrackCollection, TopNav, Tracks, app,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -1393,10 +1378,9 @@ module.exports = AppView = (function(_super) {
   return AppView;
 
 })(BaseView);
-
 });
 
-require.register("views/class/off_screen_nav", function(exports, require, module) {
+;require.register("views/class/off_screen_nav", function(exports, require, module) {
 
 /*
   Off screen nav view
@@ -1555,10 +1539,9 @@ module.exports = OffScreenNav = (function(_super) {
   return OffScreenNav;
 
 })(ViewCollection);
-
 });
 
-require.register("views/class/player/player", function(exports, require, module) {
+;require.register("views/class/player/player", function(exports, require, module) {
 
 /*
     Here is the player. This is the bridge beetween Soundmanager2 and Cozic.
@@ -2018,10 +2001,9 @@ module.exports = Player = (function(_super) {
   return Player;
 
 })(BaseView);
-
 });
 
-require.register("views/class/player/volumeManager", function(exports, require, module) {
+;require.register("views/class/player/volumeManager", function(exports, require, module) {
 var BaseView, VolumeManager,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -2154,10 +2136,9 @@ module.exports = VolumeManager = (function(_super) {
   return VolumeManager;
 
 })(BaseView);
-
 });
 
-require.register("views/class/playlist/playlist", function(exports, require, module) {
+;require.register("views/class/playlist/playlist", function(exports, require, module) {
 
 /*
     Inherited from playqueue (for the drag and drop feature)
@@ -2219,10 +2200,9 @@ module.exports = PlayListView = (function(_super) {
   return PlayListView;
 
 })(PlayQueueView);
-
 });
 
-require.register("views/class/playlist/playlist_item", function(exports, require, module) {
+;require.register("views/class/playlist/playlist_item", function(exports, require, module) {
 var PlayListItemView, TrackListItemView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -2304,10 +2284,9 @@ module.exports = PlayListItemView = (function(_super) {
   return PlayListItemView;
 
 })(TrackListItemView);
-
 });
 
-require.register("views/class/playlist_nav_view", function(exports, require, module) {
+;require.register("views/class/playlist_nav_view", function(exports, require, module) {
 var BaseView, PlaylistNavView,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -2370,10 +2349,9 @@ module.exports = PlaylistNavView = (function(_super) {
   return PlaylistNavView;
 
 })(BaseView);
-
 });
 
-require.register("views/class/playqueue/playqueue", function(exports, require, module) {
+;require.register("views/class/playqueue/playqueue", function(exports, require, module) {
 
 /*
     Inherited from tracklist
@@ -2559,10 +2537,9 @@ module.exports = PlayQueueView = (function(_super) {
   return PlayQueueView;
 
 })(TrackListView);
-
 });
 
-require.register("views/class/playqueue/playqueue_item", function(exports, require, module) {
+;require.register("views/class/playqueue/playqueue_item", function(exports, require, module) {
 var PlayQueueItemView, TrackListItemView,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -2646,10 +2623,9 @@ module.exports = PlayQueueItemView = (function(_super) {
   return PlayQueueItemView;
 
 })(TrackListItemView);
-
 });
 
-require.register("views/class/top_nav", function(exports, require, module) {
+;require.register("views/class/top_nav", function(exports, require, module) {
 var BaseView, TopNav, TrackModel, app, uploadTrackModel,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -2812,10 +2788,9 @@ module.exports = TopNav = (function(_super) {
   return TopNav;
 
 })(BaseView);
-
 });
 
-require.register("views/class/track/tracks", function(exports, require, module) {
+;require.register("views/class/track/tracks", function(exports, require, module) {
 
 /*
     Inherited from tracklist
@@ -2848,7 +2823,6 @@ module.exports = TracksView = (function(_super) {
     this.toggleSort = __bind(this.toggleSort, this);
     this.onClickTableHead = __bind(this.onClickTableHead, this);
     this.updateSortingDisplay = __bind(this.updateSortingDisplay, this);
-    this.onClickTrack = __bind(this.onClickTrack, this);
     this.appendBlanckTrack = __bind(this.appendBlanckTrack, this);
     this.beforeDetach = __bind(this.beforeDetach, this);
     this.scrollCheck = __bind(this.scrollCheck, this);
@@ -2875,7 +2849,9 @@ module.exports = TracksView = (function(_super) {
     },
     'album:queue': 'queueAlbum',
     'album:pushNext': 'pushNextAlbum',
-    'click-track': 'onClickTrack'
+    'click-track': 'onClickTrack',
+    'shift-click-track': 'onShiftClickTrack',
+    'ctrl-click-track': 'onCtrlClickTrack'
   };
 
   TracksView.prototype.minTrackListLength = 40;
@@ -2905,7 +2881,8 @@ module.exports = TracksView = (function(_super) {
 
   TracksView.prototype.initialize = function() {
     TracksView.__super__.initialize.apply(this, arguments);
-    this.selectedTrackView = null;
+    this.selectedTrackView = new Array();
+    this.lastSelectedTrackView = null;
     this.toggleSort(Cookies('defaultSortItem') || 'artist');
     this.elementSort = null;
     this.listenTo(this.collection, 'sort', this.render);
@@ -3033,11 +3010,39 @@ module.exports = TracksView = (function(_super) {
     }
   };
 
-  TracksView.prototype.onClickTrack = function(e, trackView) {
-    if (this.selectedTrackView != null) {
-      this.selectedTrackView.unSelect();
+  TracksView.prototype.emptySelectedTrackView = function() {
+    var _results;
+    _results = [];
+    while (this.selectedTrackView.length) {
+      _results.push(this.selectedTrackView.pop().unSelect());
     }
-    return this.selectedTrackView = trackView;
+    return _results;
+  };
+
+  TracksView.prototype.onShiftClickTrack = function(e, trackView) {};
+
+  TracksView.prototype.onCtrlClickTrack = function(e, trackView) {
+    var isNewSelect;
+    isNewSelect = this.selectedTrackView.every(function(elem, index, array) {
+      if (elem === trackView) {
+        elem.unSelect();
+        array.splice(index, 1);
+        return false;
+      }
+      return true;
+    });
+    if (isNewSelect) {
+      this.selectedTrackView.push(trackView);
+      trackView.$el.addClass('selected');
+    }
+    return this.lastSelectedTrackView = trackView;
+  };
+
+  TracksView.prototype.onClickTrack = function(e, trackView) {
+    this.emptySelectedTrackView();
+    this.selectedTrackView.push(trackView);
+    trackView.$el.addClass('selected');
+    return this.lastSelectedTrackView = trackView;
   };
 
   TracksView.prototype.updateSortingDisplay = function() {
@@ -3141,10 +3146,9 @@ module.exports = TracksView = (function(_super) {
   return TracksView;
 
 })(TrackListView);
-
 });
 
-require.register("views/class/track/tracks_item", function(exports, require, module) {
+;require.register("views/class/track/tracks_item", function(exports, require, module) {
 var TrackListItemView, TracksItemView, app,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -3254,25 +3258,12 @@ module.exports = TracksItemView = (function(_super) {
     event.preventDefault();
     event.stopPropagation();
     if (this.model.attributes.state === 'server') {
-      if (this.$el.hasClass('selected')) {
-        if (this.isEdited !== element) {
-          if (this.isEdited !== '') {
-            this.disableEdition();
-          }
-          this.isEdited = element;
-          return this.enableEdition();
-        }
+      if (event.shiftKey) {
+        return this.$el.trigger('shift-click-track', this);
+      } else if (event.ctrlKey || event.metaKey) {
+        return this.$el.trigger('ctrl-click-track', this);
       } else {
-        this.$el.addClass('selected');
-        this.$el.trigger('click-track', this);
-        Mousetrap.bind('f2', function() {
-          if (this.isEdited === '') {
-            this.isEdited = 'title';
-            return this.enableEdition();
-          }
-        });
-        Mousetrap.bind('enter', this.onEnter);
-        return Mousetrap.bind('ctrl+enter', this.onCtrlEnter);
+        return this.$el.trigger('click-track', this);
       }
     }
   };
@@ -3565,10 +3556,9 @@ module.exports = TracksItemView = (function(_super) {
   return TracksItemView;
 
 })(TrackListItemView);
-
 });
 
-require.register("views/class/tracklist/tracklist", function(exports, require, module) {
+;require.register("views/class/tracklist/tracklist", function(exports, require, module) {
 
 /*
     Basic track list.
@@ -3636,10 +3626,9 @@ module.exports = TrackListView = (function(_super) {
   return TrackListView;
 
 })(ViewCollection);
-
 });
 
-require.register("views/class/tracklist/tracklist_item", function(exports, require, module) {
+;require.register("views/class/tracklist/tracklist_item", function(exports, require, module) {
 var BaseView, TrackListItemView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -3662,10 +3651,9 @@ module.exports = TrackListItemView = (function(_super) {
   return TrackListItemView;
 
 })(BaseView);
-
 });
 
-require.register("views/templates/home", function(exports, require, module) {
+;require.register("views/templates/home", function(exports, require, module) {
 var __templateData = function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -3932,3 +3920,4 @@ if (typeof define === 'function' && define.amd) {
 });
 
 ;
+//# sourceMappingURL=app.js.map
