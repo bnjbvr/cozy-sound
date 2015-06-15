@@ -6,12 +6,14 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/07 19:28:13 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/12 15:41:43 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/15 15:34:13 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 module.exports =
     #Top Nav
+    "action"                    : "Do something on selected tracks"
+    "action-text"               : "Action"
     "broadcast"                 : "Broadcast your music"
     "broadcast-text"            : "Broadcast"
     "home"                      : "Go to your songs"
@@ -30,6 +32,7 @@ module.exports =
     "#"                         : "#"
 
     #Playlist
+    "error-playlist-get"        : "Unable to get this playlist"
     "playlist-title"            : "Playlists"
     "playlist-new"              : "Create a new playlist"
     "playlist-new-pop"          : "Please enter the new playlist title"
@@ -42,12 +45,11 @@ module.exports =
     "playlist-remove-valid"     : "Are you sure? The playlist will be deleted \
     definitively"
     "playlist-remove-error"     : "Server orror occured, track was not deleted"
-    "queue-song"                : "Add this song to play queue"
     "playlist-select"           : "Select playlist"
     "playlist-delete"           : "Delete playlist"
     "playlist-retrieve-error"   : "Playlists couldn't be retrieved due tot a \
     serveur error."
-    "error-playlist-get"        : "Unable to get this playlist"
+    "queue-song"                : "Add this song to play queue"
 
     #Playqueue
     "save"                      : "Save as playlis"

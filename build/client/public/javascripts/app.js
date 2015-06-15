@@ -733,6 +733,8 @@ module.exports = ViewCollection = (function(_super) {
 
 require.register("locales/en", function(exports, require, module) {
 module.exports = {
+  "action": "Do something on selected tracks",
+  "action-text": "Action",
   "broadcast": "Broadcast your music",
   "broadcast-text": "Broadcast",
   "home": "Go to your songs",
@@ -747,6 +749,7 @@ module.exports = {
   "artist": "Artist",
   "album": "Album",
   "#": "#",
+  "error-playlist-get": "Unable to get this playlist",
   "playlist-title": "Playlists",
   "playlist-new": "Create a new playlist",
   "playlist-new-pop": "Please enter the new playlist title",
@@ -757,11 +760,10 @@ module.exports = {
   "playlist-remove": "Remove this playlist",
   "playlist-remove-valid": "Are you sure? The playlist will be deleted definitively",
   "playlist-remove-error": "Server orror occured, track was not deleted",
-  "queue-song": "Add this song to play queue",
   "playlist-select": "Select playlist",
   "playlist-delete": "Delete playlist",
   "playlist-retrieve-error": "Playlists couldn't be retrieved due tot a serveur error.",
-  "error-playlist-get": "Unable to get this playlist",
+  "queue-song": "Add this song to play queue",
   "save": "Save as playlis",
   "show/hide": "Show/hide previously played",
   "clear": "Clear the queue",
@@ -812,6 +814,8 @@ module.exports = {
   "upload-text": "Upload",
   "youtube": "Importer un morceau de Youtube",
   "youtube-text": "Youtube",
+  "action": "Appliquer une action sur les morceaux selectionnes",
+  "action-text": "Action",
   "title": "Titre",
   "artist": "Artiste",
   "album": "Album",
@@ -2682,6 +2686,7 @@ module.exports = TopNav = (function(_super) {
   TopNav.prototype.events = {
     'click #youtube-import': 'onClickYoutube',
     'click #broadcast': 'onClickBroadcast',
+    'click #add': 'onClickAdd',
     'click #upload-form': 'onClick'
   };
 
@@ -2706,6 +2711,8 @@ module.exports = TopNav = (function(_super) {
     document.body.appendChild(this.hiddenFileInput);
     return this.hiddenFileInput.addEventListener("change", this.onUploadFormChange);
   };
+
+  TopNav.prototype.onclickAdd = function() {};
 
   TopNav.prototype.onUploadFormChange = function(event) {
     this.handleFiles(this.hiddenFileInput.files);
@@ -2848,7 +2855,6 @@ module.exports = TracksView = (function(_super) {
     this.toggleSort = __bind(this.toggleSort, this);
     this.onClickTableHead = __bind(this.onClickTableHead, this);
     this.updateSortingDisplay = __bind(this.updateSortingDisplay, this);
-    this.onClickTrack = __bind(this.onClickTrack, this);
     this.appendBlanckTrack = __bind(this.appendBlanckTrack, this);
     this.beforeDetach = __bind(this.beforeDetach, this);
     this.scrollCheck = __bind(this.scrollCheck, this);
@@ -2875,7 +2881,9 @@ module.exports = TracksView = (function(_super) {
     },
     'album:queue': 'queueAlbum',
     'album:pushNext': 'pushNextAlbum',
-    'click-track': 'onClickTrack'
+    'click-track': 'onClickTrack',
+    'shift-click-track': 'onShiftClickTrack',
+    'ctrl-click-track': 'onCtrlClickTrack'
   };
 
   TracksView.prototype.minTrackListLength = 40;
@@ -2905,7 +2913,8 @@ module.exports = TracksView = (function(_super) {
 
   TracksView.prototype.initialize = function() {
     TracksView.__super__.initialize.apply(this, arguments);
-    this.selectedTrackView = null;
+    this.selectedTrackView = new Array();
+    this.lastSelectedTrackView = null;
     this.toggleSort(Cookies('defaultSortItem') || 'artist');
     this.elementSort = null;
     this.listenTo(this.collection, 'sort', this.render);
@@ -3033,11 +3042,67 @@ module.exports = TracksView = (function(_super) {
     }
   };
 
-  TracksView.prototype.onClickTrack = function(e, trackView) {
-    if (this.selectedTrackView != null) {
-      this.selectedTrackView.unSelect();
+  TracksView.prototype.emptySelectedTrackView = function() {
+    var _results;
+    _results = [];
+    while (this.selectedTrackView.length) {
+      _results.push(this.selectedTrackView.pop().unSelect());
     }
-    return this.selectedTrackView = trackView;
+    return _results;
+  };
+
+  TracksView.prototype.onShiftClickTrack = function(e, trackView) {
+    var cursor, isNewSelect, lastTrackIndex, newViewSelect, trackIndex;
+    lastTrackIndex = this.collection.indexOf(this.lastSelectedTrackView.model);
+    trackIndex = this.collection.indexOf(trackView.model);
+    if (this.lastSelectedTrackView) {
+      if (trackIndex > lastTrackIndex) {
+        cursor = lastTrackIndex;
+      } else {
+        cursor = trackIndex;
+      }
+    }
+    while (true) {
+      isNewSelect = this.selectedTrackView.every(function(elem, index, array) {
+        return elem !== app.tracks.at(cursor);
+      });
+      if (isNewSelect) {
+        newViewSelect = this.views[this.collection.at(cursor).cid];
+        newViewSelect.$el.addClass('selected');
+        this.selectedTrackView.push(newViewSelect);
+      }
+      cursor++;
+      if (cursor === trackIndex || cursor === lastTrackIndex) {
+        break;
+      }
+    }
+    this.lastSelectedTrackView = trackView;
+    return console.log(this.selectedTrackView);
+  };
+
+  TracksView.prototype.onCtrlClickTrack = function(e, trackView) {
+    var isNewSelect;
+    isNewSelect = this.selectedTrackView.every(function(elem, index, array) {
+      if (elem === trackView) {
+        elem.unSelect();
+        array.splice(index, 1);
+        return false;
+      }
+      return true;
+    });
+    if (isNewSelect) {
+      this.selectedTrackView.push(trackView);
+      trackView.$el.addClass('selected');
+    }
+    this.lastSelectedTrackView = trackView;
+    return console.log(this.selectedTrackView);
+  };
+
+  TracksView.prototype.onClickTrack = function(e, trackView) {
+    this.emptySelectedTrackView();
+    this.selectedTrackView.push(trackView);
+    trackView.$el.addClass('selected');
+    return this.lastSelectedTrackView = trackView;
   };
 
   TracksView.prototype.updateSortingDisplay = function() {
@@ -3254,25 +3319,12 @@ module.exports = TracksItemView = (function(_super) {
     event.preventDefault();
     event.stopPropagation();
     if (this.model.attributes.state === 'server') {
-      if (this.$el.hasClass('selected')) {
-        if (this.isEdited !== element) {
-          if (this.isEdited !== '') {
-            this.disableEdition();
-          }
-          this.isEdited = element;
-          return this.enableEdition();
-        }
+      if (event.shiftKey) {
+        return this.$el.trigger('shift-click-track', this);
+      } else if (event.ctrlKey || event.metaKey) {
+        return this.$el.trigger('ctrl-click-track', this);
       } else {
-        this.$el.addClass('selected');
-        this.$el.trigger('click-track', this);
-        Mousetrap.bind('f2', function() {
-          if (this.isEdited === '') {
-            this.isEdited = 'title';
-            return this.enableEdition();
-          }
-        });
-        Mousetrap.bind('enter', this.onEnter);
-        return Mousetrap.bind('ctrl+enter', this.onCtrlEnter);
+        return this.$el.trigger('click-track', this);
       }
     }
   };
@@ -3842,7 +3894,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<a href=\"#\"" + (jade.attr("title", "" + ( t('home') ) + "", true, false)) + "><div id=\"top-nav-title-home\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t("home-text")) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-home\"></i></div></a><a href=\"#playqueue\"" + (jade.attr("title", t('queue'), true, false)) + "><div id=\"top-nav-title-list\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('queue-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-list\"></i></div></a><div id=\"upload-form\"" + (jade.attr("title", "" + (t('upload')) + "", true, false)) + " type=\"file\" multiple=\"multiple\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('upload-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-cloud-upload\"></i></div><div id=\"youtube-import\"" + (jade.attr("title", "" + (t('youtube')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('youtube-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-youtube\"></i></div><div id=\"broadcast\"" + (jade.attr("title", "" + (t('broadcast')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('broadcast-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-rss\"></i></div>");;return buf.join("");
+buf.push("<a href=\"#\"" + (jade.attr("title", "" + ( t('home') ) + "", true, false)) + "><div id=\"top-nav-title-home\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t("home-text")) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-home\"></i></div></a><a href=\"#playqueue\"" + (jade.attr("title", t('queue'), true, false)) + "><div id=\"top-nav-title-list\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('queue-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-list\"></i></div></a><div id=\"upload-form\"" + (jade.attr("title", "" + (t('upload')) + "", true, false)) + " type=\"file\" multiple=\"multiple\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('upload-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-cloud-upload\"></i></div><div id=\"youtube-import\"" + (jade.attr("title", "" + (t('youtube')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('youtube-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-youtube\"></i></div><div id=\"broadcast\"" + (jade.attr("title", "" + (t('broadcast')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('broadcast-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-rss\"></i></div><div id=\"action\"" + (jade.attr("title", "" + (t('action')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('action-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-cog\"></i></div><div id=\"add\"" + (jade.attr("title", "" + (t('add')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('add')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-cog\"></i></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {

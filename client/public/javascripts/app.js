@@ -154,9 +154,10 @@ module.exports = {
     return Backbone.history.start();
   }
 };
+
 });
 
-;require.register("collections/playlist", function(exports, require, module) {
+require.register("collections/playlist", function(exports, require, module) {
 var PlaylistTrackCollection, Track, app,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -242,9 +243,10 @@ module.exports = PlaylistTrackCollection = (function(_super) {
   return PlaylistTrackCollection;
 
 })(Backbone.Collection);
+
 });
 
-;require.register("collections/playlist_collection", function(exports, require, module) {
+require.register("collections/playlist_collection", function(exports, require, module) {
 var Playlist, PlaylistsCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -265,9 +267,10 @@ module.exports = PlaylistsCollection = (function(_super) {
   return PlaylistsCollection;
 
 })(Backbone.Collection);
+
 });
 
-;require.register("collections/playqueue", function(exports, require, module) {
+require.register("collections/playqueue", function(exports, require, module) {
 var PlayQueue, Track,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -472,9 +475,10 @@ module.exports = PlayQueue = (function(_super) {
   return PlayQueue;
 
 })(Backbone.Collection);
+
 });
 
-;require.register("collections/track_collection", function(exports, require, module) {
+require.register("collections/track_collection", function(exports, require, module) {
 var Track, TrackCollection,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -495,9 +499,10 @@ module.exports = TrackCollection = (function(_super) {
   return TrackCollection;
 
 })(Backbone.Collection);
+
 });
 
-;require.register("initialize", function(exports, require, module) {
+require.register("initialize", function(exports, require, module) {
 $(function() {
   var app, initializeLocale;
   app = require('application');
@@ -527,9 +532,10 @@ $(function() {
     return app.initialize();
   };
 });
+
 });
 
-;require.register("lib/app_helpers", function(exports, require, module) {
+require.register("lib/app_helpers", function(exports, require, module) {
 (function() {
   return (function() {
     var console, dummy, method, methods, _results;
@@ -544,9 +550,10 @@ $(function() {
     return _results;
   })();
 })();
+
 });
 
-;require.register("lib/base_view", function(exports, require, module) {
+require.register("lib/base_view", function(exports, require, module) {
 var BaseView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -590,9 +597,10 @@ module.exports = BaseView = (function(_super) {
   return BaseView;
 
 })(Backbone.View);
+
 });
 
-;require.register("lib/view_collection", function(exports, require, module) {
+require.register("lib/view_collection", function(exports, require, module) {
 var BaseView, ViewCollection,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -720,10 +728,13 @@ module.exports = ViewCollection = (function(_super) {
   return ViewCollection;
 
 })(BaseView);
+
 });
 
-;require.register("locales/en", function(exports, require, module) {
+require.register("locales/en", function(exports, require, module) {
 module.exports = {
+  "action": "Do something on selected tracks",
+  "action-text": "Action",
   "broadcast": "Broadcast your music",
   "broadcast-text": "Broadcast",
   "home": "Go to your songs",
@@ -738,6 +749,7 @@ module.exports = {
   "artist": "Artist",
   "album": "Album",
   "#": "#",
+  "error-playlist-get": "Unable to get this playlist",
   "playlist-title": "Playlists",
   "playlist-new": "Create a new playlist",
   "playlist-new-pop": "Please enter the new playlist title",
@@ -748,11 +760,10 @@ module.exports = {
   "playlist-remove": "Remove this playlist",
   "playlist-remove-valid": "Are you sure? The playlist will be deleted definitively",
   "playlist-remove-error": "Server orror occured, track was not deleted",
-  "queue-song": "Add this song to play queue",
   "playlist-select": "Select playlist",
   "playlist-delete": "Delete playlist",
   "playlist-retrieve-error": "Playlists couldn't be retrieved due tot a serveur error.",
-  "error-playlist-get": "Unable to get this playlist",
+  "queue-song": "Add this song to play queue",
   "save": "Save as playlis",
   "show/hide": "Show/hide previously played",
   "clear": "Clear the queue",
@@ -788,9 +799,10 @@ module.exports = {
   "fail-remove-track": "Fail to remove track",
   "fail-add-track": "Fail to add track"
 };
+
 });
 
-;require.register("locales/fr", function(exports, require, module) {
+require.register("locales/fr", function(exports, require, module) {
 module.exports = {
   "broadcast": "Partager votre musique",
   "broadcast-text": "Partage",
@@ -802,6 +814,8 @@ module.exports = {
   "upload-text": "Upload",
   "youtube": "Importer un morceau de Youtube",
   "youtube-text": "Youtube",
+  "action": "Appliquer une action sur les morceaux selectionnes",
+  "action-text": "Action",
   "title": "Titre",
   "artist": "Artiste",
   "album": "Album",
@@ -856,9 +870,10 @@ module.exports = {
   "fail-remove-track": "La suppression du morceau a echouer",
   "fail-add-track": "L'ajout du morceau a echouer"
 };
+
 });
 
-;require.register("models/playlist", function(exports, require, module) {
+require.register("models/playlist", function(exports, require, module) {
 var Playlist, app,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -897,9 +912,10 @@ module.exports = Playlist = (function(_super) {
   return Playlist;
 
 })(Backbone.Model);
+
 });
 
-;require.register("models/track", function(exports, require, module) {
+require.register("models/track", function(exports, require, module) {
 var Track,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -943,9 +959,10 @@ module.exports = Track = (function(_super) {
   return Track;
 
 })(Backbone.Model);
+
 });
 
-;require.register("models/uploader_model", function(exports, require, module) {
+require.register("models/uploader_model", function(exports, require, module) {
 var Track, UploaderModel, app, controlFile, readMetaData, refreshDisplay, upload, uploadWorker;
 
 app = require('application');
@@ -1108,9 +1125,10 @@ UploaderModel = (function() {
 })();
 
 module.exports = new UploaderModel();
+
 });
 
-;require.register("router", function(exports, require, module) {
+require.register("router", function(exports, require, module) {
 var AppView, Router,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -1172,9 +1190,10 @@ module.exports = Router = (function(_super) {
   return Router;
 
 })(Backbone.Router);
+
 });
 
-;require.register("views/class/app_view", function(exports, require, module) {
+require.register("views/class/app_view", function(exports, require, module) {
 var AppView, BaseView, OffScreenNav, PlayQueue, Player, Playlist, PlaylistCollection, PlaylistTrackCollection, TopNav, Tracks, app,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -1378,9 +1397,10 @@ module.exports = AppView = (function(_super) {
   return AppView;
 
 })(BaseView);
+
 });
 
-;require.register("views/class/off_screen_nav", function(exports, require, module) {
+require.register("views/class/off_screen_nav", function(exports, require, module) {
 
 /*
   Off screen nav view
@@ -1539,9 +1559,10 @@ module.exports = OffScreenNav = (function(_super) {
   return OffScreenNav;
 
 })(ViewCollection);
+
 });
 
-;require.register("views/class/player/player", function(exports, require, module) {
+require.register("views/class/player/player", function(exports, require, module) {
 
 /*
     Here is the player. This is the bridge beetween Soundmanager2 and Cozic.
@@ -2001,9 +2022,10 @@ module.exports = Player = (function(_super) {
   return Player;
 
 })(BaseView);
+
 });
 
-;require.register("views/class/player/volumeManager", function(exports, require, module) {
+require.register("views/class/player/volumeManager", function(exports, require, module) {
 var BaseView, VolumeManager,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -2136,9 +2158,10 @@ module.exports = VolumeManager = (function(_super) {
   return VolumeManager;
 
 })(BaseView);
+
 });
 
-;require.register("views/class/playlist/playlist", function(exports, require, module) {
+require.register("views/class/playlist/playlist", function(exports, require, module) {
 
 /*
     Inherited from playqueue (for the drag and drop feature)
@@ -2200,9 +2223,10 @@ module.exports = PlayListView = (function(_super) {
   return PlayListView;
 
 })(PlayQueueView);
+
 });
 
-;require.register("views/class/playlist/playlist_item", function(exports, require, module) {
+require.register("views/class/playlist/playlist_item", function(exports, require, module) {
 var PlayListItemView, TrackListItemView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -2284,9 +2308,10 @@ module.exports = PlayListItemView = (function(_super) {
   return PlayListItemView;
 
 })(TrackListItemView);
+
 });
 
-;require.register("views/class/playlist_nav_view", function(exports, require, module) {
+require.register("views/class/playlist_nav_view", function(exports, require, module) {
 var BaseView, PlaylistNavView,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -2349,9 +2374,10 @@ module.exports = PlaylistNavView = (function(_super) {
   return PlaylistNavView;
 
 })(BaseView);
+
 });
 
-;require.register("views/class/playqueue/playqueue", function(exports, require, module) {
+require.register("views/class/playqueue/playqueue", function(exports, require, module) {
 
 /*
     Inherited from tracklist
@@ -2537,9 +2563,10 @@ module.exports = PlayQueueView = (function(_super) {
   return PlayQueueView;
 
 })(TrackListView);
+
 });
 
-;require.register("views/class/playqueue/playqueue_item", function(exports, require, module) {
+require.register("views/class/playqueue/playqueue_item", function(exports, require, module) {
 var PlayQueueItemView, TrackListItemView,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -2623,9 +2650,10 @@ module.exports = PlayQueueItemView = (function(_super) {
   return PlayQueueItemView;
 
 })(TrackListItemView);
+
 });
 
-;require.register("views/class/top_nav", function(exports, require, module) {
+require.register("views/class/top_nav", function(exports, require, module) {
 var BaseView, TopNav, TrackModel, app, uploadTrackModel,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -2658,6 +2686,7 @@ module.exports = TopNav = (function(_super) {
   TopNav.prototype.events = {
     'click #youtube-import': 'onClickYoutube',
     'click #broadcast': 'onClickBroadcast',
+    'click #add': 'onClickAdd',
     'click #upload-form': 'onClick'
   };
 
@@ -2682,6 +2711,8 @@ module.exports = TopNav = (function(_super) {
     document.body.appendChild(this.hiddenFileInput);
     return this.hiddenFileInput.addEventListener("change", this.onUploadFormChange);
   };
+
+  TopNav.prototype.onclickAdd = function() {};
 
   TopNav.prototype.onUploadFormChange = function(event) {
     this.handleFiles(this.hiddenFileInput.files);
@@ -2788,9 +2819,10 @@ module.exports = TopNav = (function(_super) {
   return TopNav;
 
 })(BaseView);
+
 });
 
-;require.register("views/class/track/tracks", function(exports, require, module) {
+require.register("views/class/track/tracks", function(exports, require, module) {
 
 /*
     Inherited from tracklist
@@ -3019,7 +3051,34 @@ module.exports = TracksView = (function(_super) {
     return _results;
   };
 
-  TracksView.prototype.onShiftClickTrack = function(e, trackView) {};
+  TracksView.prototype.onShiftClickTrack = function(e, trackView) {
+    var cursor, isNewSelect, lastTrackIndex, newViewSelect, trackIndex;
+    lastTrackIndex = this.collection.indexOf(this.lastSelectedTrackView.model);
+    trackIndex = this.collection.indexOf(trackView.model);
+    if (this.lastSelectedTrackView) {
+      if (trackIndex > lastTrackIndex) {
+        cursor = lastTrackIndex;
+      } else {
+        cursor = trackIndex;
+      }
+    }
+    while (true) {
+      isNewSelect = this.selectedTrackView.every(function(elem, index, array) {
+        return elem !== app.tracks.at(cursor);
+      });
+      if (isNewSelect) {
+        newViewSelect = this.views[this.collection.at(cursor).cid];
+        newViewSelect.$el.addClass('selected');
+        this.selectedTrackView.push(newViewSelect);
+      }
+      cursor++;
+      if (cursor === trackIndex || cursor === lastTrackIndex) {
+        break;
+      }
+    }
+    this.lastSelectedTrackView = trackView;
+    return console.log(this.selectedTrackView);
+  };
 
   TracksView.prototype.onCtrlClickTrack = function(e, trackView) {
     var isNewSelect;
@@ -3035,7 +3094,8 @@ module.exports = TracksView = (function(_super) {
       this.selectedTrackView.push(trackView);
       trackView.$el.addClass('selected');
     }
-    return this.lastSelectedTrackView = trackView;
+    this.lastSelectedTrackView = trackView;
+    return console.log(this.selectedTrackView);
   };
 
   TracksView.prototype.onClickTrack = function(e, trackView) {
@@ -3146,9 +3206,10 @@ module.exports = TracksView = (function(_super) {
   return TracksView;
 
 })(TrackListView);
+
 });
 
-;require.register("views/class/track/tracks_item", function(exports, require, module) {
+require.register("views/class/track/tracks_item", function(exports, require, module) {
 var TrackListItemView, TracksItemView, app,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -3556,9 +3617,10 @@ module.exports = TracksItemView = (function(_super) {
   return TracksItemView;
 
 })(TrackListItemView);
+
 });
 
-;require.register("views/class/tracklist/tracklist", function(exports, require, module) {
+require.register("views/class/tracklist/tracklist", function(exports, require, module) {
 
 /*
     Basic track list.
@@ -3626,9 +3688,10 @@ module.exports = TrackListView = (function(_super) {
   return TrackListView;
 
 })(ViewCollection);
+
 });
 
-;require.register("views/class/tracklist/tracklist_item", function(exports, require, module) {
+require.register("views/class/tracklist/tracklist_item", function(exports, require, module) {
 var BaseView, TrackListItemView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -3651,9 +3714,10 @@ module.exports = TrackListItemView = (function(_super) {
   return TrackListItemView;
 
 })(BaseView);
+
 });
 
-;require.register("views/templates/home", function(exports, require, module) {
+require.register("views/templates/home", function(exports, require, module) {
 var __templateData = function template(locals) {
 var buf = [];
 var jade_mixins = {};
@@ -3830,7 +3894,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<a href=\"#\"" + (jade.attr("title", "" + ( t('home') ) + "", true, false)) + "><div id=\"top-nav-title-home\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t("home-text")) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-home\"></i></div></a><a href=\"#playqueue\"" + (jade.attr("title", t('queue'), true, false)) + "><div id=\"top-nav-title-list\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('queue-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-list\"></i></div></a><div id=\"upload-form\"" + (jade.attr("title", "" + (t('upload')) + "", true, false)) + " type=\"file\" multiple=\"multiple\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('upload-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-cloud-upload\"></i></div><div id=\"youtube-import\"" + (jade.attr("title", "" + (t('youtube')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('youtube-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-youtube\"></i></div><div id=\"broadcast\"" + (jade.attr("title", "" + (t('broadcast')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('broadcast-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-rss\"></i></div>");;return buf.join("");
+buf.push("<a href=\"#\"" + (jade.attr("title", "" + ( t('home') ) + "", true, false)) + "><div id=\"top-nav-title-home\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t("home-text")) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-home\"></i></div></a><a href=\"#playqueue\"" + (jade.attr("title", t('queue'), true, false)) + "><div id=\"top-nav-title-list\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('queue-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-list\"></i></div></a><div id=\"upload-form\"" + (jade.attr("title", "" + (t('upload')) + "", true, false)) + " type=\"file\" multiple=\"multiple\" class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('upload-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-cloud-upload\"></i></div><div id=\"youtube-import\"" + (jade.attr("title", "" + (t('youtube')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('youtube-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-youtube\"></i></div><div id=\"broadcast\"" + (jade.attr("title", "" + (t('broadcast')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('broadcast-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-rss\"></i></div><div id=\"action\"" + (jade.attr("title", "" + (t('action')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('action-text')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-cog\"></i></div><div id=\"add\"" + (jade.attr("title", "" + (t('add')) + "", true, false)) + " class=\"top-nav-title\"><span class=\"top-nav-text\">" + (jade.escape((jade_interp = t('add')) == null ? '' : jade_interp)) + "&nbsp;</span><i class=\"icon-cog\"></i></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -3920,4 +3984,3 @@ if (typeof define === 'function' && define.amd) {
 });
 
 ;
-//# sourceMappingURL=app.js.map

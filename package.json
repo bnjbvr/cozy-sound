@@ -17,6 +17,7 @@
         "type": "git",
         "url": "https://github.com/Peltoche/cozy-sound.git"
     },
+    "readmeFilename": "README.md",
     "main": "server.coffee",
     "dependencies": {
         "americano": "0.4.1",
@@ -35,7 +36,7 @@
     },
     "scripts": {
         "test": "cake tests",
-        "start": "node build/server.js"
+        "start": "cd build && node ./server.js"
     },
     "cozy-permissions": {
         "Track": {

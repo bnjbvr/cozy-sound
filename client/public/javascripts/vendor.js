@@ -10985,5 +10985,3 @@ window.SoundManager = SoundManager; // constructor
 window.soundManager = soundManager; // public API, flash callbacks etc.
 
 }(window));
-
-//# sourceMappingURL=vendor.js.map

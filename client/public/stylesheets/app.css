@@ -2397,6 +2397,17 @@ a {
   background: -ms-linear-gradient(#f00, #800);
   background: linear-gradient(#f00, #800);
 }
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 #content {
   position: absolute;
   top: 0;
@@ -3292,5 +3303,3 @@ Da damn bear-killer player style
   h2, h3 { page-break-after: avoid; }
 }
 
-
-/*# sourceMappingURL=app.css.map*/

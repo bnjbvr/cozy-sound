@@ -6,7 +6,7 @@
 #    By: ppeltier <ppeltier@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/06/08 19:54:04 by ppeltier          #+#    #+#              #
-#    Updated: 2015/06/12 15:42:17 by ppeltier         ###   ########.fr        #
+#    Updated: 2015/06/15 15:20:18 by ppeltier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,8 @@ module.exports =
     "upload-text"               : "Upload"
     "youtube"                   : "Importer un morceau de Youtube"
     "youtube-text"              : "Youtube"
+    "action"                    : "Appliquer une action sur les morceaux selectionnes"
+    "action-text"               : "Action"
 
     #Fields
     "title"                     : "Titre"

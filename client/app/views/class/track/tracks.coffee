@@ -221,7 +221,27 @@ module.exports = class TracksView extends TrackListView
 
 
     onShiftClickTrack: (e, trackView) ->
-        #console.log app.tracks?.indexOf? trackView.model
+        # Take index of begining and the end of the array than will be
+        # selected
+        lastTrackIndex = @collection.indexOf @lastSelectedTrackView.model
+        trackIndex = @collection.indexOf trackView.model
+        if @lastSelectedTrackView
+            if trackIndex > lastTrackIndex
+                cursor = lastTrackIndex
+            else
+                cursor = trackIndex
+           loop
+               # Check if the current view is already selected
+               isNewSelect = @selectedTrackView.every (elem, index, array) ->
+                   return elem != app.tracks.at(cursor)
+               if isNewSelect
+                   newViewSelect = @views[@collection.at(cursor).cid]
+                   newViewSelect.$el.addClass 'selected'
+                   @selectedTrackView.push newViewSelect
+               cursor++
+               break if cursor == trackIndex or cursor == lastTrackIndex
+        @lastSelectedTrackView = trackView
+        console.log @selectedTrackView
 
 
     onCtrlClickTrack: (e, trackView) ->
@@ -239,6 +259,7 @@ module.exports = class TracksView extends TrackListView
             # select track
             trackView.$el.addClass 'selected'
         @lastSelectedTrackView = trackView
+        console.log @selectedTrackView
 
 
     onClickTrack: (e, trackView) ->
