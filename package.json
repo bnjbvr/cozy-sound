@@ -36,7 +36,7 @@
     },
     "scripts": {
         "test": "cake tests",
-        "start": "cd build && node ./server.js"
+        "start": "node ./build/server.js"
     },
     "cozy-permissions": {
         "Track": {
