@@ -21,7 +21,7 @@
     "main": "server.coffee",
     "dependencies": {
         "americano": "0.4.1",
-        "cozydb": "0.0.15",
+        "cozydb": "0.0.18",
         "cozy-i18n-helper": "0.0.4",
         "multiparty": "4.1.1",
         "async": "^0.9.0",
